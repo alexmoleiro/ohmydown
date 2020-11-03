@@ -2,14 +2,15 @@ package com.alexmoleiro.healthchecker.infrastructure;
 
 public class WebStatusResponse {
 
-  private final String status;
-  private final String url;
-  private final Integer delay;
+  private String status;
+  private String url;
+  private Integer delay;
 
-  public WebStatusResponse(String status, String url, Integer delay) {
-    this.status = status;
-    this.url = url;
-    this.delay = delay;
+
+  public WebStatusResponse(WebStatusRequest webStatusRequest) {
+    this.url = webStatusRequest.getUrl();
+    this.delay = 200;
+    this.status = "UP";
   }
 
   public String getStatus() {

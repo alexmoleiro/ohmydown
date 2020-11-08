@@ -1,13 +1,13 @@
 package com.alexmoleiro.healthchecker.infrastructure;
 
-public class WebStatusResponse {
+public class SiteCheckerResponse {
 
   private String status;
   private String url;
   private Integer delay;
 
 
-  public WebStatusResponse(WebStatusRequest webStatusRequest) {
+  public SiteCheckerResponse(WebStatusRequest webStatusRequest) {
     this.url = webStatusRequest.getUrl();
     this.delay = 200;
     this.status = "UP";

@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class HealthApi {
 
 
-  @CrossOrigin(origins = "http://localhost:8080")
+  @CrossOrigin(origins = "http://localhost:3000")
   @PostMapping("/status")
-  WebStatusResponse webStatusResult(@RequestBody WebStatusRequest webStatusRequest) {
-      return new WebStatusResponse(webStatusRequest);
+  SiteCheckerResponse webStatusResult(@RequestBody WebStatusRequest webStatusRequest) {
+      return new SiteCheckerResponse(webStatusRequest);
   }
 }

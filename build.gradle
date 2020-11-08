@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.alexmoleiro'
-version = '0.1'
+version = '0.13'
 sourceCompatibility = '15'
 
 repositories {
@@ -20,6 +20,7 @@ dependencies {
 	testCompile group: 'io.rest-assured', name: 'rest-assured', version: '4.2.0'
 	testCompile group: 'io.rest-assured', name: 'xml-path', version: '4.2.0'
 	testCompile group: 'io.rest-assured', name: 'json-path', version: '4.2.0'
+	testImplementation "com.github.tomakehurst:wiremock-jre8:2.27.2"
 
 }
 

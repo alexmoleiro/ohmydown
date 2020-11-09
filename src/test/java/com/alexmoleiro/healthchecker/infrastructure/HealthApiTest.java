@@ -5,14 +5,19 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 
+import java.io.IOException;
+import java.net.URI;
 import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.params.provider.Arguments.of;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class HealthApiTest {
@@ -20,9 +25,16 @@ class HealthApiTest {
   @LocalServerPort
   int port;
 
+  @MockBean
+  SiteChecker siteChecker;
+
   @ParameterizedTest
   @MethodSource("urls")
-  void shouldReturnHttpStatus(String url, String status) {
+  void shouldReturnHttpStatus(String url, String status) throws IOException, InterruptedException {
+
+    when(siteChecker.check(any(URI.class)))
+        .thenReturn(new SiteCheckerResponse("DOWN", 200, "https://www.down.com"));
+
     given()
         .contentType(JSON)
         .body("""
@@ -35,8 +47,7 @@ class HealthApiTest {
 
   private static Stream<Arguments> urls() {
     return Stream.of(
-        of("https://www.yavendras.com", "UP"),
-        of("http://www.down.com", "DOWN")
+        of("https://www.down.com", "DOWN")
     );
   }
 }

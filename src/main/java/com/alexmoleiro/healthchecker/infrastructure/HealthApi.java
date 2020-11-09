@@ -8,19 +8,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.http.HttpClient;
 
 @RestController
 public class HealthApi {
 
   @Autowired
-  HttpClient httpClient;
+  SiteChecker siteChecker;
 
   @CrossOrigin(origins = "http://localhost:3000")
   @PostMapping("/status")
   SiteCheckerResponse webStatusResult(@RequestBody WebStatusRequest webStatusRequest)
       throws IOException, InterruptedException {
-    final SiteCheckerResponse response = new SiteChecker(httpClient).check(URI.create(webStatusRequest.getUrl()));
-    return response;
+    return siteChecker.check(URI.create(webStatusRequest.getUrl()));
   }
 }

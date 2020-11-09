@@ -26,6 +26,6 @@ public class SiteChecker {
     final HttpResponse<String> send = client.send(request, ofString());
     final long delay = between(now, now()).toMillis();
     String status = (send.statusCode() == 200) ? "UP" : "DOWN";
-    return new SiteCheckerResponse(status, 200, uri.toString());
+    return new SiteCheckerResponse(status, delay, uri.toString());
   }
 }

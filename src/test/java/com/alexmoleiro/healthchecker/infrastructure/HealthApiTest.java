@@ -35,7 +35,7 @@ class HealthApiTest {
 
   private static Stream<Arguments> urls() {
     return Stream.of(
-        of("http://www.up.com", "UP"),
+        of("https://www.yavendras.com", "UP"),
         of("http://www.down.com", "DOWN")
     );
   }

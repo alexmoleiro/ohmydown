@@ -4,27 +4,23 @@ public class SiteCheckerResponse {
 
   private String status;
   private String url;
-  private Integer delay;
+  private long delay;
 
-
-  public SiteCheckerResponse(WebStatusRequest webStatusRequest) {
-    this.url = webStatusRequest.getUrl();
-    this.delay = 200;
-    this.status = "UP";
+  public SiteCheckerResponse(String status, long delay, String url) {
+      this.status = status;
+      this.delay = delay;
+      this.url = url;
   }
 
   public String getStatus() {
-    if(url.equals("http://www.up.com")) {
-      return "UP";
-    }
-    return "DOWN";
+    return status;
   }
 
   public String getUrl() {
     return url;
   }
 
-  public Integer getDelay() {
+  public long getDelay() {
     return delay;
   }
 }

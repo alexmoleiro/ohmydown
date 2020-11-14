@@ -3,6 +3,7 @@ package com.alexmoleiro.healthchecker.infrastructure;
 import com.alexmoleiro.healthchecker.service.WebStatusRequest;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -21,12 +22,13 @@ public class SiteChecker {
     this.client = client;
   }
 
-  public SiteCheckerResponse check(WebStatusRequest webStatusRequest) throws IOException, InterruptedException {
-    final HttpRequest request = newBuilder().GET().uri(webStatusRequest.getUri()).build();
+  public SiteCheckerResponse check(WebStatusRequest webStatusRequest)
+      throws IOException, InterruptedException, URISyntaxException {
+    final HttpRequest request = newBuilder().GET().uri(webStatusRequest.getUrl().toURI()).build();
     final LocalDateTime now = now();
     final HttpResponse<String> send = client.send(request, ofString());
     final long delay = between(now, now()).toMillis();
     String status = (send.statusCode() == 200) ? "UP" : "DOWN";
-    return new SiteCheckerResponse(status, delay, webStatusRequest.getUri().toString());
+    return new SiteCheckerResponse(status, delay, webStatusRequest.getUrl().toString());
   }
 }

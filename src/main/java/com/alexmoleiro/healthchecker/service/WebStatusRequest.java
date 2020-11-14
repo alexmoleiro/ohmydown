@@ -2,9 +2,8 @@ package com.alexmoleiro.healthchecker.service;
 
 import com.alexmoleiro.healthchecker.infrastructure.WebStatusRequestDto;
 
-import java.net.URI;
-
-import static java.net.URI.create;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class WebStatusRequest {
   private final WebStatusRequestDto webStatusRequestDto;
@@ -13,7 +12,7 @@ public class WebStatusRequest {
     this.webStatusRequestDto = webStatusRequestDto;
   }
 
-  public URI getUri() {
-    return create(webStatusRequestDto.getUrl());
+  public URL getUrl() throws MalformedURLException {
+    return new URL(webStatusRequestDto.getUrl());
   }
 }

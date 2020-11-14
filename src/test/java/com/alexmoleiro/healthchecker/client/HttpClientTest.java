@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
@@ -37,7 +38,7 @@ public class HttpClientTest {
   }
 
   @Test
-  void shouldCallSite() throws IOException, InterruptedException {
+  void shouldCallSite() throws IOException, InterruptedException, URISyntaxException {
 
     stubFor(WireMock.get(urlEqualTo("/log")));
 

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 @RestController
 public class HealthApi {
@@ -20,7 +21,7 @@ public class HealthApi {
   @CrossOrigin(origins = "http://localhost:3000")
   @PostMapping("/status")
   SiteCheckerResponse webStatusResult(@RequestBody WebStatusRequestDto webStatusRequestDto)
-      throws IOException, InterruptedException {
+      throws IOException, InterruptedException, URISyntaxException {
     return siteChecker.check(new WebStatusRequest(webStatusRequestDto));
   }
 }

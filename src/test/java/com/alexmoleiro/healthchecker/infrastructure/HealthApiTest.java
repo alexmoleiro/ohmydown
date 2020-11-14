@@ -10,6 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
@@ -30,7 +31,7 @@ class HealthApiTest {
 
   @ParameterizedTest
   @MethodSource("urls")
-  void shouldReturnHttpStatus(String url, String status) throws IOException, InterruptedException {
+  void shouldReturnHttpStatus(String url, String status) throws IOException, InterruptedException, URISyntaxException {
 
     when(siteChecker.check(any(WebStatusRequest.class)))
         .thenReturn(new SiteCheckerResponse("DOWN", 200, "https://www.down.com"));

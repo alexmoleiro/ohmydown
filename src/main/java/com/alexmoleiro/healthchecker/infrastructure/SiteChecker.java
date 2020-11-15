@@ -25,9 +25,9 @@ public class SiteChecker {
   public SiteCheckerResponse check(WebStatusRequest webStatusRequest)
       throws IOException, InterruptedException, URISyntaxException {
     final HttpRequest request = newBuilder().GET().uri(webStatusRequest.getUrl().toURI()).build();
-    final LocalDateTime now = now();
+    final LocalDateTime beforeRequest = now();
     final HttpResponse<String> send = client.send(request, ofString());
-    final long delay = between(now, now()).toMillis();
+    final long delay = between(beforeRequest, now()).toMillis();
     String status = (send.statusCode() == 200) ? "UP" : "DOWN";
     return new SiteCheckerResponse(status, delay, webStatusRequest.getUrl().toString());
   }

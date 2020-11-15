@@ -1,5 +1,6 @@
 package com.alexmoleiro.healthchecker.infrastructure;
 
+import com.alexmoleiro.healthchecker.service.WebStatusRequest;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -9,7 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import java.io.IOException;
-import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
@@ -30,9 +31,9 @@ class HealthApiTest {
 
   @ParameterizedTest
   @MethodSource("urls")
-  void shouldReturnHttpStatus(String url, String status) throws IOException, InterruptedException {
+  void shouldReturnHttpStatus(String url, String status) throws IOException, InterruptedException, URISyntaxException {
 
-    when(siteChecker.check(any(URI.class)))
+    when(siteChecker.check(any(WebStatusRequest.class)))
         .thenReturn(new SiteCheckerResponse("DOWN", 200, "https://www.down.com"));
 
     given()

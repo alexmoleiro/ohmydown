@@ -1,6 +1,8 @@
-package com.alexmoleiro.healthchecker.infrastructure;
+package com.alexmoleiro.healthchecker.service;
 
-import com.alexmoleiro.healthchecker.service.WebStatusRequest;
+import com.alexmoleiro.healthchecker.infrastructure.SiteCheckerResponse;
+import com.alexmoleiro.healthchecker.core.WebStatusRequest;
+import com.alexmoleiro.healthchecker.infrastructure.SiteStatus;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -9,6 +11,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 
+import static com.alexmoleiro.healthchecker.infrastructure.SiteStatus.DOWN;
+import static com.alexmoleiro.healthchecker.infrastructure.SiteStatus.UP;
 import static java.net.http.HttpRequest.newBuilder;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static java.time.Duration.between;
@@ -28,7 +32,7 @@ public class SiteChecker {
     final LocalDateTime beforeRequest = now();
     final HttpResponse<String> send = client.send(request, ofString());
     final long delay = between(beforeRequest, now()).toMillis();
-    String status = (send.statusCode() == 200) ? "UP" : "DOWN";
-    return new SiteCheckerResponse(status, delay, webStatusRequest.getUrl().toString());
+    SiteStatus status = (send.statusCode() == 200) ? UP : DOWN;
+    return new SiteCheckerResponse(status, delay, send.uri().toString());
   }
 }

@@ -1,4 +1,4 @@
-package com.alexmoleiro.healthchecker.service;
+package com.alexmoleiro.healthchecker.core;
 
 import com.alexmoleiro.healthchecker.infrastructure.WebStatusRequestDto;
 import org.junit.jupiter.params.ParameterizedTest;

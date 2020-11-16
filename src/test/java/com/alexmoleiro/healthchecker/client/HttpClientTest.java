@@ -1,10 +1,9 @@
 package com.alexmoleiro.healthchecker.client;
 
-import com.alexmoleiro.healthchecker.infrastructure.SiteChecker;
+import com.alexmoleiro.healthchecker.core.WebStatusRequest;
 import com.alexmoleiro.healthchecker.infrastructure.WebStatusRequestDto;
-import com.alexmoleiro.healthchecker.service.WebStatusRequest;
+import com.alexmoleiro.healthchecker.service.SiteChecker;
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +12,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
@@ -40,7 +40,7 @@ public class HttpClientTest {
   @Test
   void shouldCallSite() throws IOException, InterruptedException, URISyntaxException {
 
-    stubFor(WireMock.get(urlEqualTo("/log")));
+    stubFor(get(urlEqualTo("/log")));
 
     final WebStatusRequestDto mock = mock(WebStatusRequestDto.class);
     when(mock.getUrl()).thenReturn("http://localhost:8080/log");

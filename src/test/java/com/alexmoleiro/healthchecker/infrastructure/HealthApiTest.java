@@ -1,6 +1,7 @@
 package com.alexmoleiro.healthchecker.infrastructure;
 
-import com.alexmoleiro.healthchecker.service.WebStatusRequest;
+import com.alexmoleiro.healthchecker.service.SiteChecker;
+import com.alexmoleiro.healthchecker.core.WebStatusRequest;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.stream.Stream;
 
+import static com.alexmoleiro.healthchecker.infrastructure.SiteStatus.DOWN;
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.Matchers.equalTo;
@@ -34,7 +36,7 @@ class HealthApiTest {
   void shouldReturnHttpStatus(String url, String status) throws IOException, InterruptedException, URISyntaxException {
 
     when(siteChecker.check(any(WebStatusRequest.class)))
-        .thenReturn(new SiteCheckerResponse("DOWN", 200, "https://www.down.com"));
+        .thenReturn(new SiteCheckerResponse(DOWN, 200, "https://www.down.com"));
 
     given()
         .contentType(JSON)

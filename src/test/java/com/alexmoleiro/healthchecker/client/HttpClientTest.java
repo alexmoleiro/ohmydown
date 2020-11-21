@@ -3,10 +3,10 @@ package com.alexmoleiro.healthchecker.client;
 import com.alexmoleiro.healthchecker.core.WebStatusRequest;
 import com.alexmoleiro.healthchecker.infrastructure.WebStatusRequestDto;
 import com.alexmoleiro.healthchecker.service.SiteChecker;
-import com.github.tomakehurst.wiremock.WireMockServer;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -22,20 +22,11 @@ import static java.net.http.HttpClient.newBuilder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(SpringExtension.class)
+@AutoConfigureWireMock(port = 8765)
 public class HttpClientTest {
 
-  private WireMockServer wireMockServer = new WireMockServer(8080);
   private HttpClient client = newBuilder().build();
-
-  @BeforeEach
-  void setUp() {
-    wireMockServer.start();
-  }
-
-  @AfterEach
-  void tearDown() {
-    wireMockServer.stop();
-  }
 
   @Test
   void shouldCallSite() throws IOException, InterruptedException, URISyntaxException {
@@ -43,7 +34,7 @@ public class HttpClientTest {
     stubFor(get(urlEqualTo("/log")));
 
     final WebStatusRequestDto mock = mock(WebStatusRequestDto.class);
-    when(mock.getUrl()).thenReturn("http://localhost:8080/log");
+    when(mock.getUrl()).thenReturn("http://localhost:8765/log");
 
     new SiteChecker(client).check(new WebStatusRequest(mock));
 

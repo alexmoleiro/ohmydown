@@ -21,6 +21,7 @@ dependencies {
 	testCompile group: 'io.rest-assured', name: 'xml-path', version: '4.2.0'
 	testCompile group: 'io.rest-assured', name: 'json-path', version: '4.2.0'
 	testImplementation "com.github.tomakehurst:wiremock-jre8:2.27.2"
+	testImplementation("org.springframework.cloud:spring-cloud-starter-contract-stub-runner:2.2.3.RELEASE")
 
 }
 

@@ -27,7 +27,7 @@ public class HealthApi {
   @CrossOrigin(origins = "http://localhost:3000")
   @PostMapping("/status")
   SiteCheckerResponse webStatusResult(@RequestBody WebStatusRequestDto webStatusRequestDto)
-      throws IOException, InterruptedException, URISyntaxException {
+      throws InterruptedException, IOException, URISyntaxException {
     return siteChecker.check(new WebStatusRequest(webStatusRequestDto));
   }
 

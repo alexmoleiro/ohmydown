@@ -9,11 +9,11 @@ public class WebStatusRequest {
   private URL url;
   private static final String DOMAIN_PATTERN = "^((?!-)[A-Za-z0–9-]{1,63}(?<!-)\\.)+[A-Za-z]{2,20}$";
 
-  public WebStatusRequest(WebStatusRequestDto webStatusRequestDto) throws MalformedURLException {
+  public WebStatusRequest(WebStatusRequestDto webStatusRequestDto) {
     setUrl(webStatusRequestDto.getUrl());
   }
 
-  private void setUrl(String urlString) throws MalformedURLException {
+  private void setUrl(String urlString) {
 
     try {
       url = new URL(urlString);

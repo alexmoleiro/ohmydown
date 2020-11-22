@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 import static com.alexmoleiro.healthchecker.infrastructure.SiteStatus.DOWN;
@@ -22,17 +23,28 @@ import static org.springframework.http.HttpStatus.OK;
 public class SiteChecker {
 
   private final HttpClient client;
+  private final Duration timeout;
 
-  public SiteChecker(HttpClient client) {
+  public SiteChecker(HttpClient client, Duration timeout) {
     this.client = client;
+    this.timeout = timeout;
   }
 
-  public SiteCheckerResponse check(WebStatusRequest webStatusRequest)
-      throws IOException, InterruptedException, URISyntaxException {
-    final HttpRequest request = newBuilder().GET().uri(webStatusRequest.getUrl().toURI()).build();
+  public SiteCheckerResponse check(WebStatusRequest webStatusRequest) throws URISyntaxException, InterruptedException {
+    final HttpRequest request =
+        newBuilder()
+            .GET()
+            .uri(webStatusRequest.getUrl().toURI())
+            .timeout(timeout)
+            .build();
     final LocalDateTime beforeRequest = now();
-    final HttpResponse<String> send = client.send(request, ofString());
-    final long delay = between(beforeRequest, now()).toMillis();
+     HttpResponse<String> send;
+        try {
+          send = client.send(request, ofString());
+        } catch (IOException e) {
+          throw new SiteCheckerException(e);
+        }
+        final long delay = between(beforeRequest, now()).toMillis();
     SiteStatus status = (send.statusCode() == OK.value()) ? UP : DOWN;
     return new SiteCheckerResponse(status, delay, send.uri().toString());
   }

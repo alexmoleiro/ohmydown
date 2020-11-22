@@ -1,7 +1,10 @@
 package com.alexmoleiro.healthchecker.infrastructure;
 
 
+import com.alexmoleiro.healthchecker.core.WebStatusRequest;
 import com.alexmoleiro.healthchecker.service.SiteChecker;
+import com.alexmoleiro.healthchecker.service.SiteCheckerException;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -10,8 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.http.HttpConnectTimeoutException;
 import java.util.Random;
 import java.util.stream.Stream;
 
@@ -21,10 +24,13 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.params.provider.Arguments.of;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.REQUEST_TIMEOUT;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class HealthApiTest {
@@ -39,7 +45,7 @@ class HealthApiTest {
   @ParameterizedTest
   @MethodSource("urls")
   void shouldReturnHttpStatus(String url, int statusCode, SiteStatus siteStatus)
-      throws IOException, InterruptedException, URISyntaxException {
+      throws InterruptedException, URISyntaxException {
 
     final String domainName = url.substring(8);
 
@@ -82,4 +88,18 @@ class HealthApiTest {
         of("ftps://hola","ftps://hola","unknown protocol: ftps")
     );
   }
+
+  @Test
+  void shouldReturn408WhenTimeout() throws URISyntaxException, InterruptedException {
+
+    doThrow(new SiteCheckerException(new HttpConnectTimeoutException("timeout")))
+        .when(siteChecker).check(any(WebStatusRequest.class));
+
+      given()
+          .contentType(JSON)
+          .body("""
+            {"url":"%s"}""".formatted("http://anything.com"))
+          .post("http://localhost:%d/status".formatted(port))
+          .then().assertThat().statusCode(REQUEST_TIMEOUT.value());
+    }
 }

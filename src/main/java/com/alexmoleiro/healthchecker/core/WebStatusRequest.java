@@ -9,11 +9,11 @@ public class WebStatusRequest {
   private URL url;
   private static final String DOMAIN_PATTERN = "^((?!-)[A-Za-z0–9-]{1,63}(?<!-)\\.)+[A-Za-z]{2,20}$";
 
-  public WebStatusRequest(WebStatusRequestDto webStatusRequestDto) throws MalformedURLException {
+  public WebStatusRequest(WebStatusRequestDto webStatusRequestDto) {
     setUrl(webStatusRequestDto.getUrl());
   }
 
-  private void setUrl(String urlString) throws MalformedURLException {
+  private void setUrl(String urlString) {
 
     try {
       url = new URL(urlString);
@@ -21,13 +21,13 @@ public class WebStatusRequest {
         throw new MalformedURLException("No http protocol");
       }
       if (!url.getHost().matches(DOMAIN_PATTERN) && !url.getHost().equals("localhost")) {
-        throw new MalformedURLException("Invalid domain name");
+        throw new WebStatusRequestException(urlString, "Invalid domain name");
       }
     } catch (MalformedURLException e) {
       if (e.getMessage().contains("no protocol")) {
         setUrl("https://" + urlString);
       } else {
-        throw new MalformedURLException(e.getMessage());
+        throw new WebStatusRequestException(urlString, e.getMessage());
       }
     }
   }

@@ -35,10 +35,13 @@ class HealthApiTest {
 
   @ParameterizedTest
   @MethodSource("urls")
-  void shouldReturnHttpStatus(String url, String status, SiteStatus siteStatus) throws IOException, InterruptedException, URISyntaxException {
+  void shouldReturnHttpStatus(String url, int statusCode, SiteStatus siteStatus)
+      throws IOException, InterruptedException, URISyntaxException {
+
+    final String domainName = url.substring(8);
 
     when(siteChecker.check(
-        argThat(webRequest->webRequest.getUrl().getHost().equals(url.substring(8)))))
+        argThat(webRequest-> webRequest.getUrl().getHost().equals(domainName))))
         .thenReturn(new SiteCheckerResponse(siteStatus, DELAY, url));
 
     given()
@@ -46,15 +49,15 @@ class HealthApiTest {
         .body("""
             {"url":"%s"}""".formatted(url))
         .post("http://localhost:%d/status".formatted(port))
-        .then().assertThat().statusCode(200).body(equalTo("""
-        {"status":"%s","url":"%s","delay":%d}""".formatted(status, url, DELAY)))
+        .then().assertThat().statusCode(statusCode).body(equalTo("""
+        {"status":"%s","url":"%s","delay":%d}""".formatted(siteStatus.toString(), url, DELAY)))
         .body("url", equalTo(url));
   }
 
   private static Stream<Arguments> urls() {
     return Stream.of(
-        of("https://www.down.com", "DOWN", DOWN),
-        of("https://www.up.com", "UP", UP)
+        of("https://www.down.com", 200, DOWN),
+        of("https://www.up.com", 200, UP)
     );
   }
 }

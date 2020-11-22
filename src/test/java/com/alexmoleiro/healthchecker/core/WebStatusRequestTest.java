@@ -5,7 +5,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.net.MalformedURLException;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -24,7 +23,7 @@ class WebStatusRequestTest {
 
     assertThatThrownBy(
         ()-> new WebStatusRequest(webStatusRequestDto)
-    ).isInstanceOf(MalformedURLException.class);
+    ).isInstanceOf(WebStatusRequestException.class);
 
   }
 

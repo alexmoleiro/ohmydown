@@ -21,13 +21,13 @@ public class WebStatusRequest {
         throw new MalformedURLException("No http protocol");
       }
       if (!url.getHost().matches(DOMAIN_PATTERN) && !url.getHost().equals("localhost")) {
-        throw new MalformedURLException("Invalid domain name");
+        throw new WebStatusRequestException(urlString, "Invalid domain name");
       }
     } catch (MalformedURLException e) {
       if (e.getMessage().contains("no protocol")) {
         setUrl("https://" + urlString);
       } else {
-        throw new MalformedURLException(e.getMessage());
+        throw new WebStatusRequestException(urlString, e.getMessage());
       }
     }
   }

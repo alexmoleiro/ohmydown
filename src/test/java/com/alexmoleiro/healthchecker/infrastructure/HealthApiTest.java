@@ -1,6 +1,8 @@
 package com.alexmoleiro.healthchecker.infrastructure;
 
+
 import com.alexmoleiro.healthchecker.service.SiteChecker;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -22,6 +24,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.params.provider.Arguments.of;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class HealthApiTest {
@@ -50,8 +53,7 @@ class HealthApiTest {
             {"url":"%s"}""".formatted(url))
         .post("http://localhost:%d/status".formatted(port))
         .then().assertThat().statusCode(statusCode).body(equalTo("""
-        {"status":"%s","url":"%s","delay":%d}""".formatted(siteStatus.toString(), url, DELAY)))
-        .body("url", equalTo(url));
+        {"status":"%s","url":"%s","delay":%d}""".formatted(siteStatus.toString(), url, DELAY)));
   }
 
   private static Stream<Arguments> urls() {
@@ -60,4 +62,17 @@ class HealthApiTest {
         of("https://www.up.com", 200, UP)
     );
   }
+
+  @Test
+  void shouldReturnBadRequest() {
+    final String invalidUrl = "randomMessage";
+    given()
+        .contentType(JSON)
+        .body("""
+            {"url":"%s"}""".formatted(invalidUrl))
+        .post("http://localhost:%d/status".formatted(port))
+        .then().assertThat().statusCode(BAD_REQUEST.value())
+        .body(equalTo("""
+        {"url":"https://%s","message":"%s"}""".formatted(invalidUrl, "Invalid domain name")));
+    }
 }

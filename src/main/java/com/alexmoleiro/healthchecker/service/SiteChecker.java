@@ -3,6 +3,8 @@ package com.alexmoleiro.healthchecker.service;
 import com.alexmoleiro.healthchecker.core.WebStatusRequest;
 import com.alexmoleiro.healthchecker.infrastructure.SiteCheckerResponse;
 import com.alexmoleiro.healthchecker.infrastructure.SiteStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -24,6 +26,8 @@ public class SiteChecker {
 
   private final HttpClient client;
   private final Duration timeout;
+  private static Logger logger = LoggerFactory.getLogger(SiteChecker.class);
+
 
   public SiteChecker(HttpClient client, Duration timeout) {
     this.client = client;
@@ -36,12 +40,15 @@ public class SiteChecker {
             .GET()
             .uri(webStatusRequest.getUrl().toURI())
             .timeout(timeout)
+
             .build();
     final LocalDateTime beforeRequest = now();
      HttpResponse<String> send;
         try {
           send = client.send(request, ofString());
+          logger.info(webStatusRequest.getUrl().toString()+ " => " + send.statusCode());
         } catch (IOException e) {
+          logger.warn(e.getClass().toString());
           throw new SiteCheckerException(e);
         }
         final long delay = between(beforeRequest, now()).toMillis();

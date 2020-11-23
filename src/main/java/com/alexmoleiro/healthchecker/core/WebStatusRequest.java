@@ -7,7 +7,8 @@ import java.net.URL;
 
 public class WebStatusRequest {
   private URL url;
-  private static final String DOMAIN_PATTERN = "^((?!-)[A-Za-z0–9-]{1,63}(?<!-)\\.)+[A-Za-z]{2,20}$";
+  private static final String DOMAIN_PATTERN =
+      "(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]";
 
   public WebStatusRequest(WebStatusRequestDto webStatusRequestDto) {
     setUrl(webStatusRequestDto.getUrl());

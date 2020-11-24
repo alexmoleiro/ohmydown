@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 
@@ -33,7 +34,7 @@ public class HttpClientTest {
   private HttpClient client = newBuilder().build();
 
   @Test
-  void shouldCallSite() throws InterruptedException, URISyntaxException {
+  void shouldCallSite() throws InterruptedException, URISyntaxException, IOException {
 
     stubFor(get(urlEqualTo("/log")).willReturn(aResponse().withStatus(200)));
 

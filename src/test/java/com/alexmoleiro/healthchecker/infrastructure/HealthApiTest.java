@@ -7,7 +7,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 
@@ -19,7 +18,7 @@ import java.net.http.HttpConnectTimeoutException;
 import java.util.Random;
 import java.util.stream.Stream;
 
-import static com.alexmoleiro.healthchecker.core.CheckResult.SSL_CERTIFICATE_ERROR;
+import static com.alexmoleiro.healthchecker.core.CheckResultCode.SSL_CERTIFICATE_ERROR;
 import static com.alexmoleiro.healthchecker.infrastructure.SiteStatus.DOWN;
 import static com.alexmoleiro.healthchecker.infrastructure.SiteStatus.UP;
 import static io.restassured.RestAssured.given;
@@ -30,12 +29,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.REQUEST_TIMEOUT;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = RANDOM_PORT)
 class HealthApiTest {
 
   @LocalServerPort

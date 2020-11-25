@@ -1,11 +1,11 @@
 package com.alexmoleiro.healthchecker.core;
 
-public enum CheckResult {
+public enum CheckResultCode {
   SSL_CERTIFICATE_ERROR(495);
 
   private final int value;
 
-  CheckResult(int value) {
+  CheckResultCode(int value) {
     this.value = value;
   }
 

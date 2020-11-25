@@ -17,7 +17,7 @@ import java.net.ConnectException;
 import java.net.URISyntaxException;
 import java.net.http.HttpConnectTimeoutException;
 
-import static com.alexmoleiro.healthchecker.core.CheckResult.SSL_CERTIFICATE_ERROR;
+import static com.alexmoleiro.healthchecker.core.CheckResultCode.SSL_CERTIFICATE_ERROR;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.REQUEST_TIMEOUT;

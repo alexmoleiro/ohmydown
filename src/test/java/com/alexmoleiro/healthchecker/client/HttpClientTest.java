@@ -3,7 +3,6 @@ package com.alexmoleiro.healthchecker.client;
 import com.alexmoleiro.healthchecker.core.WebStatusRequest;
 import com.alexmoleiro.healthchecker.infrastructure.WebStatusRequestDto;
 import com.alexmoleiro.healthchecker.service.SiteChecker;
-import com.alexmoleiro.healthchecker.service.SiteCheckerException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
@@ -12,6 +11,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
+import java.net.http.HttpTimeoutException;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -62,7 +62,7 @@ public class HttpClientTest {
             () ->
                 new SiteChecker(client, ofMillis(clientTimeout))
                     .check(new WebStatusRequest(webStatusRequestDtoMock)))
-        .isInstanceOf(SiteCheckerException.class)
+        .isInstanceOf(HttpTimeoutException.class)
         .hasMessageContaining("request timed out");
   }
 }

@@ -3,8 +3,6 @@ package com.alexmoleiro.healthchecker.infrastructure;
 
 import com.alexmoleiro.healthchecker.core.WebStatusRequest;
 import com.alexmoleiro.healthchecker.service.SiteChecker;
-import com.alexmoleiro.healthchecker.service.SiteCheckerException;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -21,6 +19,7 @@ import java.net.http.HttpConnectTimeoutException;
 import java.util.Random;
 import java.util.stream.Stream;
 
+import static com.alexmoleiro.healthchecker.core.CheckResult.SSL_CERTIFICATE_ERROR;
 import static com.alexmoleiro.healthchecker.infrastructure.SiteStatus.DOWN;
 import static com.alexmoleiro.healthchecker.infrastructure.SiteStatus.UP;
 import static io.restassured.RestAssured.given;
@@ -93,25 +92,12 @@ class HealthApiTest {
     );
   }
 
-  @Test
-  void shouldReturn408WhenTimeout() throws URISyntaxException, InterruptedException, IOException {
-
-    doThrow(new SiteCheckerException(new HttpConnectTimeoutException("timeout")))
-        .when(siteChecker).check(any(WebStatusRequest.class));
-
-      given()
-          .contentType(JSON)
-          .body("""
-            {"url":"%s"}""".formatted("http://anything.com"))
-          .post("http://localhost:%d/status".formatted(port))
-          .then().assertThat().statusCode(REQUEST_TIMEOUT.value());
-    }
-
-  @Test
-  void shouldReturnUnknownWhenUnresolvedAddressException()
+  @ParameterizedTest
+  @MethodSource("cases")
+  void shouldReturnProperStatusCode(int statusCode, Throwable e)
       throws URISyntaxException, InterruptedException, IOException {
 
-    doThrow(new ConnectException())
+    doThrow(e)
         .when(siteChecker).check(any(WebStatusRequest.class));
 
     given()
@@ -119,22 +105,15 @@ class HealthApiTest {
         .body("""
             {"url":"%s"}""".formatted("http://anything.com"))
         .post("http://localhost:%d/status".formatted(port))
-        .then().assertThat().statusCode(NOT_FOUND.value());
+        .then().assertThat().statusCode(statusCode);
   }
 
-  @Test
-  void shouldReturnUnknownWhenCertificateExpiredExceptionException()
-      throws URISyntaxException, InterruptedException, IOException {
-
-    doThrow(new SSLHandshakeException(""))
-        .when(siteChecker).check(any(WebStatusRequest.class));
-
-    given()
-        .contentType(JSON)
-        .body("""
-            {"url":"%s"}""".formatted("http://anything.com"))
-        .post("http://localhost:%d/status".formatted(port))
-        .then().assertThat().statusCode(495);
+  private static Stream<Arguments> cases() {
+    return Stream.of(
+        of(SSL_CERTIFICATE_ERROR.value(), new SSLHandshakeException("")),
+        of(NOT_FOUND.value(), new ConnectException()),
+        of(REQUEST_TIMEOUT.value(), new HttpConnectTimeoutException("timeout"))
+    );
   }
 
 }

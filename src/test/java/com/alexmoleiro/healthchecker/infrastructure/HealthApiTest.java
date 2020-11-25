@@ -13,6 +13,9 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 
+import javax.net.ssl.SSLHandshakeException;
+import java.io.IOException;
+import java.net.ConnectException;
 import java.net.URISyntaxException;
 import java.net.http.HttpConnectTimeoutException;
 import java.util.Random;
@@ -29,6 +32,7 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.REQUEST_TIMEOUT;
 
@@ -45,7 +49,7 @@ class HealthApiTest {
   @ParameterizedTest
   @MethodSource("urls")
   void shouldReturnHttpStatus(String url, int statusCode, SiteStatus siteStatus)
-      throws InterruptedException, URISyntaxException {
+      throws InterruptedException, URISyntaxException, IOException {
 
     final String domainName = url.substring(8);
 
@@ -90,7 +94,7 @@ class HealthApiTest {
   }
 
   @Test
-  void shouldReturn408WhenTimeout() throws URISyntaxException, InterruptedException {
+  void shouldReturn408WhenTimeout() throws URISyntaxException, InterruptedException, IOException {
 
     doThrow(new SiteCheckerException(new HttpConnectTimeoutException("timeout")))
         .when(siteChecker).check(any(WebStatusRequest.class));
@@ -102,4 +106,35 @@ class HealthApiTest {
           .post("http://localhost:%d/status".formatted(port))
           .then().assertThat().statusCode(REQUEST_TIMEOUT.value());
     }
+
+  @Test
+  void shouldReturnUnknownWhenUnresolvedAddressException()
+      throws URISyntaxException, InterruptedException, IOException {
+
+    doThrow(new ConnectException())
+        .when(siteChecker).check(any(WebStatusRequest.class));
+
+    given()
+        .contentType(JSON)
+        .body("""
+            {"url":"%s"}""".formatted("http://anything.com"))
+        .post("http://localhost:%d/status".formatted(port))
+        .then().assertThat().statusCode(NOT_FOUND.value());
+  }
+
+  @Test
+  void shouldReturnUnknownWhenCertificateExpiredExceptionException()
+      throws URISyntaxException, InterruptedException, IOException {
+
+    doThrow(new SSLHandshakeException(""))
+        .when(siteChecker).check(any(WebStatusRequest.class));
+
+    given()
+        .contentType(JSON)
+        .body("""
+            {"url":"%s"}""".formatted("http://anything.com"))
+        .post("http://localhost:%d/status".formatted(port))
+        .then().assertThat().statusCode(495);
+  }
+
 }

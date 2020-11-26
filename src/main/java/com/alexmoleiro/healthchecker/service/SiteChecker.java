@@ -10,7 +10,6 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -44,15 +43,8 @@ public class SiteChecker {
             .build();
     final LocalDateTime beforeRequest = now();
     HttpResponse<String> send;
-    try {
-      send = client.send(request, ofString());
-      logger.info("%s %d".formatted(webStatusRequest.getUrl().toString(), send.statusCode()));
-    }
-    catch (HttpTimeoutException e) {
-      logger.warn(e.getClass().toString());
-      throw new SiteCheckerException(e);
-    }
-
+    send = client.send(request, ofString());
+    logger.info("%s %d".formatted(webStatusRequest.getUrl().toString(), send.statusCode()));
     final long delay = between(beforeRequest, now()).toMillis();
     SiteStatus status = (send.statusCode() == OK.value()) ? UP : DOWN;
     return new SiteCheckerResponse(status, delay, send.uri().toString());

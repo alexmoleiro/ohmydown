@@ -3,7 +3,6 @@ package com.alexmoleiro.healthchecker.infrastructure;
 import com.alexmoleiro.healthchecker.core.WebStatusRequest;
 import com.alexmoleiro.healthchecker.core.WebStatusRequestException;
 import com.alexmoleiro.healthchecker.service.SiteChecker;
-import com.alexmoleiro.healthchecker.service.SiteCheckerException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.URISyntaxException;
+import java.net.http.HttpConnectTimeoutException;
 
+import static com.alexmoleiro.healthchecker.core.CheckResultCode.SSL_CERTIFICATE_ERROR;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.REQUEST_TIMEOUT;
@@ -24,7 +25,6 @@ import static org.springframework.http.HttpStatus.REQUEST_TIMEOUT;
 @RestController
 public class HealthApi {
 
-  public static final int SSL_CERTIFICATE_ERROR = 495;
   private final SiteChecker siteChecker;
 
   public HealthApi(SiteChecker siteChecker) {
@@ -45,7 +45,7 @@ public class HealthApi {
   }
 
   @ResponseStatus(value= REQUEST_TIMEOUT)
-  @ExceptionHandler(SiteCheckerException.class)
+  @ExceptionHandler(HttpConnectTimeoutException.class)
   public void timeout() {
   }
 
@@ -56,7 +56,7 @@ public class HealthApi {
 
   @ExceptionHandler(SSLHandshakeException.class)
   public void sslException(Exception e, HttpServletResponse response) {
-    response.setStatus(SSL_CERTIFICATE_ERROR);
+    response.setStatus(SSL_CERTIFICATE_ERROR.value());
   }
 
 

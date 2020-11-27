@@ -42,8 +42,7 @@ public class SiteChecker {
             .timeout(timeout)
             .build();
     final LocalDateTime beforeRequest = now();
-    HttpResponse<String> send;
-    send = client.send(request, ofString());
+    HttpResponse<String> send = client.send(request, ofString());
     logger.info("%s %d".formatted(webStatusRequest.getUrl().toString(), send.statusCode()));
     final long delay = between(beforeRequest, now()).toMillis();
     SiteStatus status = (send.statusCode() == OK.value()) ? UP : DOWN;

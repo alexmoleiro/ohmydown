@@ -7,7 +7,7 @@ import com.alexmoleiro.healthchecker.service.SiteChecker;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 
 import javax.net.ssl.SSLHandshakeException;
 import java.io.FileWriter;
@@ -20,18 +20,21 @@ import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.IntStream;
 
+import static java.lang.Thread.sleep;
 import static java.net.http.HttpClient.Redirect.ALWAYS;
 import static java.net.http.HttpClient.newBuilder;
 import static java.nio.file.Files.lines;
 import static java.nio.file.Path.of;
+import static java.time.Duration.ofSeconds;
+import static java.util.concurrent.Executors.newFixedThreadPool;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.IntStream.rangeClosed;
 
 public class ScraperTest {
-  // @Test
+
+  @Disabled
   void shouldDownload() throws IOException {
 
     FileWriter fileWriter = new FileWriter("domains-alabrent.txt");
@@ -58,35 +61,31 @@ public class ScraperTest {
     }
   }
 
-  @Test
+  @Disabled
   void shouldUpdateAtomicInteger() throws IOException, URISyntaxException, InterruptedException {
     final List<String> domains =
         lines(of("/Users/alejandro.moleiro/Idea/sitechecker/domains-english.md")).collect(toList());
 
-    final AtomicInteger index = new AtomicInteger(-1); // https://mimoYmima.com"
-    int cursor = index.get();
+    final AtomicInteger index = new AtomicInteger(-1);
 
     final SiteChecker siteChecker =
-        new SiteChecker(newBuilder().followRedirects(ALWAYS).build(), Duration.ofSeconds(5));
+        new SiteChecker(newBuilder().followRedirects(ALWAYS).build(), ofSeconds(5));
 
-    final int nThreads = 10;
-    ExecutorService executor = Executors.newFixedThreadPool(nThreads);
+    final int nThreads = 15;
+    ExecutorService executor = newFixedThreadPool(nThreads);
 
-    IntStream.rangeClosed(1, nThreads)
-        .forEach(x -> executor.execute(() -> navegar(domains, index, cursor, siteChecker)));
+    rangeClosed(1, nThreads)
+        .forEach(x -> executor.execute(() -> navegar(domains, index, siteChecker)));
 
-    Thread.sleep(Duration.ofMinutes(2).toMillis());
+    sleep(Duration.ofMinutes(3).toMillis());
   }
 
-  private void navegar(
-      List<String> domains, AtomicInteger index, int cursor, SiteChecker siteChecker) {
+  private void navegar(List<String> domains, AtomicInteger index, SiteChecker siteChecker) {
 
     while (1 == 1) {
       String domain = null;
-      // final String name = Thread.currentThread().getName();
-      // System.out.println(name);
       try {
-        cursor = index.addAndGet(1) % domains.size();
+        int cursor = index.addAndGet(1) % domains.size();
         domain = domains.get(cursor);
         final SiteCheckerResponse result =
             siteChecker.check(new WebStatusRequest(new WebStatusRequestDto(domain)));
@@ -98,12 +97,18 @@ public class ScraperTest {
                 + result.getUrl()
                 + "\t\t"
                 + result.getStatus());
-      } catch (ConnectException | URISyntaxException | SSLHandshakeException e) {
-        System.out.println("varios " + domain);
+      } catch (ConnectException e) {
+        System.out.println("Connection error " + domain + " " + e.getMessage());
+      } catch (URISyntaxException e) {
+        System.out.println("URI syntax " + domain);
+      } catch (SSLHandshakeException e) {
+        System.out.println("SSL exception " + domain);
       } catch (HttpTimeoutException e) {
         System.out.println("Timeout https://" + domain);
-      } catch (IOException | InterruptedException e) {
-        System.out.println("Freak " + domain);
+      } catch (IOException e) {
+        System.out.println("IOException " + domain + " " + e.getMessage());
+      } catch (InterruptedException e) {
+        System.out.println("Interrupted " + domain);
       }
     }
   }

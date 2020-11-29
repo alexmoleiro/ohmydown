@@ -87,7 +87,7 @@ class HealthApiTest {
 
   private static Stream<Arguments> invalidUrls() {
     return Stream.of(
-        of("randomMessage","https://randomMessage","Invalid domain name"),
+        of("randomMessage","http://randommessage","Invalid domain name"),
         of("ftps://hola","ftps://hola","unknown protocol: ftps")
     );
   }

@@ -8,6 +8,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import javax.net.ssl.SSLHandshakeException;
 import java.io.FileWriter;
@@ -16,7 +17,6 @@ import java.io.PrintWriter;
 import java.net.ConnectException;
 import java.net.URISyntaxException;
 import java.net.http.HttpTimeoutException;
-import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -27,7 +27,9 @@ import static java.net.http.HttpClient.Redirect.ALWAYS;
 import static java.net.http.HttpClient.newBuilder;
 import static java.nio.file.Files.lines;
 import static java.nio.file.Path.of;
+import static java.time.Duration.ofMinutes;
 import static java.time.Duration.ofSeconds;
+import static java.util.concurrent.CompletableFuture.runAsync;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.rangeClosed;
@@ -61,23 +63,24 @@ public class ScraperTest {
     }
   }
 
-  @Disabled
+  @Test
   void shouldUpdateAtomicInteger() throws IOException, URISyntaxException, InterruptedException {
     final List<String> domains =
-        lines(of("/Users/alejandro.moleiro/Idea/sitechecker/domains-english.md")).collect(toList());
+        lines(of("/Users/alejandro.moleiro/Idea/sitechecker/sites/domains-english.md")).collect(toList());
 
     final AtomicInteger index = new AtomicInteger(-1);
 
+    final int timeout = 25;
     final SiteChecker siteChecker =
-        new SiteChecker(newBuilder().followRedirects(ALWAYS).build(), ofSeconds(5));
+        new SiteChecker(newBuilder().followRedirects(ALWAYS).build(), ofSeconds(timeout));
 
-    final int nThreads = 15;
+    final int nThreads = 40;
     ExecutorService executor = newFixedThreadPool(nThreads);
 
-    rangeClosed(1, nThreads)
-        .forEach(x -> executor.execute(() -> navegar(domains, index, siteChecker)));
+    //rangeClosed(1, nThreads).forEach(x -> executor.execute(() -> navegar(domains, index, siteChecker)));
 
-    sleep(Duration.ofMinutes(3).toMillis());
+    rangeClosed(1, nThreads).forEach(x->runAsync(() -> navegar(domains, index, siteChecker), executor));
+    sleep(ofMinutes(3).toMillis());
   }
 
   private void navegar(List<String> domains, AtomicInteger index, SiteChecker siteChecker) {

@@ -4,6 +4,7 @@ import com.alexmoleiro.healthchecker.core.WebStatusRequest;
 import com.alexmoleiro.healthchecker.infrastructure.SiteCheckerResponse;
 import com.alexmoleiro.healthchecker.infrastructure.SiteStatus;
 import org.slf4j.Logger;
+import org.springframework.http.HttpHeaders;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -39,12 +40,14 @@ public class SiteChecker {
         newBuilder()
             .GET()
             .uri(webStatusRequest.getUrl().toURI())
+            .setHeader(
+                HttpHeaders.USER_AGENT,
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36")
             .timeout(timeout)
             .build();
     final LocalDateTime beforeRequest = now();
-    HttpResponse<Void> send = client.send(request, discarding());
+    HttpResponse<Void> response = client.send(request, discarding());
     final long delay = between(beforeRequest, now()).toMillis();
-    SiteStatus status = (send.statusCode() == OK.value()) ? UP : DOWN;
-    return new SiteCheckerResponse(status, delay, send.uri().toString());
+    return new SiteCheckerResponse(response, delay);
   }
 }

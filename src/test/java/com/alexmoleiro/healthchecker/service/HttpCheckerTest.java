@@ -34,10 +34,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * 200 OK 400-499 ISSUE => 403 forbidden, 404 me equivoco url, 429 too much requests, 500 down =>
- * imposible timeout (qué hacemos: retry o aumentar el timeout) falsos negativos
- */
 class HttpCheckerTest {
 
   public static final String URL = "www.alexmoleiro.com";

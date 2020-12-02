@@ -1,3 +1,6 @@
+glovo.com
+amazon.com
+sport.it
 gavalian.com
 lava-brands.com
 freshform.com

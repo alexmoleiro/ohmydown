@@ -8,7 +8,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -60,7 +59,7 @@ public class ScraperTest {
     }
   }
 
-  @Test
+  @Disabled
   void shouldUpdateAtomicInteger() throws IOException, URISyntaxException, InterruptedException {
     final List<String> domains =
         lines(of("/Users/alejandro.moleiro/Idea/sitechecker/sites/domains-english.md"))

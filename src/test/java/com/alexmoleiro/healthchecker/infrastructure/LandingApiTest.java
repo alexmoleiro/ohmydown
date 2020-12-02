@@ -22,9 +22,7 @@ public class LandingApiTest {
       this.mockMvc.perform(post("/landing-list"))
           .andExpect(status().isOk())
           .andExpect(content().json("""
-              {"siteResults":[{"url":"https://www.yavendras.com","delay":200,"siteStatus":"UP"},
-              {"url":"https://www.alexmoleiro.com","delay":123,"siteStatus":"DOWN"}],
-              "numUrls":2}"""));
-
+              {"siteResults":[{"url":"https://www.alexmoleiro.com","delay":200,"siteStatus":"UP"}],
+              "numUrls":1}"""));
   }
 }

@@ -11,7 +11,7 @@ public class WebStatusRequest {
       "(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]";
 
   public WebStatusRequest(WebStatusRequestDto webStatusRequestDto) {
-    setUrl(webStatusRequestDto.getUrl());
+    setUrl(webStatusRequestDto.getUrl().toLowerCase());
   }
 
   private void setUrl(String urlString) {
@@ -26,7 +26,7 @@ public class WebStatusRequest {
       }
     } catch (MalformedURLException e) {
       if (e.getMessage().contains("no protocol")) {
-        setUrl("https://" + urlString);
+        setUrl("http://" + urlString);
       } else {
         throw new WebStatusRequestException(urlString, e.getMessage());
       }

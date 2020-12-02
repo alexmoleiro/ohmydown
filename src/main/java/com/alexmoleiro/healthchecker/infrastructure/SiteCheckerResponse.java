@@ -1,19 +1,22 @@
 package com.alexmoleiro.healthchecker.infrastructure;
 
+
+import java.net.http.HttpResponse;
+
 public class SiteCheckerResponse {
 
-  private SiteStatus status;
   private String url;
+  private final HttpResponse<Void> response;
   private long delay;
 
-  public SiteCheckerResponse(SiteStatus status, long delay, String url) {
-      this.status = status;
-      this.delay = delay;
-      this.url = url;
+  public SiteCheckerResponse(HttpResponse<Void> response, long delay) {
+    this.response = response;
+    this.delay = delay;
+    this.url = response.uri().toString();
   }
 
-  public SiteStatus getStatus() {
-    return status;
+  public int getStatus() {
+    return response.statusCode();
   }
 
   public String getUrl() {
@@ -22,5 +25,14 @@ public class SiteCheckerResponse {
 
   public long getDelay() {
     return delay;
+  }
+
+  @Override
+  public String toString() {
+    return "{" +
+        "url='" + url + '\'' +
+        ", status=" + getStatus() +
+        ", delay=" + delay +
+        '}';
   }
 }

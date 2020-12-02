@@ -5,10 +5,10 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
-import static com.alexmoleiro.healthchecker.infrastructure.SiteStatus.DOWN;
 import static com.alexmoleiro.healthchecker.infrastructure.SiteStatus.UP;
 import static java.util.List.of;
 
@@ -16,13 +16,13 @@ import static java.util.List.of;
 public class LandingApi {
 
   @CrossOrigin(origins = "http://localhost:3000")
-  @PostMapping(value="/landing-list", produces = "application/json" )
-  SiteResultsDto webStatusResult() throws MalformedURLException {
+  @PostMapping(value = "/landing-list", produces = "application/json")
+  SiteResultsDto webStatusResult() throws IOException {
 
-    return new SiteResultsDto(
-        of(
-            new SiteResult(new URL("https://www.yavendras.com"), 200, UP),
-            new SiteResult(new URL("https://www.alexmoleiro.com"), 123, DOWN)
-        ), 2);
+    final List<SiteResult> siteResults = of(
+        new SiteResult(new URL("https://www.alexmoleiro.com"), 200, UP)
+    );
+
+    return new SiteResultsDto(siteResults, siteResults.size());
   }
 }

@@ -10,17 +10,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import javax.net.ssl.SSLHandshakeException;
-import javax.net.ssl.SSLSession;
 import java.io.IOException;
 import java.net.ConnectException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpConnectTimeoutException;
-import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Stream;
 
@@ -52,54 +47,13 @@ class HealthApiTest {
 
   @ParameterizedTest
   @MethodSource("urls")
-  void shouldReturnHttpStatus(String url, int serverStatusCode)
-      throws InterruptedException, URISyntaxException, IOException {
+  void shouldReturnHttpStatus(String url, int serverStatusCode) {
 
     final String domainName = url.substring(8);
 
     when(httpChecker.check(
         argThat(webRequest-> webRequest.getUrl().getHost().equals(domainName))))
-        .thenReturn(new SiteCheckerResponse(new HttpResponse<>() {
-          @Override
-          public int statusCode() {
-            return serverStatusCode;
-          }
-
-          @Override
-          public HttpRequest request() {
-            return null;
-          }
-
-          @Override
-          public Optional<HttpResponse<Void>> previousResponse() {
-            return Optional.empty();
-          }
-
-          @Override
-          public HttpHeaders headers() {
-            return null;
-          }
-
-          @Override
-          public Void body() {
-            return null;
-          }
-
-          @Override
-          public Optional<SSLSession> sslSession() {
-            return Optional.empty();
-          }
-
-          @Override
-          public URI uri() {
-            return URI.create(url);
-          }
-
-          @Override
-          public HttpClient.Version version() {
-            return null;
-          }
-        }, DELAY));
+        .thenReturn(new SiteCheckerResponse(url, serverStatusCode, DELAY));
 
     given()
         .contentType(JSON)

@@ -5,18 +5,14 @@ import com.alexmoleiro.healthchecker.infrastructure.SiteCheckerResponse;
 import org.slf4j.Logger;
 
 import javax.net.ssl.SSLHandshakeException;
-import javax.net.ssl.SSLSession;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.URI;
 import java.net.http.HttpClient;
-import java.net.http.HttpHeaders;
-import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static com.alexmoleiro.healthchecker.core.CheckResultCode.SERVER_TIMEOUT;
 import static com.alexmoleiro.healthchecker.core.CheckResultCode.SSL_CERTIFICATE_ERROR;
@@ -59,14 +55,14 @@ public class HttpChecker {
     }
 
     return new SiteCheckerResponse(
-        getResponse(webStatusRequest, httpStatus), between(beforeRequest, now()).toMillis());
+        webStatusRequest.getUrl().toString(), httpStatus, between(beforeRequest, now()).toMillis());
   }
 
   private SiteCheckerResponse httpClient(
       WebStatusRequest webStatusRequest, LocalDateTime beforeRequest)
       throws IOException, InterruptedException {
 
-    return new SiteCheckerResponse(
+    final HttpResponse<Void> send =
         client.send(
             newBuilder()
                 .GET()
@@ -74,51 +70,8 @@ public class HttpChecker {
                 .setHeader(USER_AGENT, MOZILLA)
                 .timeout(timeout)
                 .build(),
-            discarding()),
-        between(beforeRequest, now()).toMillis());
-  }
-
-  private HttpResponse<Void> getResponse(WebStatusRequest webStatusRequest, final int statusCode) {
-    return new HttpResponse<Void>() {
-      @Override
-      public int statusCode() {
-        return statusCode;
-      }
-
-      @Override
-      public HttpRequest request() {
-        return null;
-      }
-
-      @Override
-      public Optional<HttpResponse<Void>> previousResponse() {
-        return Optional.empty();
-      }
-
-      @Override
-      public HttpHeaders headers() {
-        return null;
-      }
-
-      @Override
-      public Void body() {
-        return null;
-      }
-
-      @Override
-      public Optional<SSLSession> sslSession() {
-        return Optional.empty();
-      }
-
-      @Override
-      public URI uri() {
-        return URI.create(webStatusRequest.getUrl().toString());
-      }
-
-      @Override
-      public HttpClient.Version version() {
-        return null;
-      }
-    };
+            discarding());
+    return new SiteCheckerResponse(
+        send.uri().toString(), send.statusCode(), between(beforeRequest, now()).toMillis());
   }
 }

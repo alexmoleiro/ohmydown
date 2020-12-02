@@ -1,7 +1,8 @@
 package com.alexmoleiro.healthchecker.core;
 
 public enum CheckResultCode {
-  SSL_CERTIFICATE_ERROR(495);
+  SSL_CERTIFICATE_ERROR(495),
+  SERVER_TIMEOUT(504);
 
   private final int value;
 

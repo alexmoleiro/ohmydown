@@ -1,6 +1,6 @@
 package com.alexmoleiro.healthchecker.configuration;
 
-import com.alexmoleiro.healthchecker.service.SiteChecker;
+import com.alexmoleiro.healthchecker.service.HttpChecker;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +23,7 @@ public class InfrastuctureConfiguration {
   }
 
   @Bean
-  SiteChecker siteChecker(HttpClient httpClient) {
-    return new SiteChecker(httpClient, ofSeconds(seconds));
+  HttpChecker siteChecker(HttpClient httpClient) {
+    return new HttpChecker(httpClient, ofSeconds(seconds));
   }
 }

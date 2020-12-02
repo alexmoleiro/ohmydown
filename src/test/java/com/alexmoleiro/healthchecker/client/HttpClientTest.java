@@ -2,7 +2,7 @@ package com.alexmoleiro.healthchecker.client;
 
 import com.alexmoleiro.healthchecker.core.WebStatusRequest;
 import com.alexmoleiro.healthchecker.infrastructure.WebStatusRequestDto;
-import com.alexmoleiro.healthchecker.service.SiteChecker;
+import com.alexmoleiro.healthchecker.service.HttpChecker;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
@@ -41,7 +41,7 @@ public class HttpClientTest {
     final WebStatusRequestDto webStatusRequestDtoMock = mock(WebStatusRequestDto.class);
     when(webStatusRequestDtoMock.getUrl()).thenReturn("http://localhost:8765/log");
 
-    new SiteChecker(client, ofSeconds(2)).check(new WebStatusRequest(webStatusRequestDtoMock));
+    new HttpChecker(client, ofSeconds(2)).check(new WebStatusRequest(webStatusRequestDtoMock));
 
     verify(getRequestedFor(urlMatching("/log")));
   }
@@ -60,7 +60,7 @@ public class HttpClientTest {
 
     assertThatThrownBy(
             () ->
-                new SiteChecker(client, ofMillis(clientTimeout))
+                new HttpChecker(client, ofMillis(clientTimeout))
                     .check(new WebStatusRequest(webStatusRequestDtoMock)))
         .isInstanceOf(HttpTimeoutException.class)
         .hasMessageContaining("request timed out");

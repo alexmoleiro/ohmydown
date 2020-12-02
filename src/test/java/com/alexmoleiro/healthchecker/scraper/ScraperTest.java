@@ -3,7 +3,7 @@ package com.alexmoleiro.healthchecker.scraper;
 import com.alexmoleiro.healthchecker.core.WebStatusRequest;
 import com.alexmoleiro.healthchecker.infrastructure.SiteCheckerResponse;
 import com.alexmoleiro.healthchecker.infrastructure.WebStatusRequestDto;
-import com.alexmoleiro.healthchecker.service.SiteChecker;
+import com.alexmoleiro.healthchecker.service.HttpChecker;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -71,19 +71,19 @@ public class ScraperTest {
     final AtomicInteger index = new AtomicInteger(-1);
 
     final int timeout = 25;
-    final SiteChecker siteChecker =
-        new SiteChecker(newBuilder().followRedirects(ALWAYS).build(), ofSeconds(timeout));
+    final HttpChecker httpChecker =
+        new HttpChecker(newBuilder().followRedirects(ALWAYS).build(), ofSeconds(timeout));
 
     final int nThreads = 40;
     ExecutorService executor = newFixedThreadPool(nThreads);
 
     //rangeClosed(1, nThreads).forEach(x -> executor.execute(() -> navegar(domains, index, siteChecker)));
 
-    rangeClosed(1, nThreads).forEach(x->runAsync(() -> navegar(domains, index, siteChecker), executor));
+    rangeClosed(1, nThreads).forEach(x->runAsync(() -> navegar(domains, index, httpChecker), executor));
     sleep(ofMinutes(3).toMillis());
   }
 
-  private void navegar(List<String> domains, AtomicInteger index, SiteChecker siteChecker) {
+  private void navegar(List<String> domains, AtomicInteger index, HttpChecker httpChecker) {
 
     while (1 == 1) {
       String domain = null;
@@ -91,19 +91,10 @@ public class ScraperTest {
         int cursor = index.addAndGet(1) % domains.size();
         domain = domains.get(cursor);
         final SiteCheckerResponse result =
-            siteChecker.check(new WebStatusRequest(new WebStatusRequestDto(domain)));
-        System.out.println(
-            cursor
-                + "\t\t"
-                + result.getDelay()
-                + "\t\t\t\t"
-                + result.getUrl()
-                + "\t\t"
-                + result.getStatus());
+            httpChecker.check(new WebStatusRequest(new WebStatusRequestDto(domain)));
+        System.out.println(result);
       } catch (ConnectException e) {
         System.out.println("Connection error " + domain + " " + e.getMessage());
-      } catch (URISyntaxException e) {
-        System.out.println("URI syntax " + domain);
       } catch (SSLHandshakeException e) {
         System.out.println("SSL exception " + domain);
       } catch (HttpTimeoutException e) {

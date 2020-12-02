@@ -2,7 +2,7 @@ package com.alexmoleiro.healthchecker.infrastructure;
 
 import com.alexmoleiro.healthchecker.core.WebStatusRequest;
 import com.alexmoleiro.healthchecker.core.WebStatusRequestException;
-import com.alexmoleiro.healthchecker.service.SiteChecker;
+import com.alexmoleiro.healthchecker.service.HttpChecker;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,17 +25,17 @@ import static org.springframework.http.HttpStatus.REQUEST_TIMEOUT;
 @RestController
 public class HealthApi {
 
-  private final SiteChecker siteChecker;
+  private final HttpChecker httpChecker;
 
-  public HealthApi(SiteChecker siteChecker) {
-    this.siteChecker = siteChecker;
+  public HealthApi(HttpChecker httpChecker) {
+    this.httpChecker = httpChecker;
   }
 
   @CrossOrigin(origins = "http://localhost:3000")
   @PostMapping("/status")
   SiteCheckerResponse webStatusResult(@RequestBody WebStatusRequestDto webStatusRequestDto)
       throws InterruptedException, URISyntaxException, IOException {
-    return siteChecker.check(new WebStatusRequest(webStatusRequestDto));
+    return httpChecker.check(new WebStatusRequest(webStatusRequestDto));
   }
 
   @ResponseStatus(value= BAD_REQUEST)

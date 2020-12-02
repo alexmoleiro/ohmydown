@@ -4,8 +4,10 @@ import com.alexmoleiro.healthchecker.core.WebStatusRequest;
 import com.alexmoleiro.healthchecker.infrastructure.SiteCheckerResponse;
 import org.slf4j.Logger;
 
+import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSession;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpHeaders;
@@ -17,12 +19,14 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.alexmoleiro.healthchecker.core.CheckResultCode.SERVER_TIMEOUT;
+import static com.alexmoleiro.healthchecker.core.CheckResultCode.SSL_CERTIFICATE_ERROR;
 import static java.net.http.HttpRequest.newBuilder;
 import static java.net.http.HttpResponse.BodyHandlers.discarding;
 import static java.time.Duration.between;
 import static java.time.LocalDateTime.now;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.HttpHeaders.USER_AGENT;
+import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 
 public class HttpChecker {
 
@@ -37,19 +41,25 @@ public class HttpChecker {
     this.timeout = timeout;
   }
 
-  public SiteCheckerResponse check(WebStatusRequest webStatusRequest)
-      throws InterruptedException, IOException {
-
-    SiteCheckerResponse siteCheckerResponse;
+  public SiteCheckerResponse check(WebStatusRequest webStatusRequest) {
+    int httpStatus;
     final LocalDateTime beforeRequest = now();
     try {
-      siteCheckerResponse = httpClient(webStatusRequest, beforeRequest);
+      return httpClient(webStatusRequest, beforeRequest);
     } catch (HttpTimeoutException e) {
-      return new SiteCheckerResponse(
-          getResponse(webStatusRequest, SERVER_TIMEOUT.value()),
-          between(beforeRequest, now()).toMillis());
+      httpStatus = SERVER_TIMEOUT.value();
+    } catch (ConnectException e) {
+      httpStatus = SERVICE_UNAVAILABLE.value();
+    } catch (SSLHandshakeException e) {
+      httpStatus = SSL_CERTIFICATE_ERROR.value();
+    } catch (IOException e) {
+      httpStatus = SERVICE_UNAVAILABLE.value();
+    } catch (InterruptedException e) {
+      httpStatus = SERVICE_UNAVAILABLE.value();
     }
-    return siteCheckerResponse;
+
+    return new SiteCheckerResponse(
+        getResponse(webStatusRequest, httpStatus), between(beforeRequest, now()).toMillis());
   }
 
   private SiteCheckerResponse httpClient(

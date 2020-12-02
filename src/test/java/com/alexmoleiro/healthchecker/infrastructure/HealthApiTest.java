@@ -1,7 +1,6 @@
 package com.alexmoleiro.healthchecker.infrastructure;
 
 
-import com.alexmoleiro.healthchecker.core.WebStatusRequest;
 import com.alexmoleiro.healthchecker.service.HttpChecker;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -25,7 +24,6 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Stream;
 
-import static com.alexmoleiro.healthchecker.core.CheckResultCode.SSL_CERTIFICATE_ERROR;
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.Matchers.equalTo;
@@ -36,9 +34,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.HttpStatus.REQUEST_TIMEOUT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 class HealthApiTest {
@@ -48,6 +44,10 @@ class HealthApiTest {
 
   @MockBean
   HttpChecker httpChecker;
+
+  @MockBean
+  HttpClient httpClient;
+
   public static final int DELAY = new Random().nextInt();
 
   @ParameterizedTest
@@ -140,10 +140,9 @@ class HealthApiTest {
   @ParameterizedTest
   @MethodSource("cases")
   void shouldReturnProperStatusCode(int statusCode, Throwable e)
-      throws URISyntaxException, InterruptedException, IOException {
+      throws InterruptedException, IOException {
 
-    doThrow(e)
-        .when(httpChecker).check(any(WebStatusRequest.class));
+    doThrow(e).when(httpClient).send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class));
 
     given()
         .contentType(JSON)
@@ -155,9 +154,11 @@ class HealthApiTest {
 
   private static Stream<Arguments> cases() {
     return Stream.of(
-        of(SSL_CERTIFICATE_ERROR.value(), new SSLHandshakeException("")),
-        of(NOT_FOUND.value(), new ConnectException()),
-        of(REQUEST_TIMEOUT.value(), new HttpConnectTimeoutException("timeout"))
+        of(200, new SSLHandshakeException("")),
+        of(200, new ConnectException()),
+        of(200, new IOException()),
+        of(200, new InterruptedException()),
+        of(200, new HttpConnectTimeoutException("timeout"))
     );
   }
 

@@ -27,7 +27,7 @@ import static java.util.concurrent.Executors.newFixedThreadPool;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.rangeClosed;
 
-public class ScraperTest {
+public class PerformanceTest {
 
   @Disabled
   void shouldDownload() throws IOException {

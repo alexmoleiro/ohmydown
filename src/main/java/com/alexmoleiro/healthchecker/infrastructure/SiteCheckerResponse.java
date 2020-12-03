@@ -1,13 +1,10 @@
 package com.alexmoleiro.healthchecker.infrastructure;
 
 
-import java.net.http.HttpResponse;
-
 public class SiteCheckerResponse {
 
   private final int statusCode;
   private String url;
-  private  HttpResponse<Void> response;
   private long delay;
 
 

@@ -1,24 +1,20 @@
 package com.alexmoleiro.healthchecker.infrastructure;
 
-import com.alexmoleiro.healthchecker.core.SiteResult;
-
 import java.util.List;
 
 public class SiteResultsDto {
 
-  List<SiteResult> siteResults;
-  int numUrls;
+  List<SiteCheckerResponse> responses;
 
-  public SiteResultsDto(List<SiteResult> siteResults, int numUrls) {
-    this.siteResults = siteResults;
-    this.numUrls = numUrls;
+  public SiteResultsDto(List<SiteCheckerResponse> responses) {
+    this.responses = responses;
   }
 
-  public List<SiteResult> getSiteResults() {
-    return siteResults;
+  public List<SiteCheckerResponse> getResponses() {
+    return responses;
   }
 
   public int getNumUrls() {
-    return numUrls;
+    return responses.size();
   }
 }

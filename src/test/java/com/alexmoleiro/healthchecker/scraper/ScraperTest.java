@@ -12,18 +12,15 @@ import org.junit.jupiter.api.Disabled;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import static java.lang.Thread.sleep;
 import static java.net.http.HttpClient.Redirect.ALWAYS;
 import static java.net.http.HttpClient.newBuilder;
 import static java.nio.file.Files.lines;
 import static java.nio.file.Path.of;
-import static java.time.Duration.ofMinutes;
 import static java.time.Duration.ofSeconds;
 import static java.util.concurrent.CompletableFuture.runAsync;
 import static java.util.concurrent.Executors.newFixedThreadPool;
@@ -60,32 +57,28 @@ public class ScraperTest {
   }
 
   @Disabled
-  void shouldUpdateAtomicInteger() throws IOException, URISyntaxException, InterruptedException {
+  void shouldTestOneThousand() throws IOException, InterruptedException {
     final List<String> domains =
         lines(of("/Users/alejandro.moleiro/Idea/sitechecker/sites/domains-english.md"))
             .collect(toList());
 
-    final AtomicInteger index = new AtomicInteger(-1);
-
     final int timeout = 25;
     final int nThreads = 40;
-
-    final HttpChecker httpChecker =
+    final ConcurrentLinkedDeque<String> domainsQueue = new ConcurrentLinkedDeque<>(domains);
+    ExecutorService executor = newFixedThreadPool(nThreads);
+    final var httpChecker =
         new HttpChecker(newBuilder().followRedirects(ALWAYS).build(), ofSeconds(timeout));
 
-    ExecutorService executor = newFixedThreadPool(nThreads);
-
     rangeClosed(1, nThreads)
-        .forEach(x -> runAsync(() -> navegar(domains, index, httpChecker), executor));
-    sleep(ofMinutes(3).toMillis());
+        .forEach(x -> runAsync(() -> checkDomain(httpChecker, domainsQueue), executor));
+
+    Thread.sleep(90_000);
   }
 
-  private void navegar(List<String> domains, AtomicInteger index, HttpChecker httpChecker) {
-
-    while (1 == 1) {
-      int cursor = index.addAndGet(1) % domains.size();
+  private void checkDomain(HttpChecker httpChecker, ConcurrentLinkedDeque<String> domainsQueue) {
+    while (domainsQueue.peek() != null) {
       final SiteCheckerResponse check =
-          httpChecker.check(new WebStatusRequest(new WebStatusRequestDto(domains.get(cursor))));
+          httpChecker.check(new WebStatusRequest(new WebStatusRequestDto(domainsQueue.poll())));
       System.out.println(check);
     }
   }

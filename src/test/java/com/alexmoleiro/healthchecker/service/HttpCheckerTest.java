@@ -45,9 +45,8 @@ class HttpCheckerTest {
 
     when(mock.send(any(HttpRequest.class), any(BodyHandler.class)))
         .thenReturn(getHttpResponse(statusCode, URL));
-    final WebStatusRequest webStatusRequest = new WebStatusRequest(URL);
 
-    final SiteCheckerResponse check = new HttpChecker(mock, ofSeconds(5)).check(webStatusRequest);
+    final SiteCheckerResponse check = new HttpChecker(mock, ofSeconds(5)).check(new WebStatusRequest(URL));
 
     assertThat(check.getStatus()).isEqualTo(statusCode);
   }
@@ -58,8 +57,7 @@ class HttpCheckerTest {
     final HttpClient mock = mock(HttpClient.class);
     doThrow(e).when(mock).send(any(HttpRequest.class), any(BodyHandler.class));
 
-    final WebStatusRequest webStatusRequest = new WebStatusRequest(URL);
-    final SiteCheckerResponse check = new HttpChecker(mock, ofSeconds(5)).check(webStatusRequest);
+    final SiteCheckerResponse check = new HttpChecker(mock, ofSeconds(5)).check(new WebStatusRequest(URL));
 
     assertThat(check.getStatus()).isEqualTo(statusCode);
   }

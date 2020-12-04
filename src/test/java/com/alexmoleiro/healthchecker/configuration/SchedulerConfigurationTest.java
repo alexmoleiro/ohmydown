@@ -9,7 +9,6 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
@@ -19,6 +18,7 @@ class SchedulerConfigurationTest {
 
   public static final int ONCE = 1;
   public static final int TIMEOUT = 5_000;
+
   @MockBean
   CheckStatusCrawler checkStatusCrawler;
 

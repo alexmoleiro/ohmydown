@@ -2,21 +2,22 @@ package com.alexmoleiro.healthchecker.core;
 
 import com.alexmoleiro.healthchecker.infrastructure.SiteCheckerResponse;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class SiteResults {
 
-  private List<SiteCheckerResponse> siteResults = new ArrayList<>();
+  private Map<String, SiteCheckerResponse> siteResults = new HashMap<>();
 
-  public SiteResults() {
-  }
+  public SiteResults() {}
 
   public void add(SiteCheckerResponse siteCheckerResponse) {
-    siteResults.add(siteCheckerResponse);
+    siteResults.put(siteCheckerResponse.getUrl(), siteCheckerResponse);
   }
 
   public List<SiteCheckerResponse> getSiteResults() {
-    return this.siteResults;
+    return siteResults.values().stream().collect(Collectors.toList());
   }
 }

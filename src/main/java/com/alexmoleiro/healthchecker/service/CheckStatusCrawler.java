@@ -33,8 +33,7 @@ public class CheckStatusCrawler {
   private void getCheck(ConcurrentLinkedDeque<String> domains, LocalDateTime now) {
 
     while (domains.peek() != null) {
-      final SiteCheckerResponse response =
-          httpChecker.check(new WebStatusRequest(domains.poll()));
+      final SiteCheckerResponse response = httpChecker.check(new WebStatusRequest(domains.poll()));
       siteResults.add(response);
       LOGGER.info(response.toString());
     }

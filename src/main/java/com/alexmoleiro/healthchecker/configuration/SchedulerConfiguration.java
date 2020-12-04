@@ -5,6 +5,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import java.util.List;
+import java.util.concurrent.ConcurrentLinkedDeque;
+
+import static java.util.List.of;
+
 @Configuration
 @EnableScheduling
 public class SchedulerConfiguration {
@@ -16,8 +21,11 @@ public class SchedulerConfiguration {
   }
 
   @Scheduled(cron = "${cron.expression}")
-  public void run() {
-    checkStatusCrawler.run();
+  public void crawlerJob() {
+    final List<String> domains = of("www.alexmoleiro.com", "www.yavendras.com");
+    ConcurrentLinkedDeque<String> queueDomains = new ConcurrentLinkedDeque<>(domains);
+    final int nThreads = 5;
+    checkStatusCrawler.run(queueDomains, nThreads);
   }
 
 }

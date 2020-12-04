@@ -1,6 +1,6 @@
 package com.alexmoleiro.healthchecker.configuration;
 
-import com.alexmoleiro.healthchecker.service.CheckDaemon;
+import com.alexmoleiro.healthchecker.service.CheckStatusCrawler;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -9,15 +9,15 @@ import org.springframework.scheduling.annotation.Scheduled;
 @EnableScheduling
 public class SchedulerConfiguration {
 
-  private final CheckDaemon checkDaemon;
+  private final CheckStatusCrawler checkStatusCrawler;
 
-  public SchedulerConfiguration(CheckDaemon checkDaemon) {
-    this.checkDaemon = checkDaemon;
+  public SchedulerConfiguration(CheckStatusCrawler checkStatusCrawler) {
+    this.checkStatusCrawler = checkStatusCrawler;
   }
 
   @Scheduled(cron = "${cron.expression}")
   public void run() {
-    checkDaemon.run();
+    checkStatusCrawler.run();
   }
 
 }

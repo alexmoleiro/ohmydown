@@ -1,7 +1,7 @@
 package com.alexmoleiro.healthchecker.configuration;
 
 import com.alexmoleiro.healthchecker.core.SiteResults;
-import com.alexmoleiro.healthchecker.service.CheckDaemon;
+import com.alexmoleiro.healthchecker.service.CheckStatusCrawler;
 import com.alexmoleiro.healthchecker.service.HttpChecker;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +25,7 @@ public class InfrastuctureConfiguration {
   }
 
   @Bean
-  HttpChecker siteChecker(HttpClient httpClient) {
+  HttpChecker httpChecker(HttpClient httpClient) {
     return new HttpChecker(httpClient, ofSeconds(seconds));
   }
 
@@ -35,7 +35,7 @@ public class InfrastuctureConfiguration {
   }
 
   @Bean
-  CheckDaemon checkDaemon() {
-    return new CheckDaemon();
+  CheckStatusCrawler checkDaemon(HttpChecker httpChecker) {
+    return new CheckStatusCrawler(httpChecker);
   }
 }

@@ -30,7 +30,7 @@ public class HttpChecker {
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36";
   private final HttpClient client;
   private final Duration timeout;
-  private static Logger logger = getLogger(HttpChecker.class);
+  private static Logger LOGGER = getLogger(HttpChecker.class);
 
   public HttpChecker(HttpClient client, Duration timeout) {
     this.client = client;
@@ -40,6 +40,7 @@ public class HttpChecker {
   public SiteCheckerResponse check(WebStatusRequest webStatusRequest) {
     int httpStatus;
     final LocalDateTime beforeRequest = now();
+    LOGGER.info(webStatusRequest.getUrl().toString());
     try {
       return httpFetch(webStatusRequest, beforeRequest);
     } catch (HttpTimeoutException e) {

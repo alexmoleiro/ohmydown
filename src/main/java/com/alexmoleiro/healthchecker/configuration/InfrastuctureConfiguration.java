@@ -38,7 +38,7 @@ public class InfrastuctureConfiguration {
   }
 
   @Bean
-  CheckStatusCrawler checkDaemon(HttpChecker httpChecker) {
-    return new CheckStatusCrawler(httpChecker, nThreads);
+  CheckStatusCrawler checkDaemon(HttpChecker httpChecker, SiteResults siteResults) {
+    return new CheckStatusCrawler(httpChecker, siteResults, nThreads);
   }
 }

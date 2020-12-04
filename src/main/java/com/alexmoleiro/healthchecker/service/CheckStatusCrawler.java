@@ -1,5 +1,6 @@
 package com.alexmoleiro.healthchecker.service;
 
+import com.alexmoleiro.healthchecker.core.SiteResults;
 import com.alexmoleiro.healthchecker.core.WebStatusRequest;
 import com.alexmoleiro.healthchecker.infrastructure.SiteCheckerResponse;
 import com.alexmoleiro.healthchecker.infrastructure.WebStatusRequestDto;
@@ -17,10 +18,12 @@ import static java.util.stream.IntStream.rangeClosed;
 public class CheckStatusCrawler {
   private static final Logger LOGGER = LoggerFactory.getLogger(CheckStatusCrawler.class);
   private final HttpChecker httpChecker;
+  private final SiteResults siteResults;
   private final int nThreads;
 
-  public CheckStatusCrawler(HttpChecker httpChecker, int nThreads) {
+  public CheckStatusCrawler(HttpChecker httpChecker, SiteResults siteResults, int nThreads) {
     this.httpChecker = httpChecker;
+    this.siteResults = siteResults;
     this.nThreads = nThreads;
   }
 
@@ -31,9 +34,10 @@ public class CheckStatusCrawler {
   private void getCheck(ConcurrentLinkedDeque<String> domains, LocalDateTime now) {
 
     while (domains.peek() != null) {
-      final SiteCheckerResponse check =
+      final SiteCheckerResponse response =
           httpChecker.check(new WebStatusRequest(new WebStatusRequestDto(domains.poll())));
-      LOGGER.info(check.toString());
+      siteResults.add(response);
+      LOGGER.info(response.toString());
     }
   }
 }

@@ -24,7 +24,7 @@ public class HealthApi {
   @CrossOrigin(origins = "http://localhost:3000")
   @PostMapping("/status")
   SiteCheckerResponse webStatusResult(@RequestBody WebStatusRequestDto webStatusRequestDto) {
-    return httpChecker.check(new WebStatusRequest(webStatusRequestDto));
+    return httpChecker.check(new WebStatusRequest(webStatusRequestDto.getUrl()));
   }
 
   @ResponseStatus(value= BAD_REQUEST)

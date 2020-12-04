@@ -19,6 +19,9 @@ public class InfrastuctureConfiguration {
   @Value("${timeout}")
   long seconds;
 
+  @Value("${nthreads}")
+  int nThreads;
+
   @Bean
   HttpClient httpClient() {
     return newBuilder().followRedirects(ALWAYS).build();
@@ -36,6 +39,6 @@ public class InfrastuctureConfiguration {
 
   @Bean
   CheckStatusCrawler checkDaemon(HttpChecker httpChecker) {
-    return new CheckStatusCrawler(httpChecker);
+    return new CheckStatusCrawler(httpChecker, nThreads);
   }
 }

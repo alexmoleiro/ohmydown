@@ -22,8 +22,9 @@ class CheckStatusCrawlerTest {
     final HttpChecker httpChecker = mock(HttpChecker.class);
     final List<String> domains = of("www.a.com", "www.b.com", "www.c.com", "www.d.es", "www.e.com");
     final ConcurrentLinkedDeque<String> domainsQueue = new ConcurrentLinkedDeque<>(domains);
+    final int nThreads = 5;
 
-    new CheckStatusCrawler(httpChecker).run(domainsQueue, 5);
+    new CheckStatusCrawler(httpChecker, nThreads).run(domainsQueue);
 
     domains.stream()
         .forEach(

@@ -25,7 +25,7 @@ public class SchedulerConfiguration {
     final List<String> domains = of("www.alexmoleiro.com", "www.yavendras.com");
     ConcurrentLinkedDeque<String> queueDomains = new ConcurrentLinkedDeque<>(domains);
     final int nThreads = 5;
-    checkStatusCrawler.run(queueDomains, nThreads);
+    checkStatusCrawler.run(queueDomains);
   }
 
 }

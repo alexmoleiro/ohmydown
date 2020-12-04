@@ -24,6 +24,6 @@ class SchedulerConfigurationTest {
 
   @Test
   void shouldCallRun() {
-    verify(checkStatusCrawler, timeout(TIMEOUT).atLeast(ONCE)).run(any(ConcurrentLinkedDeque.class), anyInt());
+    verify(checkStatusCrawler, timeout(TIMEOUT).atLeast(ONCE)).run(any(ConcurrentLinkedDeque.class));
   }
 }

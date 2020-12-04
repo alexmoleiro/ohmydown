@@ -40,7 +40,6 @@ public class HttpChecker {
   public SiteCheckerResponse check(WebStatusRequest webStatusRequest) {
     int httpStatus;
     final LocalDateTime beforeRequest = now();
-    LOGGER.info(webStatusRequest.getUrl().toString());
     try {
       return httpFetch(webStatusRequest, beforeRequest);
     } catch (HttpTimeoutException e) {

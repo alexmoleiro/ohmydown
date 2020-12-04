@@ -5,7 +5,6 @@ import com.alexmoleiro.healthchecker.service.HttpChecker;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.net.http.HttpClient;
@@ -19,6 +18,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static java.net.http.HttpClient.newBuilder;
 import static java.time.Duration.ofSeconds;
+import static org.springframework.http.HttpStatus.OK;
 
 @ExtendWith(SpringExtension.class)
 @AutoConfigureWireMock(port = 8765)
@@ -29,7 +29,7 @@ public class HttpClientTest {
   @Test
   void shouldCallSite() {
 
-    stubFor(get(urlEqualTo("/log")).willReturn(aResponse().withStatus(HttpStatus.OK.value())));
+    stubFor(get(urlEqualTo("/log")).willReturn(aResponse().withStatus(OK.value())));
 
     new HttpChecker(client, ofSeconds(2)).check(new WebStatusRequest("http://localhost:8765/log"));
 

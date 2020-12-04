@@ -41,7 +41,7 @@ public class HttpChecker {
     int httpStatus;
     final LocalDateTime beforeRequest = now();
     try {
-      return httpClient(webStatusRequest, beforeRequest);
+      return httpFetch(webStatusRequest, beforeRequest);
     } catch (HttpTimeoutException e) {
       httpStatus = SERVER_TIMEOUT.value();
     } catch (ConnectException e) {
@@ -58,7 +58,7 @@ public class HttpChecker {
         webStatusRequest.getUrl().toString(), httpStatus, between(beforeRequest, now()).toMillis());
   }
 
-  private SiteCheckerResponse httpClient(
+  private SiteCheckerResponse httpFetch(
       WebStatusRequest webStatusRequest, LocalDateTime beforeRequest)
       throws IOException, InterruptedException {
 

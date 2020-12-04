@@ -1,6 +1,7 @@
 package com.alexmoleiro.healthchecker.configuration;
 
 import com.alexmoleiro.healthchecker.core.SiteResults;
+import com.alexmoleiro.healthchecker.service.CheckDaemon;
 import com.alexmoleiro.healthchecker.service.HttpChecker;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -31,5 +32,10 @@ public class InfrastuctureConfiguration {
   @Bean
   SiteResults siteResults() {
     return new SiteResults();
+  }
+
+  @Bean
+  CheckDaemon checkDaemon() {
+    return new CheckDaemon();
   }
 }

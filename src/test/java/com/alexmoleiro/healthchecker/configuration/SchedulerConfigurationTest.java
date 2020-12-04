@@ -1,11 +1,15 @@
 package com.alexmoleiro.healthchecker.configuration;
 
-import com.alexmoleiro.healthchecker.service.CheckDaemon;
+import com.alexmoleiro.healthchecker.service.CheckStatusCrawler;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.concurrent.ConcurrentLinkedDeque;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
@@ -16,10 +20,10 @@ class SchedulerConfigurationTest {
   public static final int ONCE = 1;
   public static final int TIMEOUT = 5_000;
   @MockBean
-  CheckDaemon checkDaemon;
+  CheckStatusCrawler checkStatusCrawler;
 
   @Test
   void shouldCallRun() {
-    verify(checkDaemon, timeout(TIMEOUT).atLeast(ONCE)).run();
+    verify(checkStatusCrawler, timeout(TIMEOUT).atLeast(ONCE)).run(any(ConcurrentLinkedDeque.class));
   }
 }

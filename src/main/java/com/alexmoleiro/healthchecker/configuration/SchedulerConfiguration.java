@@ -5,15 +5,20 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import static java.util.List.of;
+import static java.nio.file.Files.lines;
+import static java.nio.file.Path.of;
+import static java.util.stream.Collectors.toList;
 
 @Configuration
 @EnableScheduling
 public class SchedulerConfiguration {
 
+  public static final String PATH_TO_FILE =
+      "/Users/alejandro.moleiro/Idea/sitechecker/sites/domains-english.md";
   private final CheckStatusCrawler checkStatusCrawler;
 
   public SchedulerConfiguration(CheckStatusCrawler checkStatusCrawler) {
@@ -21,11 +26,9 @@ public class SchedulerConfiguration {
   }
 
   @Scheduled(cron = "${cron.expression}")
-  public void crawlerJob() {
-    final List<String> domains = of("www.alexmoleiro.com", "www.yavendras.com");
+  public void crawlerJob() throws IOException {
+    final List<String> domains = lines(of(PATH_TO_FILE)).collect(toList());
     ConcurrentLinkedDeque<String> queueDomains = new ConcurrentLinkedDeque<>(domains);
-    final int nThreads = 5;
     checkStatusCrawler.run(queueDomains);
   }
-
 }

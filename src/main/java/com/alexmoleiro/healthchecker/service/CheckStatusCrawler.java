@@ -3,7 +3,6 @@ package com.alexmoleiro.healthchecker.service;
 import com.alexmoleiro.healthchecker.core.SiteResults;
 import com.alexmoleiro.healthchecker.core.WebStatusRequest;
 import com.alexmoleiro.healthchecker.infrastructure.SiteCheckerResponse;
-import com.alexmoleiro.healthchecker.infrastructure.WebStatusRequestDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +34,7 @@ public class CheckStatusCrawler {
 
     while (domains.peek() != null) {
       final SiteCheckerResponse response =
-          httpChecker.check(new WebStatusRequest(new WebStatusRequestDto(domains.poll())));
+          httpChecker.check(new WebStatusRequest(domains.poll()));
       siteResults.add(response);
       LOGGER.info(response.toString());
     }

@@ -1,6 +1,5 @@
 package com.alexmoleiro.healthchecker.core;
 
-import com.alexmoleiro.healthchecker.infrastructure.WebStatusRequestDto;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -9,8 +8,6 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.params.provider.Arguments.of;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class WebStatusRequestTest {
 
@@ -18,13 +15,8 @@ class WebStatusRequestTest {
   @MethodSource("invalidUrl")
   void shouldThrowExceptionWhenInvalidUrl(String invalidUrl) {
 
-    final WebStatusRequestDto webStatusRequestDto = mock(WebStatusRequestDto.class);
-    when(webStatusRequestDto.getUrl()).thenReturn(invalidUrl);
-
-    assertThatThrownBy(
-        ()-> new WebStatusRequest(webStatusRequestDto)
-    ).isInstanceOf(WebStatusRequestException.class);
-
+    assertThatThrownBy(() -> new WebStatusRequest(invalidUrl))
+        .isInstanceOf(WebStatusRequestException.class);
   }
 
   private static Stream<Arguments> invalidUrl() {
@@ -36,7 +28,6 @@ class WebStatusRequestTest {
         of("-.."),
         of("/"),
         of(""),
-        of("ftp://www")
-    );
+        of("ftp://www"));
   }
 }

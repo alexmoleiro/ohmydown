@@ -28,9 +28,7 @@ class CheckStatusCrawlerTest {
 
     domains.stream()
         .forEach(
-            domain -> {
-              verify(httpChecker, timeout(TIMEOUT).atLeast(ONCE))
-                  .check(argThat(x -> x.getUrl().toString().equals("http://" + domain)));
-            });
+            domain -> verify(httpChecker, timeout(TIMEOUT).atLeast(ONCE))
+                .check(argThat(request -> request.getUrl().toString().equals("http://" + domain))));
   }
 }

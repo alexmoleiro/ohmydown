@@ -9,26 +9,27 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import static java.nio.file.Files.lines;
-import static java.nio.file.Path.of;
+import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
+import static org.jsoup.Jsoup.connect;
 
 @Configuration
 @EnableScheduling
 public class SchedulerConfiguration {
 
-  public static final String PATH_TO_FILE =
-      "/Users/alejandro.moleiro/Idea/sitechecker/sites/domains-english.md";
   private final CheckStatusCrawler checkStatusCrawler;
+  private List<String> domains;
+  public static final String URL =
+      "https://raw.githubusercontent.com/alexmoleiro/sitechecker/master/sites/domains-english.md";
 
-  public SchedulerConfiguration(CheckStatusCrawler checkStatusCrawler) {
+  public SchedulerConfiguration(CheckStatusCrawler checkStatusCrawler) throws IOException {
     this.checkStatusCrawler = checkStatusCrawler;
+    this.domains =
+        stream(connect(URL).get().body().html().split(" ")).sequential().collect(toList());
   }
 
   @Scheduled(cron = "${cron.expression}")
-  public void crawlerJob() throws IOException {
-    final List<String> domains = lines(of(PATH_TO_FILE)).collect(toList());
-    ConcurrentLinkedDeque<String> queueDomains = new ConcurrentLinkedDeque<>(domains);
-    checkStatusCrawler.run(queueDomains);
+  public void crawlerJob() {
+    checkStatusCrawler.run(new ConcurrentLinkedDeque<>(domains));
   }
 }

@@ -1,6 +1,6 @@
 package com.alexmoleiro.healthchecker.configuration;
 
-import com.alexmoleiro.healthchecker.core.HealthCheker;
+import com.alexmoleiro.healthchecker.core.HealthChecker;
 import com.alexmoleiro.healthchecker.core.SiteResults;
 import com.alexmoleiro.healthchecker.service.HealthCheckerClient;
 import com.alexmoleiro.healthchecker.service.HealthCheckerCrawler;
@@ -22,7 +22,7 @@ public class InfrastuctureConfiguration {
   int nThreads;
 
   @Bean
-  HealthCheker httpChecker() {
+  HealthChecker httpChecker() {
     return new HealthCheckerClient(newBuilder().followRedirects(ALWAYS).build(), ofSeconds(seconds));
   }
 
@@ -32,7 +32,7 @@ public class InfrastuctureConfiguration {
   }
 
   @Bean
-  HealthCheckerCrawler checkDaemon(HealthCheker healthChecker, SiteResults siteResults) {
+  HealthCheckerCrawler checkDaemon(HealthChecker healthChecker, SiteResults siteResults) {
     return new HealthCheckerCrawler(healthChecker, siteResults, nThreads);
   }
 }

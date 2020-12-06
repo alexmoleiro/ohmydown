@@ -1,6 +1,6 @@
 package com.alexmoleiro.healthchecker.service;
 
-import com.alexmoleiro.healthchecker.core.HealthCheker;
+import com.alexmoleiro.healthchecker.core.HealthChecker;
 import com.alexmoleiro.healthchecker.core.SiteResults;
 import com.alexmoleiro.healthchecker.core.WebStatusRequest;
 import com.alexmoleiro.healthchecker.infrastructure.SiteCheckerResponse;
@@ -18,12 +18,12 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class HealthCheckerCrawler {
   private static final Logger LOGGER = getLogger(HealthCheckerCrawler.class);
-  private final HealthCheker healthCheker;
+  private final HealthChecker healthChecker;
   private final SiteResults siteResults;
   private final int nThreads;
 
-  public HealthCheckerCrawler(HealthCheker healthChecker, SiteResults siteResults, int nThreads) {
-    this.healthCheker = healthChecker;
+  public HealthCheckerCrawler(HealthChecker healthChecker, SiteResults siteResults, int nThreads) {
+    this.healthChecker = healthChecker;
     this.siteResults = siteResults;
     this.nThreads = nThreads;
   }
@@ -36,7 +36,7 @@ public class HealthCheckerCrawler {
   private void getHealthStatus(ConcurrentLinkedDeque<String> domains, LocalDateTime now) {
 
     while (domains.peek() != null) {
-      final SiteCheckerResponse response = healthCheker.check(new WebStatusRequest(domains.poll()));
+      final SiteCheckerResponse response = healthChecker.check(new WebStatusRequest(domains.poll()));
       siteResults.add(response);
       LOGGER.info(response.toString());
     }

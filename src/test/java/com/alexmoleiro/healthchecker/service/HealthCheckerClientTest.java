@@ -33,7 +33,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class HttpCheckerTest {
+class HealthCheckerClientTest {
 
   public static final String URL = "www.alexmoleiro.com";
 
@@ -46,7 +46,7 @@ class HttpCheckerTest {
     when(mock.send(any(HttpRequest.class), any(BodyHandler.class)))
         .thenReturn(getHttpResponse(statusCode, URL));
 
-    final SiteCheckerResponse check = new HttpChecker(mock, ofSeconds(5)).check(new WebStatusRequest(URL));
+    final SiteCheckerResponse check = new HealthCheckerClient(mock, ofSeconds(5)).check(new WebStatusRequest(URL));
 
     assertThat(check.getStatus()).isEqualTo(statusCode);
   }
@@ -57,7 +57,7 @@ class HttpCheckerTest {
     final HttpClient mock = mock(HttpClient.class);
     doThrow(e).when(mock).send(any(HttpRequest.class), any(BodyHandler.class));
 
-    final SiteCheckerResponse check = new HttpChecker(mock, ofSeconds(5)).check(new WebStatusRequest(URL));
+    final SiteCheckerResponse check = new HealthCheckerClient(mock, ofSeconds(5)).check(new WebStatusRequest(URL));
 
     assertThat(check.getStatus()).isEqualTo(statusCode);
   }

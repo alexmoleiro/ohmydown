@@ -1,29 +1,27 @@
 package com.alexmoleiro.healthchecker.configuration;
 
-import com.alexmoleiro.healthchecker.service.CheckStatusCrawler;
+import com.alexmoleiro.healthchecker.service.HealthCheckerCrawler;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.concurrent.ConcurrentLinkedDeque;
-
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
 @ActiveProfiles("test")
 @SpringBootTest
-class SchedulerConfigurationTest {
+class SchedulerTest {
 
   public static final int ONCE = 1;
   public static final int TIMEOUT = 5_000;
 
   @MockBean
-  CheckStatusCrawler checkStatusCrawler;
+  HealthCheckerCrawler healthCheckerCrawler;
 
   @Test
   void shouldCallRun() {
-    verify(checkStatusCrawler, timeout(TIMEOUT).atLeast(ONCE)).run(any(ConcurrentLinkedDeque.class));
+    verify(healthCheckerCrawler, timeout(TIMEOUT).atLeast(ONCE)).run(anyList());
   }
 }

@@ -1,5 +1,6 @@
 package com.alexmoleiro.healthchecker.service;
 
+import com.alexmoleiro.healthchecker.core.HealthChecker;
 import com.alexmoleiro.healthchecker.core.WebStatusRequest;
 import com.alexmoleiro.healthchecker.infrastructure.SiteCheckerResponse;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 
 import static com.alexmoleiro.healthchecker.core.CheckResultCode.SERVER_TIMEOUT;
 import static com.alexmoleiro.healthchecker.core.CheckResultCode.SSL_CERTIFICATE_ERROR;
+import static com.alexmoleiro.healthchecker.core.UserAgent.MOZILLA;
 import static java.net.http.HttpRequest.newBuilder;
 import static java.net.http.HttpResponse.BodyHandlers.discarding;
 import static java.time.Duration.between;
@@ -24,19 +26,18 @@ import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.HttpHeaders.USER_AGENT;
 import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 
-public class HttpChecker {
+public class HealthCheckerClient implements HealthChecker {
 
-  public static final String MOZILLA =
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36";
   private final HttpClient client;
   private final Duration timeout;
-  private static Logger LOGGER = getLogger(HttpChecker.class);
+  private static Logger LOGGER = getLogger(HealthCheckerClient.class);
 
-  public HttpChecker(HttpClient client, Duration timeout) {
+  public HealthCheckerClient(HttpClient client, Duration timeout) {
     this.client = client;
     this.timeout = timeout;
   }
 
+  @Override
   public SiteCheckerResponse check(WebStatusRequest webStatusRequest) {
     int httpStatus;
     final LocalDateTime beforeRequest = now();
@@ -67,7 +68,7 @@ public class HttpChecker {
             newBuilder()
                 .GET()
                 .uri(URI.create(webStatusRequest.getUrl().toString()))
-                .setHeader(USER_AGENT, MOZILLA)
+                .setHeader(USER_AGENT, MOZILLA.getValue())
                 .timeout(timeout)
                 .build(),
             discarding());

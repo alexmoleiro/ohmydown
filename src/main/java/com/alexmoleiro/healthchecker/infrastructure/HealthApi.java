@@ -1,6 +1,7 @@
 package com.alexmoleiro.healthchecker.infrastructure;
 
 import com.alexmoleiro.healthchecker.core.HealthChecker;
+import com.alexmoleiro.healthchecker.core.SiteCheckerResponse;
 import com.alexmoleiro.healthchecker.core.WebStatusRequest;
 import com.alexmoleiro.healthchecker.core.WebStatusRequestException;
 import org.springframework.web.bind.annotation.CrossOrigin;

@@ -1,5 +1,7 @@
 package com.alexmoleiro.healthchecker.infrastructure;
 
+import com.alexmoleiro.healthchecker.core.SiteCheckerResponse;
+
 import java.util.List;
 
 public class SiteResultsDto {

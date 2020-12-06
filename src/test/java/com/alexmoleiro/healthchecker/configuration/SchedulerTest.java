@@ -12,7 +12,7 @@ import static org.mockito.Mockito.verify;
 
 @ActiveProfiles("test")
 @SpringBootTest
-class SchedulerConfigurationTest {
+class SchedulerTest {
 
   public static final int ONCE = 1;
   public static final int TIMEOUT = 5_000;

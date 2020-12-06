@@ -1,7 +1,7 @@
 package com.alexmoleiro.healthchecker.infrastructure;
 
 
-import com.alexmoleiro.healthchecker.service.HealthChecker;
+import com.alexmoleiro.healthchecker.core.HealthCheker;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -38,7 +38,7 @@ class HealthApiTest {
   int port;
 
   @MockBean
-  HealthChecker healthChecker;
+  HealthCheker healthCheker;
 
   @MockBean
   HttpClient httpClient;
@@ -51,7 +51,7 @@ class HealthApiTest {
 
     final String domainName = url.substring(8);
 
-    when(healthChecker.check(
+    when(healthCheker.check(
         argThat(webRequest-> webRequest.getUrl().getHost().equals(domainName))))
         .thenReturn(new SiteCheckerResponse(url, serverStatusCode, DELAY));
 

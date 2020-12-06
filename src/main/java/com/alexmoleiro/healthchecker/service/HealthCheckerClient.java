@@ -1,5 +1,6 @@
 package com.alexmoleiro.healthchecker.service;
 
+import com.alexmoleiro.healthchecker.core.HealthCheker;
 import com.alexmoleiro.healthchecker.core.WebStatusRequest;
 import com.alexmoleiro.healthchecker.infrastructure.SiteCheckerResponse;
 import org.slf4j.Logger;
@@ -25,17 +26,18 @@ import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.HttpHeaders.USER_AGENT;
 import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 
-public class HealthChecker {
+public class HealthCheckerClient implements HealthCheker {
 
   private final HttpClient client;
   private final Duration timeout;
-  private static Logger LOGGER = getLogger(HealthChecker.class);
+  private static Logger LOGGER = getLogger(HealthCheckerClient.class);
 
-  public HealthChecker(HttpClient client, Duration timeout) {
+  public HealthCheckerClient(HttpClient client, Duration timeout) {
     this.client = client;
     this.timeout = timeout;
   }
 
+  @Override
   public SiteCheckerResponse check(WebStatusRequest webStatusRequest) {
     int httpStatus;
     final LocalDateTime beforeRequest = now();

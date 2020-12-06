@@ -6,9 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.concurrent.ConcurrentLinkedDeque;
-
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
@@ -24,6 +22,6 @@ class SchedulerConfigurationTest {
 
   @Test
   void shouldCallRun() {
-    verify(healthCheckerCrawler, timeout(TIMEOUT).atLeast(ONCE)).run(any(ConcurrentLinkedDeque.class));
+    verify(healthCheckerCrawler, timeout(TIMEOUT).atLeast(ONCE)).run(anyList());
   }
 }

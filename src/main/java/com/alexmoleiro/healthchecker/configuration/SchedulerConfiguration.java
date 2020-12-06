@@ -30,6 +30,6 @@ public class SchedulerConfiguration {
 
   @Scheduled(cron = "${cron.expression}")
   public void crawlerJob() {
-    healthCheckerCrawler.run(new ConcurrentLinkedDeque<>(domains));
+    healthCheckerCrawler.run(domains);
   }
 }

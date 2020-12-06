@@ -2,13 +2,11 @@ package com.alexmoleiro.healthchecker.configuration;
 
 import com.alexmoleiro.healthchecker.core.HealthCheker;
 import com.alexmoleiro.healthchecker.core.SiteResults;
-import com.alexmoleiro.healthchecker.service.HealthCheckerCrawler;
 import com.alexmoleiro.healthchecker.service.HealthCheckerClient;
+import com.alexmoleiro.healthchecker.service.HealthCheckerCrawler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.net.http.HttpClient;
 
 import static java.net.http.HttpClient.Redirect.ALWAYS;
 import static java.net.http.HttpClient.newBuilder;
@@ -24,13 +22,8 @@ public class InfrastuctureConfiguration {
   int nThreads;
 
   @Bean
-  HttpClient httpClient() {
-    return newBuilder().followRedirects(ALWAYS).build();
-  }
-
-  @Bean
-  HealthCheker httpChecker(HttpClient httpClient) {
-    return new HealthCheckerClient(httpClient, ofSeconds(seconds));
+  HealthCheker httpChecker() {
+    return new HealthCheckerClient(newBuilder().followRedirects(ALWAYS).build(), ofSeconds(seconds));
   }
 
   @Bean

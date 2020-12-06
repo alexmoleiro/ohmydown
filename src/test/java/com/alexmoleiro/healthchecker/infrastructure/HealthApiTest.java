@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 
 import javax.net.ssl.SSLHandshakeException;
 import java.io.IOException;
@@ -50,11 +51,11 @@ class HealthApiTest {
 
   @ParameterizedTest
   @MethodSource("urls")
-  void shouldReturnHttpStatus(URL url, int serverStatusCode) {
+  void shouldReturnHttpStatus(URL url, HttpStatus serverStatusCode) {
 
     when(healthChecker.check(
-        argThat(webRequest-> webRequest.getUrl().getHost().equals(url.getHost()))))
-        .thenReturn(new SiteCheckerResponse(url, serverStatusCode, DELAY));
+        argThat(webRequest-> webRequest.getUrl().equals(url))))
+        .thenReturn(new SiteCheckerResponse(url, serverStatusCode.value(), DELAY));
 
     given()
         .contentType(JSON)
@@ -62,13 +63,13 @@ class HealthApiTest {
             {"url":"%s"}""".formatted(url))
         .post("http://localhost:%d/status".formatted(port))
         .then().assertThat().statusCode(200).body(equalTo("""
-        {"url":"%s","delay":%d,"status":%d}""".formatted(url, DELAY, serverStatusCode)));
+        {"url":"%s","delay":%d,"status":%d}""".formatted(url, DELAY, serverStatusCode.value())));
   }
 
   private static Stream<Arguments> urls() throws MalformedURLException {
     return Stream.of(
-        of(new URL("https://www.down.com"), BAD_REQUEST.value()),
-        of(new URL("https://www.up.com"), OK.value())
+        of(new URL("https://www.down.com"), BAD_REQUEST),
+        of(new URL("https://www.up.com"), OK)
     );
   }
 

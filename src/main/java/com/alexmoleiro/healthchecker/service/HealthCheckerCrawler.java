@@ -3,7 +3,7 @@ package com.alexmoleiro.healthchecker.service;
 import com.alexmoleiro.healthchecker.core.HealthChecker;
 import com.alexmoleiro.healthchecker.core.SiteResults;
 import com.alexmoleiro.healthchecker.core.WebStatusRequest;
-import com.alexmoleiro.healthchecker.infrastructure.SiteCheckerResponse;
+import com.alexmoleiro.healthchecker.core.SiteCheckerResponse;
 import org.slf4j.Logger;
 
 import java.time.LocalDateTime;

@@ -2,7 +2,7 @@ package com.alexmoleiro.healthchecker.service;
 
 import com.alexmoleiro.healthchecker.core.HealthChecker;
 import com.alexmoleiro.healthchecker.core.WebStatusRequest;
-import com.alexmoleiro.healthchecker.infrastructure.SiteCheckerResponse;
+import com.alexmoleiro.healthchecker.core.SiteCheckerResponse;
 import org.slf4j.Logger;
 
 import javax.net.ssl.SSLHandshakeException;
@@ -56,7 +56,7 @@ public class HealthCheckerClient implements HealthChecker {
     }
 
     return new SiteCheckerResponse(
-        webStatusRequest.getUrl().toString(), httpStatus, between(beforeRequest, now()).toMillis());
+        webStatusRequest.getUrl(), httpStatus, between(beforeRequest, now()).toMillis());
   }
 
   private SiteCheckerResponse httpFetch(
@@ -73,6 +73,6 @@ public class HealthCheckerClient implements HealthChecker {
                 .build(),
             discarding());
     return new SiteCheckerResponse(
-        send.uri().toString(), send.statusCode(), between(beforeRequest, now()).toMillis());
+        send.uri().toURL(), send.statusCode(), between(beforeRequest, now()).toMillis());
   }
 }

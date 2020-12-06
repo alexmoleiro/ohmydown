@@ -2,6 +2,7 @@ package com.alexmoleiro.healthchecker.infrastructure;
 
 
 import com.alexmoleiro.healthchecker.core.HealthChecker;
+import com.alexmoleiro.healthchecker.core.SiteCheckerResponse;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -12,6 +13,8 @@ import org.springframework.boot.web.server.LocalServerPort;
 import javax.net.ssl.SSLHandshakeException;
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpConnectTimeoutException;
 import java.net.http.HttpRequest;
@@ -47,9 +50,9 @@ class HealthApiTest {
 
   @ParameterizedTest
   @MethodSource("urls")
-  void shouldReturnHttpStatus(String url, int serverStatusCode) {
+  void shouldReturnHttpStatus(URL url, int serverStatusCode) {
 
-    final String domainName = url.substring(8);
+    final String domainName = url.getHost();
 
     when(healthChecker.check(
         argThat(webRequest-> webRequest.getUrl().getHost().equals(domainName))))
@@ -64,10 +67,10 @@ class HealthApiTest {
         {"url":"%s","delay":%d,"status":%d}""".formatted(url, DELAY, serverStatusCode)));
   }
 
-  private static Stream<Arguments> urls() {
+  private static Stream<Arguments> urls() throws MalformedURLException {
     return Stream.of(
-        of("https://www.down.com", BAD_REQUEST.value()),
-        of("https://www.up.com", OK.value())
+        of(new URL("https://www.down.com"), BAD_REQUEST.value()),
+        of(new URL("https://www.up.com"), OK.value())
     );
   }
 

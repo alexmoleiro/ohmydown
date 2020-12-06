@@ -1,7 +1,7 @@
 package com.alexmoleiro.healthchecker.service;
 
 import com.alexmoleiro.healthchecker.core.WebStatusRequest;
-import com.alexmoleiro.healthchecker.infrastructure.SiteCheckerResponse;
+import com.alexmoleiro.healthchecker.core.SiteCheckerResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -35,7 +35,7 @@ import static org.mockito.Mockito.when;
 
 class HealthCheckerClientTest {
 
-  public static final String URL = "www.alexmoleiro.com";
+  public static final String URL = "http://www.alexmoleiro.com";
 
   @Test
   void shouldReturnStatusCode() throws InterruptedException, IOException {

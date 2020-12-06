@@ -1,14 +1,16 @@
-package com.alexmoleiro.healthchecker.infrastructure;
+package com.alexmoleiro.healthchecker.core;
 
+
+import java.net.URL;
 
 public class SiteCheckerResponse {
 
   private final int statusCode;
-  private String url;
+  private URL url;
   private long delay;
 
 
-  public SiteCheckerResponse(String url, int statusCode, long delay) {
+  public SiteCheckerResponse(URL url, int statusCode, long delay) {
     this.url = url;
     this.delay = delay;
     this.statusCode = statusCode;
@@ -19,7 +21,7 @@ public class SiteCheckerResponse {
   }
 
   public String getUrl() {
-    return url;
+    return url.toString();
   }
 
   public long getDelay() {

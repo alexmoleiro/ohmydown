@@ -1,11 +1,10 @@
 package com.alexmoleiro.healthchecker.core;
 
-import com.alexmoleiro.healthchecker.infrastructure.SiteCheckerResponse;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public class SiteResults {
 
@@ -18,6 +17,6 @@ public class SiteResults {
   }
 
   public List<SiteCheckerResponse> getSiteResults() {
-    return siteResults.values().stream().collect(Collectors.toList());
+    return siteResults.values().stream().collect(toList());
   }
 }

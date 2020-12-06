@@ -22,12 +22,12 @@ public class LandingApiTest {
   MockMvc mockMvc;
 
   @Autowired
-  SiteResultsRepository siteResultsInMemory;
+  SiteResultsRepository siteResultsRepository;
 
   @Test
   void shouldReturnLandingListSites() throws Exception {
-    siteResultsInMemory.add(new SiteCheckerResponse(new URL("https://www.alexmoleiro.com"),200,200));
-    siteResultsInMemory.add(new SiteCheckerResponse(new URL("https://www.yavendras.com"),500,123));
+    siteResultsRepository.add(new SiteCheckerResponse(new URL("https://www.alexmoleiro.com"),200,200));
+    siteResultsRepository.add(new SiteCheckerResponse(new URL("https://www.yavendras.com"),500,123));
 
       this.mockMvc.perform(post("/landing-list"))
           .andExpect(status().isOk())

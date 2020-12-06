@@ -1,7 +1,7 @@
 package com.alexmoleiro.healthchecker.service;
 
 import com.alexmoleiro.healthchecker.core.HealthChecker;
-import com.alexmoleiro.healthchecker.infrastructure.SiteResultsInMemory;
+import com.alexmoleiro.healthchecker.core.SiteResultsRepository;
 import com.alexmoleiro.healthchecker.core.WebStatusRequest;
 import com.alexmoleiro.healthchecker.core.SiteCheckerResponse;
 import org.slf4j.Logger;
@@ -19,12 +19,12 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class HealthCheckerCrawler {
   private static final Logger LOGGER = getLogger(HealthCheckerCrawler.class);
   private final HealthChecker healthChecker;
-  private final SiteResultsInMemory siteResultsInMemory;
+  private final SiteResultsRepository siteResultsRepository;
   private final int nThreads;
 
-  public HealthCheckerCrawler(HealthChecker healthChecker, SiteResultsInMemory siteResultsInMemory, int nThreads) {
+  public HealthCheckerCrawler(HealthChecker healthChecker, SiteResultsRepository siteResultsRepository, int nThreads) {
     this.healthChecker = healthChecker;
-    this.siteResultsInMemory = siteResultsInMemory;
+    this.siteResultsRepository = siteResultsRepository;
     this.nThreads = nThreads;
   }
 
@@ -37,7 +37,7 @@ public class HealthCheckerCrawler {
 
     while (domains.peek() != null) {
       final SiteCheckerResponse response = healthChecker.check(new WebStatusRequest(domains.poll()));
-      siteResultsInMemory.add(response);
+      siteResultsRepository.add(response);
       LOGGER.info(response.toString());
     }
   }

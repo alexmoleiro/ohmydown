@@ -14,14 +14,14 @@ import static java.time.LocalDateTime.now;
 import static java.util.concurrent.CompletableFuture.runAsync;
 import static java.util.stream.IntStream.rangeClosed;
 
-public class CheckStatusCrawler {
-  private static final Logger LOGGER = LoggerFactory.getLogger(CheckStatusCrawler.class);
-  private final HttpChecker httpChecker;
+public class HealthCheckerCrawler {
+  private static final Logger LOGGER = LoggerFactory.getLogger(HealthCheckerCrawler.class);
+  private final HealthChecker healthChecker;
   private final SiteResults siteResults;
   private final int nThreads;
 
-  public CheckStatusCrawler(HttpChecker httpChecker, SiteResults siteResults, int nThreads) {
-    this.httpChecker = httpChecker;
+  public HealthCheckerCrawler(HealthChecker healthChecker, SiteResults siteResults, int nThreads) {
+    this.healthChecker = healthChecker;
     this.siteResults = siteResults;
     this.nThreads = nThreads;
   }
@@ -33,7 +33,7 @@ public class CheckStatusCrawler {
   private void getCheck(ConcurrentLinkedDeque<String> domains, LocalDateTime now) {
 
     while (domains.peek() != null) {
-      final SiteCheckerResponse response = httpChecker.check(new WebStatusRequest(domains.poll()));
+      final SiteCheckerResponse response = healthChecker.check(new WebStatusRequest(domains.poll()));
       siteResults.add(response);
       LOGGER.info(response.toString());
     }

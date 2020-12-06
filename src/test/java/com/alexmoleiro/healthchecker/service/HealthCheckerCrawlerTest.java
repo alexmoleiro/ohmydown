@@ -16,7 +16,7 @@ import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class CheckStatusCrawlerTest {
+class HealthCheckerCrawlerTest {
 
   private static final int ONCE = 1;
   private static final int TIMEOUT = 2_000;
@@ -24,22 +24,22 @@ class CheckStatusCrawlerTest {
   @Test
   void shouldCallOnlyOnce() {
 
-    final HttpChecker httpChecker = mock(HttpChecker.class);
+    final HealthChecker healthChecker = mock(HealthChecker.class);
     final SiteResults siteResults = mock(SiteResults.class);
     final List<String> domains = of("www.a.com", "www.b.com", "www.c.com", "www.d.es", "www.e.com");
     final ConcurrentLinkedDeque<String> domainsQueue = new ConcurrentLinkedDeque<>(domains);
     final int nThreads = 5;
 
     final String anyString = "www.j.com";
-    when(httpChecker.check(any(WebStatusRequest.class)))
+    when(healthChecker.check(any(WebStatusRequest.class)))
         .thenReturn(new SiteCheckerResponse(anyString, 200, 123));
 
-    new CheckStatusCrawler(httpChecker, siteResults, nThreads).run(domainsQueue);
+    new HealthCheckerCrawler(healthChecker, siteResults, nThreads).run(domainsQueue);
 
     domains.stream()
         .forEach(
             domain -> {
-              verify(httpChecker, timeout(TIMEOUT).atLeast(ONCE))
+              verify(healthChecker, timeout(TIMEOUT).atLeast(ONCE))
                   .check(argThat(request -> request.getUrl().toString().equals("http://" + domain)));
 
               verify(siteResults, timeout(TIMEOUT).atLeast(nThreads))

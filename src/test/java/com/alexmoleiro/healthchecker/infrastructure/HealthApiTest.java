@@ -52,10 +52,8 @@ class HealthApiTest {
   @MethodSource("urls")
   void shouldReturnHttpStatus(URL url, int serverStatusCode) {
 
-    final String domainName = url.getHost();
-
     when(healthChecker.check(
-        argThat(webRequest-> webRequest.getUrl().getHost().equals(domainName))))
+        argThat(webRequest-> webRequest.getUrl().getHost().equals(url.getHost()))))
         .thenReturn(new SiteCheckerResponse(url, serverStatusCode, DELAY));
 
     given()

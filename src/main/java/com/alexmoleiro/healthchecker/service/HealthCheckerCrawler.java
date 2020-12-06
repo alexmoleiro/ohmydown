@@ -30,10 +30,10 @@ public class HealthCheckerCrawler {
 
   public void run(List<String> domains) {
     ConcurrentLinkedDeque<String> domainsQueue = new ConcurrentLinkedDeque<>(domains);
-    rangeClosed(1, nThreads).forEach(x -> runAsync(() -> getCheck(domainsQueue, now(systemUTC()))));
+    rangeClosed(1, nThreads).forEach(thread -> runAsync(() -> getHealthStatus(domainsQueue, now(systemUTC()))));
   }
 
-  private void getCheck(ConcurrentLinkedDeque<String> domains, LocalDateTime now) {
+  private void getHealthStatus(ConcurrentLinkedDeque<String> domains, LocalDateTime now) {
 
     while (domains.peek() != null) {
       final SiteCheckerResponse response = healthCheker.check(new WebStatusRequest(domains.poll()));

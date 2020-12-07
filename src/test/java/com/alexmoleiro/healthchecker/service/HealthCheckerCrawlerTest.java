@@ -1,8 +1,8 @@
 package com.alexmoleiro.healthchecker.service;
 
-import com.alexmoleiro.healthchecker.core.SiteCheckerResponse;
-import com.alexmoleiro.healthchecker.core.SiteResultsRepository;
-import com.alexmoleiro.healthchecker.core.WebStatusRequest;
+import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
+import com.alexmoleiro.healthchecker.core.HealthCheckResultsRepository;
+import com.alexmoleiro.healthchecker.core.HealthCheckRequest;
 import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
@@ -28,16 +28,16 @@ class HealthCheckerCrawlerTest {
   void shouldCallOnlyOnce() throws MalformedURLException {
 
     final HealthCheckerClient healthCheckerClient = mock(HealthCheckerClient.class);
-    final SiteResultsRepository siteResultsRepository= mock(SiteResultsRepository.class);
+    final HealthCheckResultsRepository healthCheckResultsRepository = mock(HealthCheckResultsRepository.class);
     final List<String> domains = of("www.a.com", "www.b.com", "www.c.com", "www.d.es", "www.e.com");
     final int nThreads = 5;
     final URL url = new URL("http://www.j.com");
     final int delay = new Random().nextInt();
 
-    when(healthCheckerClient.check(any(WebStatusRequest.class)))
-        .thenReturn(new SiteCheckerResponse(url, OK.value(), delay));
+    when(healthCheckerClient.check(any(HealthCheckRequest.class)))
+        .thenReturn(new HealthCheckResponse(url, OK.value(), delay));
 
-    new HealthCheckerCrawler(healthCheckerClient, siteResultsRepository, nThreads).run(domains);
+    new HealthCheckerCrawler(healthCheckerClient, healthCheckResultsRepository, nThreads).run(domains);
 
     domains.stream()
         .forEach(
@@ -45,7 +45,7 @@ class HealthCheckerCrawlerTest {
               verify(healthCheckerClient, timeout(TIMEOUT).atLeast(ONCE))
                   .check(argThat(request -> request.getUrl().toString().equals("http://" + domain)));
 
-              verify(siteResultsRepository, timeout(TIMEOUT).atLeast(nThreads))
+              verify(healthCheckResultsRepository, timeout(TIMEOUT).atLeast(nThreads))
                   .add(argThat(x -> x.getUrl().equals(url.toString())));
             });
   }

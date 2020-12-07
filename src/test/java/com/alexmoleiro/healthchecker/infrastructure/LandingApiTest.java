@@ -1,7 +1,7 @@
 package com.alexmoleiro.healthchecker.infrastructure;
 
-import com.alexmoleiro.healthchecker.core.SiteCheckerResponse;
-import com.alexmoleiro.healthchecker.core.SiteResultsRepository;
+import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
+import com.alexmoleiro.healthchecker.core.HealthCheckResultsRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,12 +22,12 @@ public class LandingApiTest {
   MockMvc mockMvc;
 
   @Autowired
-  SiteResultsRepository siteResultsRepository;
+  HealthCheckResultsRepository healthCheckResultsRepository;
 
   @Test
   void shouldReturnLandingListSites() throws Exception {
-    siteResultsRepository.add(new SiteCheckerResponse(new URL("https://www.alexmoleiro.com"),200,200));
-    siteResultsRepository.add(new SiteCheckerResponse(new URL("https://www.yavendras.com"),500,123));
+    healthCheckResultsRepository.add(new HealthCheckResponse(new URL("https://www.alexmoleiro.com"),200,200));
+    healthCheckResultsRepository.add(new HealthCheckResponse(new URL("https://www.yavendras.com"),500,123));
 
       this.mockMvc.perform(post("/landing-list"))
           .andExpect(status().isOk())

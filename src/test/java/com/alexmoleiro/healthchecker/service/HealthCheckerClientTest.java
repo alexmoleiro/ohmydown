@@ -1,7 +1,7 @@
 package com.alexmoleiro.healthchecker.service;
 
-import com.alexmoleiro.healthchecker.core.WebStatusRequest;
-import com.alexmoleiro.healthchecker.core.SiteCheckerResponse;
+import com.alexmoleiro.healthchecker.core.HealthCheckRequest;
+import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -46,7 +46,7 @@ class HealthCheckerClientTest {
     when(mock.send(any(HttpRequest.class), any(BodyHandler.class)))
         .thenReturn(getHttpResponse(statusCode, URL));
 
-    final SiteCheckerResponse check = new HealthCheckerClient(mock, ofSeconds(5)).check(new WebStatusRequest(URL));
+    final HealthCheckResponse check = new HealthCheckerClient(mock, ofSeconds(5)).check(new HealthCheckRequest(URL));
 
     assertThat(check.getStatus()).isEqualTo(statusCode);
   }
@@ -57,7 +57,7 @@ class HealthCheckerClientTest {
     final HttpClient mock = mock(HttpClient.class);
     doThrow(e).when(mock).send(any(HttpRequest.class), any(BodyHandler.class));
 
-    final SiteCheckerResponse check = new HealthCheckerClient(mock, ofSeconds(5)).check(new WebStatusRequest(URL));
+    final HealthCheckResponse check = new HealthCheckerClient(mock, ofSeconds(5)).check(new HealthCheckRequest(URL));
 
     assertThat(check.getStatus()).isEqualTo(statusCode);
   }

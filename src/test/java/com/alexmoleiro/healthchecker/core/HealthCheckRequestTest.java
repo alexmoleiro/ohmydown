@@ -9,13 +9,13 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.params.provider.Arguments.of;
 
-class WebStatusRequestTest {
+class HealthCheckRequestTest {
 
   @ParameterizedTest
   @MethodSource("invalidUrl")
   void shouldThrowExceptionWhenInvalidUrl(String invalidUrl) {
 
-    assertThatThrownBy(() -> new WebStatusRequest(invalidUrl))
+    assertThatThrownBy(() -> new HealthCheckRequest(invalidUrl))
         .isInstanceOf(WebStatusRequestException.class);
   }
 

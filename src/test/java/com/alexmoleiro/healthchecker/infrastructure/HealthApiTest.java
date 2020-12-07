@@ -2,7 +2,7 @@ package com.alexmoleiro.healthchecker.infrastructure;
 
 
 import com.alexmoleiro.healthchecker.core.HealthChecker;
-import com.alexmoleiro.healthchecker.core.SiteCheckerResponse;
+import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -55,7 +55,7 @@ class HealthApiTest {
 
     when(healthChecker.check(
         argThat(webRequest-> webRequest.getUrl().equals(url))))
-        .thenReturn(new SiteCheckerResponse(url, serverStatusCode.value(), DELAY));
+        .thenReturn(new HealthCheckResponse(url, serverStatusCode.value(), DELAY));
 
     given()
         .contentType(JSON)

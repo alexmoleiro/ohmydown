@@ -3,12 +3,12 @@ package com.alexmoleiro.healthchecker.core;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class WebStatusRequest {
+public class HealthCheckRequest {
   private URL url;
   private static final String DOMAIN_PATTERN =
       "(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]";
 
-  public WebStatusRequest(String url) {
+  public HealthCheckRequest(String url) {
     setUrl(url.toLowerCase());
   }
 

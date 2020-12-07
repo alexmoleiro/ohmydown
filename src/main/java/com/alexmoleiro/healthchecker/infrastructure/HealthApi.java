@@ -1,8 +1,8 @@
 package com.alexmoleiro.healthchecker.infrastructure;
 
 import com.alexmoleiro.healthchecker.core.HealthChecker;
-import com.alexmoleiro.healthchecker.core.SiteCheckerResponse;
-import com.alexmoleiro.healthchecker.core.WebStatusRequest;
+import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
+import com.alexmoleiro.healthchecker.core.HealthCheckRequest;
 import com.alexmoleiro.healthchecker.core.WebStatusRequestException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,8 +24,8 @@ public class HealthApi {
 
   @CrossOrigin(origins = "http://localhost:3000")
   @PostMapping("/status")
-  SiteCheckerResponse webStatusResult(@RequestBody WebStatusRequestDto webStatusRequestDto) {
-    return healthChecker.check(new WebStatusRequest(webStatusRequestDto.getUrl()));
+  HealthCheckResponse healthCheck(@RequestBody WebStatusRequestDto webStatusRequestDto) {
+    return healthChecker.check(new HealthCheckRequest(webStatusRequestDto.getUrl()));
   }
 
   @ResponseStatus(value= BAD_REQUEST)

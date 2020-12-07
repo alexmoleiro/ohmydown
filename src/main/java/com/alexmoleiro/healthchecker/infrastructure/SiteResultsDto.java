@@ -1,18 +1,18 @@
 package com.alexmoleiro.healthchecker.infrastructure;
 
-import com.alexmoleiro.healthchecker.core.SiteCheckerResponse;
+import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
 
 import java.util.List;
 
 public class SiteResultsDto {
 
-  List<SiteCheckerResponse> responses;
+  List<HealthCheckResponse> responses;
 
-  public SiteResultsDto(List<SiteCheckerResponse> responses) {
+  public SiteResultsDto(List<HealthCheckResponse> responses) {
     this.responses = responses;
   }
 
-  public List<SiteCheckerResponse> getResponses() {
+  public List<HealthCheckResponse> getResponses() {
     return responses;
   }
 

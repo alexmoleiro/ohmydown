@@ -1,8 +1,8 @@
 package com.alexmoleiro.healthchecker.service;
 
 import com.alexmoleiro.healthchecker.core.HealthChecker;
-import com.alexmoleiro.healthchecker.core.WebStatusRequest;
-import com.alexmoleiro.healthchecker.core.SiteCheckerResponse;
+import com.alexmoleiro.healthchecker.core.HealthCheckRequest;
+import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
 import org.slf4j.Logger;
 
 import javax.net.ssl.SSLHandshakeException;
@@ -38,11 +38,11 @@ public class HealthCheckerClient implements HealthChecker {
   }
 
   @Override
-  public SiteCheckerResponse check(WebStatusRequest webStatusRequest) {
+  public HealthCheckResponse check(HealthCheckRequest healthCheckRequest) {
     int httpStatus;
     final LocalDateTime beforeRequest = now();
     try {
-      return httpFetch(webStatusRequest, beforeRequest);
+      return httpFetch(healthCheckRequest, beforeRequest);
     } catch (HttpTimeoutException e) {
       httpStatus = SERVER_TIMEOUT.value();
     } catch (ConnectException e) {
@@ -55,24 +55,24 @@ public class HealthCheckerClient implements HealthChecker {
       httpStatus = SERVICE_UNAVAILABLE.value();
     }
 
-    return new SiteCheckerResponse(
-        webStatusRequest.getUrl(), httpStatus, between(beforeRequest, now()).toMillis());
+    return new HealthCheckResponse(
+        healthCheckRequest.getUrl(), httpStatus, between(beforeRequest, now()).toMillis());
   }
 
-  private SiteCheckerResponse httpFetch(
-      WebStatusRequest webStatusRequest, LocalDateTime beforeRequest)
+  private HealthCheckResponse httpFetch(
+      HealthCheckRequest healthCheckRequest, LocalDateTime beforeRequest)
       throws IOException, InterruptedException {
 
     final HttpResponse<Void> send =
         client.send(
             newBuilder()
                 .GET()
-                .uri(URI.create(webStatusRequest.getUrl().toString()))
+                .uri(URI.create(healthCheckRequest.getUrl().toString()))
                 .setHeader(USER_AGENT, MOZILLA.getValue())
                 .timeout(timeout)
                 .build(),
             discarding());
-    return new SiteCheckerResponse(
+    return new HealthCheckResponse(
         send.uri().toURL(), send.statusCode(), between(beforeRequest, now()).toMillis());
   }
 }

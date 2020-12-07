@@ -1,8 +1,8 @@
 package com.alexmoleiro.healthchecker.configuration;
 
 import com.alexmoleiro.healthchecker.core.HealthChecker;
-import com.alexmoleiro.healthchecker.core.SiteResultsRepository;
-import com.alexmoleiro.healthchecker.infrastructure.SiteResultsInMemory;
+import com.alexmoleiro.healthchecker.core.HealthCheckResultsRepository;
+import com.alexmoleiro.healthchecker.infrastructure.HealthCheckResultsInMemory;
 import com.alexmoleiro.healthchecker.service.HealthCheckerClient;
 import com.alexmoleiro.healthchecker.service.HealthCheckerCrawler;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,12 +28,12 @@ public class InfrastuctureConfiguration {
   }
 
   @Bean
-  SiteResultsRepository siteResults() {
-    return new SiteResultsInMemory();
+  HealthCheckResultsRepository siteResults() {
+    return new HealthCheckResultsInMemory();
   }
 
   @Bean
-  HealthCheckerCrawler checkDaemon(HealthChecker healthChecker, SiteResultsRepository siteResultsRepository) {
-    return new HealthCheckerCrawler(healthChecker, siteResultsRepository, nThreads);
+  HealthCheckerCrawler checkDaemon(HealthChecker healthChecker, HealthCheckResultsRepository healthCheckResultsRepository) {
+    return new HealthCheckerCrawler(healthChecker, healthCheckResultsRepository, nThreads);
   }
 }

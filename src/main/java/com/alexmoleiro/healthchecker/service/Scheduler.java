@@ -1,15 +1,11 @@
 package com.alexmoleiro.healthchecker.service;
 
+import com.alexmoleiro.healthchecker.core.DomainsRepository;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
-
-import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
-import static org.jsoup.Jsoup.connect;
 
 @Service
 @EnableScheduling
@@ -17,13 +13,10 @@ public class Scheduler {
 
   private final HealthCheckerCrawler healthCheckerCrawler;
   private List<String> domains;
-  public static final String URL =
-      "https://raw.githubusercontent.com/alexmoleiro/sitechecker/master/sites/domains-english.md";
 
-  public Scheduler(HealthCheckerCrawler healthCheckerCrawler) throws IOException {
+  public Scheduler(HealthCheckerCrawler healthCheckerCrawler, DomainsRepository domainsRepository) {
     this.healthCheckerCrawler = healthCheckerCrawler;
-    this.domains = List.of("www.as.com","sport.es");
-       // stream(connect(URL).get().body().html().split(" ")).sequential().collect(toList());
+    this.domains = domainsRepository.getDomains();
   }
 
   @Scheduled(cron = "${cron.expression}")

@@ -36,8 +36,9 @@ public class HealthCheckerCrawler {
   private void getHealthStatus(ConcurrentLinkedDeque<String> domains, LocalDateTime now) {
 
     while (domains.peek() != null) {
-      final HealthCheckResponse response = healthChecker.check(new HealthCheckRequest(domains.poll()));
-      healthCheckResultsRepository.add(response);
+      final String polledDomain = domains.poll();
+      final HealthCheckResponse response = healthChecker.check(new HealthCheckRequest(polledDomain));
+      healthCheckResultsRepository.add(polledDomain, now, response);
       LOGGER.info(response.toString());
     }
   }

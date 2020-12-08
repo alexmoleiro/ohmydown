@@ -3,6 +3,7 @@ package com.alexmoleiro.healthchecker.infrastructure;
 import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.HealthCheckResultsRepository;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,7 @@ public class HealthCheckResultsInMemory implements HealthCheckResultsRepository 
   public HealthCheckResultsInMemory() {}
 
   @Override
-  public void add(HealthCheckResponse healthCheckResponse) {
+  public void add(String polledDomain, LocalDateTime now, HealthCheckResponse healthCheckResponse) {
     siteResults.put(healthCheckResponse.getUrl(), healthCheckResponse);
   }
 

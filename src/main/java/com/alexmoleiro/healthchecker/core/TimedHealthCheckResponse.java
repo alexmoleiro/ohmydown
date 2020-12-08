@@ -1,6 +1,5 @@
 package com.alexmoleiro.healthchecker.core;
 
-import java.net.URL;
 import java.time.LocalDateTime;
 
 public class TimedHealthCheckResponse {
@@ -9,25 +8,21 @@ public class TimedHealthCheckResponse {
   private final LocalDateTime localDateTime;
   private final HealthCheckResponse healthCheckResponse;
 
-  public TimedHealthCheckResponse(Id id, LocalDateTime localDateTime, HealthCheckResponse healthCheckResponse) {
+  public TimedHealthCheckResponse(Id id, LocalDateTime time, HealthCheckResponse response) {
     this.id = id;
-    this.localDateTime = localDateTime;
-    this.healthCheckResponse = healthCheckResponse;
-  }
-
-  public LocalDateTime getLocalDateTime() {
-    return localDateTime;
+    this.localDateTime = time;
+    this.healthCheckResponse = response;
   }
 
   public Id getId() {
     return id;
   }
 
-  public HealthCheckResponse getHealthCheckResponse() {
-    return healthCheckResponse;
+  public LocalDateTime getLocalDateTime() {
+    return localDateTime;
   }
 
-  public URL getUrl() {
-    return healthCheckResponse.getUrl();
+  public HealthCheckResponse getHealthCheckResponse() {
+    return healthCheckResponse;
   }
 }

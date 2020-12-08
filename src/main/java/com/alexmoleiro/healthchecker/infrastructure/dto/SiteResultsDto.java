@@ -16,8 +16,12 @@ public class SiteResultsDto {
 
   public List<TimedSitedResultDto> getResponses() {
     return responses.stream()
-        .map(x -> new TimedSitedResultDto(new TimedHealthCheckResponse(x.getId(), x.getLocalDateTime(), x.getHealthCheckResponse()))).collect(
-            toList());
+        .map(
+            x ->
+                new TimedSitedResultDto(
+                    new TimedHealthCheckResponse(
+                        x.getId(), x.getLocalDateTime(), x.getHealthCheckResponse())))
+        .collect(toList());
   }
 
   public int getNumUrls() {

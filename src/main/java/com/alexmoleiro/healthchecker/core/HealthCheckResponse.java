@@ -21,8 +21,8 @@ public class HealthCheckResponse {
     return statusCode;
   }
 
-  public String getUrl() {
-    return url.toString();
+  public URL getUrl() {
+    return url;
   }
 
   public long getDelay() {

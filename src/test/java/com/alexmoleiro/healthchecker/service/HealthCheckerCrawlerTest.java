@@ -3,19 +3,18 @@ package com.alexmoleiro.healthchecker.service;
 import com.alexmoleiro.healthchecker.core.HealthCheckRequest;
 import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.HealthCheckResultsRepository;
+import com.alexmoleiro.healthchecker.core.TimedHealthCheckResponse;
 import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 
 import static java.time.Duration.ofMillis;
 import static java.util.List.of;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.timeout;
@@ -53,7 +52,7 @@ class HealthCheckerCrawlerTest {
                       argThat(request -> request.getUrl().toString().equals("http://" + domain)));
 
               verify(healthCheckResultsRepository, timeout(TIMEOUT).atLeast(nThreads))
-                  .add(anyString(), any(LocalDateTime.class), any(HealthCheckResponse.class));
+                  .add(any(TimedHealthCheckResponse.class));
             });
   }
 }

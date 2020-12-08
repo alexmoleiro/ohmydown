@@ -4,6 +4,7 @@ import com.alexmoleiro.healthchecker.core.HealthChecker;
 import com.alexmoleiro.healthchecker.core.HealthCheckResultsRepository;
 import com.alexmoleiro.healthchecker.core.HealthCheckRequest;
 import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
+import com.alexmoleiro.healthchecker.core.TimedHealthCheckResponse;
 import org.slf4j.Logger;
 
 import java.time.LocalDateTime;
@@ -38,7 +39,7 @@ public class HealthCheckerCrawler {
     while (domains.peek() != null) {
       final String polledDomain = domains.poll();
       final HealthCheckResponse response = healthChecker.check(new HealthCheckRequest(polledDomain));
-      healthCheckResultsRepository.add(polledDomain, now, response);
+      healthCheckResultsRepository.add(new TimedHealthCheckResponse(polledDomain, now, response));
       LOGGER.info(response.toString());
     }
   }

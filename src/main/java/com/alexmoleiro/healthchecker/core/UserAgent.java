@@ -10,19 +10,17 @@ public enum UserAgent {
   EDGE("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36 Edg/86.0.622.69");
 
 
-  private final String string;
+  private final String userAgentString;
 
-  UserAgent(String string) {
-
-    this.string = string;
+  UserAgent(String userAgentString) {
+    this.userAgentString = userAgentString;
   }
 
   public static String random() {
-    final int length = values().length;
-    return values()[new Random().nextInt(length)].getValue();
+    return values()[new Random().nextInt(values().length)].getValue();
   }
 
   private String getValue() {
-    return string;
+    return userAgentString;
   }
 }

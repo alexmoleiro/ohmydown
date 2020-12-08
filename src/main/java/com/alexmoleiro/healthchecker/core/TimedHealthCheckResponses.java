@@ -1,19 +1,18 @@
 package com.alexmoleiro.healthchecker.core;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 
 public class TimedHealthCheckResponses {
 
   private final Id id;
   private final LocalDateTime localDateTime;
-  private  List<HealthCheckResponse> healthCheckResponses = new ArrayList<>();
+  private  LinkedList<HealthCheckResponse> healthCheckResponses = new LinkedList<>();
 
   public TimedHealthCheckResponses(Id id, LocalDateTime time, HealthCheckResponse response) {
     this.id = id;
     this.localDateTime = time;
-    this.healthCheckResponses.add(response);
+    this.healthCheckResponses.addLast(response);
   }
 
   public Id getId() {
@@ -24,7 +23,7 @@ public class TimedHealthCheckResponses {
     return localDateTime;
   }
 
-  public List<HealthCheckResponse> getHealthCheckResponse() {
+  public LinkedList<HealthCheckResponse> getHealthCheckResponse() {
     return healthCheckResponses;
   }
 }

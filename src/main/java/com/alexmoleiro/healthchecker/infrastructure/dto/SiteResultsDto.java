@@ -20,7 +20,7 @@ public class SiteResultsDto {
             x ->
                 new TimedSitedResultDto(
                     new TimedHealthCheckResponses(
-                        x.getId(), x.getLocalDateTime(), x.getHealthCheckResponse().get(0))))
+                        x.getId(), x.getLocalDateTime(), x.getHealthCheckResponse().getLast())))
         .collect(toList());
   }
 

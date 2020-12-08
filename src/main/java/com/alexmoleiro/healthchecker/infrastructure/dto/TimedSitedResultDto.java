@@ -5,11 +5,11 @@ import com.alexmoleiro.healthchecker.core.TimedHealthCheckResponses;
 
 public class TimedSitedResultDto {
   private final TimedHealthCheckResponses timedHealthCheckResponses;
-  private HealthCheckResponse newestHealthCheckResponse;
+  private HealthCheckResponse lastResponse;
 
   public TimedSitedResultDto(TimedHealthCheckResponses timedHealthCheckResponses) {
     this.timedHealthCheckResponses = timedHealthCheckResponses;
-    this.newestHealthCheckResponse = timedHealthCheckResponses.getHealthCheckResponse().get(0);
+    this.lastResponse = timedHealthCheckResponses.getHealthCheckResponse().getLast();
   }
 
   public String getId() {
@@ -17,14 +17,14 @@ public class TimedSitedResultDto {
   }
 
   public int getStatus() {
-    return newestHealthCheckResponse.getStatus();
+    return lastResponse.getStatus();
   }
 
   public String getUrl() {
-    return newestHealthCheckResponse.getUrl().toString();
+    return lastResponse.getUrl().toString();
   }
 
   public long getDelay() {
-    return newestHealthCheckResponse.getDelay();
+    return lastResponse.getDelay();
   }
 }

@@ -3,7 +3,7 @@ package com.alexmoleiro.healthchecker.infrastructure;
 import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.HealthCheckResultsRepository;
 import com.alexmoleiro.healthchecker.core.Id;
-import com.alexmoleiro.healthchecker.core.TimedHealthCheckResponse;
+import com.alexmoleiro.healthchecker.core.TimedHealthCheckResponses;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -32,10 +32,10 @@ public class LandingApiTest {
 
   @Test
   void shouldReturnLandingListSites() throws Exception {
-    repository.add(new TimedHealthCheckResponse(
+    repository.add(new TimedHealthCheckResponses(
         new Id("www.a.com"), now(), new HealthCheckResponse(new URL("https://www.a.com"), OK.value(),
         ofMillis(200))));
-    repository.add(new TimedHealthCheckResponse(new Id("www.b.com"), now(),
+    repository.add(new TimedHealthCheckResponses(new Id("www.b.com"), now(),
         new HealthCheckResponse(new URL("https://www.b.com"), INTERNAL_SERVER_ERROR.value(),
         ofMillis(123)
     )));

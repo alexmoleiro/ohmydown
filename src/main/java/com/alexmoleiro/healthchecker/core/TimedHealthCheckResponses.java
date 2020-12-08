@@ -4,13 +4,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TimedHealthCheckResponse {
+public class TimedHealthCheckResponses {
 
   private final Id id;
   private final LocalDateTime localDateTime;
   private  List<HealthCheckResponse> healthCheckResponses = new ArrayList<>();
 
-  public TimedHealthCheckResponse(Id id, LocalDateTime time, HealthCheckResponse response) {
+  public TimedHealthCheckResponses(Id id, LocalDateTime time, HealthCheckResponse response) {
     this.id = id;
     this.localDateTime = time;
     this.healthCheckResponses.add(response);

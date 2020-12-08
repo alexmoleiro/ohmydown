@@ -48,7 +48,7 @@ public class HealthCheckResultsApiTest {
             second
         )));
 
-    this.mockMvc.perform(get("/historical"))
+    this.mockMvc.perform(get("/historical/www.a.com"))
         .andExpect(status().isOk())
         .andExpect(content().json("""
               [

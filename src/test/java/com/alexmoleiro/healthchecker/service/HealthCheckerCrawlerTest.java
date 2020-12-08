@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 
@@ -39,7 +40,7 @@ class HealthCheckerCrawlerTest {
     final Duration delay = ofMillis(new Random().nextInt());
 
     when(healthCheckerClient.check(any(HealthCheckRequest.class)))
-        .thenReturn(new HealthCheckResponse(url, OK.value(), delay));
+        .thenReturn(new HealthCheckResponse(url, OK.value(), delay, LocalDateTime.now()));
 
     new HealthCheckerCrawler(healthCheckerClient, healthCheckResultsRepository, nThreads)
         .run(domains);

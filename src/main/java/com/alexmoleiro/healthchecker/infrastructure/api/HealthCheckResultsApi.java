@@ -31,15 +31,15 @@ public class HealthCheckResultsApi {
   }
 
   @CrossOrigin(origins = "http://localhost:3000")
-  @GetMapping(value = "/historic", produces = "application/json")
+  @GetMapping(value = "/historical", produces = "application/json")
   List<HistoricResultsDto> historic() {
     final TimedHealthCheckResponses responses =
         healthCheckResultsRepository.getResponses(new Id("www.a.com"));
     return responses.getHealthCheckResponse().stream()
         .map(
-            x ->
+            response ->
                 new HistoricResultsDto(
-                    x.getUrl(), x.getDelay(), x.getStatus(), LocalDateTime.now()))
+                    response.getUrl(), response.getDelay(), response.getStatus(), response.getTime()))
         .collect(toList());
   }
 }

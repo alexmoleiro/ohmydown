@@ -29,7 +29,7 @@ public class HistoricResultsDto {
     return status;
   }
 
-  public String time() {
+  public String getTime() {
     return time.toString();
   }
 

@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.time.Duration.ofMillis;
@@ -21,7 +22,7 @@ class HealthCheckResultsInMemoryTest {
   @Test
   void returnHealthCheckResults() throws MalformedURLException {
     final HealthCheckResponse healthCheckResponse =
-        new HealthCheckResponse(new URL("https://www.a.com"), HttpStatus.OK.value(), ofMillis(123));
+        new HealthCheckResponse(new URL("https://www.a.com"), HttpStatus.OK.value(), ofMillis(123), LocalDateTime.now());
 
     final TimedHealthCheckResponses timedHealthCheckResponses =
         new TimedHealthCheckResponses(new Id("id"), now(), healthCheckResponse);
@@ -40,7 +41,7 @@ class HealthCheckResultsInMemoryTest {
     final String anid = "id";
 
     final HealthCheckResponse healthCheckResponse =
-        new HealthCheckResponse(new URL("https://www.a.com"), 200, ofMillis(123));
+        new HealthCheckResponse(new URL("https://www.a.com"), 200, ofMillis(123), LocalDateTime.now());
 
     final TimedHealthCheckResponses timedHealthCheckResponses =
         new TimedHealthCheckResponses(new Id(anid), now(), healthCheckResponse);
@@ -49,15 +50,20 @@ class HealthCheckResultsInMemoryTest {
     final TimedHealthCheckResponses timedHealthCheckResponses2 =
         new TimedHealthCheckResponses(new Id(anid), now(), healthCheckResponse);
 
+
+    final TimedHealthCheckResponses timedHealthCheckResponses3 =
+        new TimedHealthCheckResponses(new Id(anid), now(), healthCheckResponse);
+
     final HealthCheckResultsInMemory healthCheckResultsInMemory = new HealthCheckResultsInMemory();
 
     healthCheckResultsInMemory.add(timedHealthCheckResponses);
     healthCheckResultsInMemory.add(timedHealthCheckResponses2);
+    healthCheckResultsInMemory.add(timedHealthCheckResponses3);
 
     final List<TimedHealthCheckResponses> siteResults = healthCheckResultsInMemory.getSiteResults();
 
     assertThat(siteResults.size()).isEqualTo(1);
-    assertThat(siteResults.get(0).getHealthCheckResponse().size()).isEqualTo(2);
+    assertThat(siteResults.get(0).getHealthCheckResponse().size()).isEqualTo(3);
 
   }
 }

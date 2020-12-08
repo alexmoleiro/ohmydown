@@ -9,6 +9,10 @@ public class Id {
     this.id = id;
   }
 
+  public String getValue() {
+    return id;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {

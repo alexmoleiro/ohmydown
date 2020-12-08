@@ -22,8 +22,8 @@ public class Scheduler {
 
   public Scheduler(HealthCheckerCrawler healthCheckerCrawler) throws IOException {
     this.healthCheckerCrawler = healthCheckerCrawler;
-    this.domains =
-        stream(connect(URL).get().body().html().split(" ")).sequential().collect(toList());
+    this.domains = List.of("www.as.com","sport.es");
+       // stream(connect(URL).get().body().html().split(" ")).sequential().collect(toList());
   }
 
   @Scheduled(cron = "${cron.expression}")

@@ -4,6 +4,7 @@ import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.Id;
 import com.alexmoleiro.healthchecker.core.TimedHealthCheckResponse;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -19,7 +20,8 @@ class HealthCheckResultsInMemoryTest {
   @Test
   void returnHealthCheckResults() throws MalformedURLException {
     final HealthCheckResponse healthCheckResponse =
-        new HealthCheckResponse(new URL("https://www.a.com"), 200, ofMillis(123));
+        new HealthCheckResponse(new URL("https://www.a.com"), HttpStatus.OK.value(), ofMillis(123));
+
     final TimedHealthCheckResponse timedHealthCheckResponse =
         new TimedHealthCheckResponse(new Id("id"), now(), healthCheckResponse);
 
@@ -27,9 +29,9 @@ class HealthCheckResultsInMemoryTest {
 
     healthCheckResultsInMemory.add(timedHealthCheckResponse);
 
-    final List<HealthCheckResponse> siteResults = healthCheckResultsInMemory.getSiteResults();
+    final List<TimedHealthCheckResponse> siteResults = healthCheckResultsInMemory.getSiteResults();
 
-    assertThat(siteResults).isEqualTo(of(healthCheckResponse));
+    assertThat(siteResults).usingRecursiveComparison().isEqualTo(of(timedHealthCheckResponse));
   }
 
   @Test
@@ -51,7 +53,7 @@ class HealthCheckResultsInMemoryTest {
     healthCheckResultsInMemory.add(timedHealthCheckResponse);
     healthCheckResultsInMemory.add(timedHealthCheckResponse2);
 
-    final List<HealthCheckResponse> siteResults = healthCheckResultsInMemory.getSiteResults();
+    final List<TimedHealthCheckResponse> siteResults = healthCheckResultsInMemory.getSiteResults();
 
     assertThat(siteResults.size()).isEqualTo(1);
 

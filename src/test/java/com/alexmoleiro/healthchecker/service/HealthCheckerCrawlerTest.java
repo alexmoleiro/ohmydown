@@ -3,12 +3,13 @@ package com.alexmoleiro.healthchecker.service;
 import com.alexmoleiro.healthchecker.core.HealthCheckRequest;
 import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.HealthCheckResultsRepository;
-import com.alexmoleiro.healthchecker.core.TimedHealthCheckResponse;
+import com.alexmoleiro.healthchecker.core.TimedHealthCheckResponses;
 import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 
@@ -39,7 +40,7 @@ class HealthCheckerCrawlerTest {
     final Duration delay = ofMillis(new Random().nextInt());
 
     when(healthCheckerClient.check(any(HealthCheckRequest.class)))
-        .thenReturn(new HealthCheckResponse(url, OK.value(), delay));
+        .thenReturn(new HealthCheckResponse(url, OK.value(), delay, LocalDateTime.now()));
 
     new HealthCheckerCrawler(healthCheckerClient, healthCheckResultsRepository, nThreads)
         .run(domains);
@@ -52,7 +53,7 @@ class HealthCheckerCrawlerTest {
                       argThat(request -> request.getUrl().toString().equals("http://" + domain)));
 
               verify(healthCheckResultsRepository, timeout(TIMEOUT).atLeast(nThreads))
-                  .add(any(TimedHealthCheckResponse.class));
+                  .add(any(TimedHealthCheckResponses.class));
             });
   }
 }

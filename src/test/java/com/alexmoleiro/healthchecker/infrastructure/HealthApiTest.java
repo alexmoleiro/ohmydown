@@ -21,6 +21,7 @@ import java.net.http.HttpConnectTimeoutException;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.stream.Stream;
 
@@ -56,7 +57,7 @@ class HealthApiTest {
 
     when(healthChecker.check(
         argThat(webRequest-> webRequest.getUrl().equals(url))))
-        .thenReturn(new HealthCheckResponse(url, serverStatusCode.value(), DELAY));
+        .thenReturn(new HealthCheckResponse(url, serverStatusCode.value(), DELAY, LocalDateTime.now()));
 
     given()
         .contentType(JSON)

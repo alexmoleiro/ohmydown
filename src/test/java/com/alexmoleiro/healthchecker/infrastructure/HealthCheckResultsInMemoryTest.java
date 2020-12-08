@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.time.Duration.ofMillis;
-import static java.time.LocalDateTime.now;
 import static java.util.List.of;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,7 +24,7 @@ class HealthCheckResultsInMemoryTest {
         new HealthCheckResponse(new URL("https://www.a.com"), HttpStatus.OK.value(), ofMillis(123), LocalDateTime.now());
 
     final TimedHealthCheckResponses timedHealthCheckResponses =
-        new TimedHealthCheckResponses(new Id("id"), now(), healthCheckResponse);
+        new TimedHealthCheckResponses(new Id("id"), healthCheckResponse);
 
     final HealthCheckResultsInMemory healthCheckResultsInMemory = new HealthCheckResultsInMemory();
 
@@ -44,15 +43,15 @@ class HealthCheckResultsInMemoryTest {
         new HealthCheckResponse(new URL("https://www.a.com"), 200, ofMillis(123), LocalDateTime.now());
 
     final TimedHealthCheckResponses timedHealthCheckResponses =
-        new TimedHealthCheckResponses(new Id(anid), now(), healthCheckResponse);
+        new TimedHealthCheckResponses(new Id(anid), healthCheckResponse);
 
 
     final TimedHealthCheckResponses timedHealthCheckResponses2 =
-        new TimedHealthCheckResponses(new Id(anid), now(), healthCheckResponse);
+        new TimedHealthCheckResponses(new Id(anid), healthCheckResponse);
 
 
     final TimedHealthCheckResponses timedHealthCheckResponses3 =
-        new TimedHealthCheckResponses(new Id(anid), now(), healthCheckResponse);
+        new TimedHealthCheckResponses(new Id(anid), healthCheckResponse);
 
     final HealthCheckResultsInMemory healthCheckResultsInMemory = new HealthCheckResultsInMemory();
 

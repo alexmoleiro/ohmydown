@@ -14,7 +14,6 @@ import java.net.URL;
 import java.time.LocalDateTime;
 
 import static java.time.Duration.ofMillis;
-import static java.time.LocalDateTime.now;
 import static java.time.LocalDateTime.of;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
@@ -40,11 +39,11 @@ public class HealthCheckResultsApiTest {
     final LocalDateTime second = of(2020, 12, 8, 23, 25);
 
     repository.add(new TimedHealthCheckResponses(
-        new Id("www.a.com"), now(),
+        new Id("www.a.com"),
         new HealthCheckResponse(new URL("https://www.a.com"), OK.value(), ofMillis(444), first)));
 
     repository.add(new TimedHealthCheckResponses(
-        new Id("www.a.com"), now(),
+        new Id("www.a.com"),
         new HealthCheckResponse(new URL("https://www.a.com"), INTERNAL_SERVER_ERROR.value(), ofMillis(123),
             second
         )));
@@ -63,9 +62,9 @@ public class HealthCheckResultsApiTest {
   @Test
   void shouldReturnLandingListSites() throws Exception {
     repository.add(new TimedHealthCheckResponses(
-        new Id("www.a.com"), now(), new HealthCheckResponse(new URL("https://www.a.com"), OK.value(),
+        new Id("www.a.com"), new HealthCheckResponse(new URL("https://www.a.com"), OK.value(),
         ofMillis(200), LocalDateTime.now())));
-    repository.add(new TimedHealthCheckResponses(new Id("www.b.com"), now(),
+    repository.add(new TimedHealthCheckResponses(new Id("www.b.com"),
         new HealthCheckResponse(new URL("https://www.b.com"), INTERNAL_SERVER_ERROR.value(),
         ofMillis(123), LocalDateTime.now()
     )));
@@ -79,5 +78,4 @@ public class HealthCheckResultsApiTest {
               ],
               "numUrls":2}"""));
   }
-
 }

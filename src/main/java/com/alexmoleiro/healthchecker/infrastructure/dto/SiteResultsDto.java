@@ -17,10 +17,10 @@ public class SiteResultsDto {
   public List<TimedSitedResultDto> getResponses() {
     return responses.stream()
         .map(
-            x ->
+            responses ->
                 new TimedSitedResultDto(
                     new TimedHealthCheckResponses(
-                        x.getId(), x.getLocalDateTime(), x.getHealthCheckResponse().getLast())))
+                        responses.getId(), responses.getHealthCheckResponse().getLast())))
         .collect(toList());
   }
 

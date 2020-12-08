@@ -40,7 +40,7 @@ public class HealthCheckerCrawler {
     while (domains.peek() != null) {
       final String polledDomain = domains.poll();
       final HealthCheckResponse response = healthChecker.check(new HealthCheckRequest(polledDomain));
-      healthCheckResultsRepository.add(new TimedHealthCheckResponses(new Id(polledDomain), now, response));
+      healthCheckResultsRepository.add(new TimedHealthCheckResponses(new Id(polledDomain), response));
       LOGGER.info(response.toString());
     }
   }

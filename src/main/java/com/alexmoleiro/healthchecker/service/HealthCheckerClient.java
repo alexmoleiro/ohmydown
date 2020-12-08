@@ -1,8 +1,8 @@
 package com.alexmoleiro.healthchecker.service;
 
-import com.alexmoleiro.healthchecker.core.HealthChecker;
 import com.alexmoleiro.healthchecker.core.HealthCheckRequest;
 import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
+import com.alexmoleiro.healthchecker.core.HealthChecker;
 import org.slf4j.Logger;
 
 import javax.net.ssl.SSLHandshakeException;
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 
 import static com.alexmoleiro.healthchecker.core.CheckResultCode.SERVER_TIMEOUT;
 import static com.alexmoleiro.healthchecker.core.CheckResultCode.SSL_CERTIFICATE_ERROR;
-import static com.alexmoleiro.healthchecker.core.UserAgent.MOZILLA;
+import static com.alexmoleiro.healthchecker.core.UserAgent.random;
 import static java.net.http.HttpRequest.newBuilder;
 import static java.net.http.HttpResponse.BodyHandlers.discarding;
 import static java.time.Duration.between;
@@ -68,7 +68,7 @@ public class HealthCheckerClient implements HealthChecker {
             newBuilder()
                 .GET()
                 .uri(URI.create(healthCheckRequest.getUrl().toString()))
-                .setHeader(USER_AGENT, MOZILLA.getValue())
+                .setHeader(USER_AGENT, random())
                 .timeout(timeout)
                 .build(),
             discarding());

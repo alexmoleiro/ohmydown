@@ -4,6 +4,8 @@ import com.alexmoleiro.healthchecker.core.HealthChecker;
 import com.alexmoleiro.healthchecker.core.HealthCheckResultsRepository;
 import com.alexmoleiro.healthchecker.core.HealthCheckRequest;
 import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
+import com.alexmoleiro.healthchecker.core.Id;
+import com.alexmoleiro.healthchecker.core.TimedHealthCheckResponse;
 import org.slf4j.Logger;
 
 import java.time.LocalDateTime;
@@ -36,8 +38,9 @@ public class HealthCheckerCrawler {
   private void getHealthStatus(ConcurrentLinkedDeque<String> domains, LocalDateTime now) {
 
     while (domains.peek() != null) {
-      final HealthCheckResponse response = healthChecker.check(new HealthCheckRequest(domains.poll()));
-      healthCheckResultsRepository.add(response);
+      final String polledDomain = domains.poll();
+      final HealthCheckResponse response = healthChecker.check(new HealthCheckRequest(polledDomain));
+      healthCheckResultsRepository.add(new TimedHealthCheckResponse(new Id(polledDomain), now, response));
       LOGGER.info(response.toString());
     }
   }

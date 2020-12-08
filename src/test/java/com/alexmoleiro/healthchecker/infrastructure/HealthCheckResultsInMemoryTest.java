@@ -1,15 +1,16 @@
 package com.alexmoleiro.healthchecker.infrastructure;
 
 import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
+import com.alexmoleiro.healthchecker.core.Id;
 import com.alexmoleiro.healthchecker.core.TimedHealthCheckResponse;
 import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
 
+import static java.time.Duration.ofMillis;
+import static java.time.LocalDateTime.now;
 import static java.util.List.of;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,9 +19,9 @@ class HealthCheckResultsInMemoryTest {
   @Test
   void returnHealthCheckResults() throws MalformedURLException {
     final HealthCheckResponse healthCheckResponse =
-        new HealthCheckResponse(new URL("https://www.a.com"), 200, Duration.ofMillis(123));
+        new HealthCheckResponse(new URL("https://www.a.com"), 200, ofMillis(123));
     final TimedHealthCheckResponse timedHealthCheckResponse =
-        new TimedHealthCheckResponse("id", LocalDateTime.now(), healthCheckResponse);
+        new TimedHealthCheckResponse(new Id("id"), now(), healthCheckResponse);
 
     final HealthCheckResultsInMemory healthCheckResultsInMemory = new HealthCheckResultsInMemory();
 
@@ -29,5 +30,30 @@ class HealthCheckResultsInMemoryTest {
     final List<HealthCheckResponse> siteResults = healthCheckResultsInMemory.getSiteResults();
 
     assertThat(siteResults).isEqualTo(of(healthCheckResponse));
+  }
+
+  @Test
+  void shouldReturnOnlyOneResults() throws MalformedURLException {
+    final String anid = "id";
+
+    final HealthCheckResponse healthCheckResponse =
+        new HealthCheckResponse(new URL("https://www.a.com"), 200, ofMillis(123));
+
+    final TimedHealthCheckResponse timedHealthCheckResponse =
+        new TimedHealthCheckResponse(new Id(anid), now(), healthCheckResponse);
+
+
+    final TimedHealthCheckResponse timedHealthCheckResponse2 =
+        new TimedHealthCheckResponse(new Id(anid), now(), healthCheckResponse);
+
+    final HealthCheckResultsInMemory healthCheckResultsInMemory = new HealthCheckResultsInMemory();
+
+    healthCheckResultsInMemory.add(timedHealthCheckResponse);
+    healthCheckResultsInMemory.add(timedHealthCheckResponse2);
+
+    final List<HealthCheckResponse> siteResults = healthCheckResultsInMemory.getSiteResults();
+
+    assertThat(siteResults.size()).isEqualTo(1);
+
   }
 }

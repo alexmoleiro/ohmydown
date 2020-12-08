@@ -5,11 +5,11 @@ import java.time.LocalDateTime;
 
 public class TimedHealthCheckResponse {
 
-  private final String id;
+  private final Id id;
   private final LocalDateTime localDateTime;
   private final HealthCheckResponse healthCheckResponse;
 
-  public TimedHealthCheckResponse(String id, LocalDateTime localDateTime, HealthCheckResponse healthCheckResponse) {
+  public TimedHealthCheckResponse(Id id, LocalDateTime localDateTime, HealthCheckResponse healthCheckResponse) {
     this.id = id;
     this.localDateTime = localDateTime;
     this.healthCheckResponse = healthCheckResponse;
@@ -19,7 +19,7 @@ public class TimedHealthCheckResponse {
     return localDateTime;
   }
 
-  public String getId() {
+  public Id getId() {
     return id;
   }
 

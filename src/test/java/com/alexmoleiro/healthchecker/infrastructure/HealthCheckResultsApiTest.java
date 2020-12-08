@@ -16,19 +16,42 @@ import static java.time.Duration.ofMillis;
 import static java.time.LocalDateTime.now;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class LandingApiTest {
+public class HealthCheckResultsApiTest {
 
   @Autowired
   MockMvc mockMvc;
 
   @Autowired
   HealthCheckResultsRepository repository;
+
+  @Test
+  void shouldReturnHistoricValues() throws Exception {
+    repository.add(new TimedHealthCheckResponses(
+        new Id("www.a.com"), now(),
+        new HealthCheckResponse(new URL("https://www.a.com"), OK.value(), ofMillis(444))));
+
+    repository.add(new TimedHealthCheckResponses(
+        new Id("www.a.com"), now(),
+        new HealthCheckResponse(new URL("https://www.a.com"), INTERNAL_SERVER_ERROR.value(), ofMillis(123)
+        )));
+
+    this.mockMvc.perform(get("/historic"))
+        .andExpect(status().isOk())
+        .andExpect(content().json("""
+              [
+              {"url":"https://www.a.com","delay":444,"status":200,"time":"20201201-125959"},
+              {"url":"https://www.a.com","delay":123,"status":500,"time":"20201201-135958"}
+              ]"""));
+
+    }
+
 
   @Test
   void shouldReturnLandingListSites() throws Exception {

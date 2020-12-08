@@ -18,7 +18,14 @@ public class HealthCheckResultsInMemory implements HealthCheckResultsRepository 
 
   @Override
   public void add(TimedHealthCheckResponses timedHealthCheckResponses) {
-    siteResults.put(timedHealthCheckResponses.getId(), timedHealthCheckResponses);
+    if (!siteResults.containsKey(timedHealthCheckResponses.getId())) {
+      siteResults.put(timedHealthCheckResponses.getId(), timedHealthCheckResponses);
+    } else {
+      final TimedHealthCheckResponses old = siteResults.get(timedHealthCheckResponses.getId());
+      old.getHealthCheckResponse()
+          .addLast(timedHealthCheckResponses.getHealthCheckResponse().getLast());
+      siteResults.put(timedHealthCheckResponses.getId(), old);
+    }
   }
 
   @Override
@@ -27,7 +34,7 @@ public class HealthCheckResultsInMemory implements HealthCheckResultsRepository 
   }
 
   @Override
-  public TimedHealthCheckResponses getResponse(Id id) {
+  public TimedHealthCheckResponses getResponses(Id id) {
     return siteResults.get(id);
   }
 }

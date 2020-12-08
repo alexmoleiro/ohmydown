@@ -6,5 +6,5 @@ public interface HealthCheckResultsRepository {
 
   void add(TimedHealthCheckResponses timedHealthCheckResponses);
   List<TimedHealthCheckResponses> getSiteResults();
-  TimedHealthCheckResponses getResponse(Id id);
+  TimedHealthCheckResponses getResponses(Id id);
 }

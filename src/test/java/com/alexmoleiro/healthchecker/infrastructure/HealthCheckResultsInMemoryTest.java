@@ -57,6 +57,7 @@ class HealthCheckResultsInMemoryTest {
     final List<TimedHealthCheckResponses> siteResults = healthCheckResultsInMemory.getSiteResults();
 
     assertThat(siteResults.size()).isEqualTo(1);
+    assertThat(siteResults.get(0).getHealthCheckResponse().size()).isEqualTo(2);
 
   }
 }

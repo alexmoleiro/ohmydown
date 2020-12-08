@@ -7,9 +7,11 @@ import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.List;
 import java.util.Random;
 
+import static java.time.Duration.ofMillis;
 import static java.util.List.of;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -32,7 +34,7 @@ class HealthCheckerCrawlerTest {
     final List<String> domains = of("www.a.com", "www.b.com", "www.c.com", "www.d.es", "www.e.com");
     final int nThreads = 5;
     final URL url = new URL("http://www.j.com");
-    final int delay = new Random().nextInt();
+    final Duration delay = ofMillis(new Random().nextInt());
 
     when(healthCheckerClient.check(any(HealthCheckRequest.class)))
         .thenReturn(new HealthCheckResponse(url, OK.value(), delay));

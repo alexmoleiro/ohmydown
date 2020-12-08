@@ -6,5 +6,4 @@ public interface HealthCheckResultsRepository {
 
   void add(HealthCheckResponse healthCheckResponse);
   List<HealthCheckResponse> getSiteResults();
-
 }

@@ -2,15 +2,16 @@ package com.alexmoleiro.healthchecker.core;
 
 
 import java.net.URL;
+import java.time.Duration;
 
 public class HealthCheckResponse {
 
   private final int statusCode;
   private URL url;
-  private long delay;
+  private Duration delay;
 
 
-  public HealthCheckResponse(URL url, int statusCode, long delay) {
+  public HealthCheckResponse(URL url, int statusCode, Duration delay) {
     this.url = url;
     this.delay = delay;
     this.statusCode = statusCode;
@@ -25,7 +26,7 @@ public class HealthCheckResponse {
   }
 
   public long getDelay() {
-    return delay;
+    return delay.toMillis();
   }
 
   @Override
@@ -33,7 +34,7 @@ public class HealthCheckResponse {
     return "{" +
         "url='" + url + '\'' +
         ", status=" + statusCode +
-        ", delay=" + delay +
+        ", delay=" + delay.toMillis() +
         '}';
   }
 }

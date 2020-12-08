@@ -20,6 +20,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpConnectTimeoutException;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.Random;
 import java.util.stream.Stream;
 
@@ -47,7 +48,7 @@ class HealthApiTest {
   @MockBean
   HttpClient httpClient;
 
-  public static final int DELAY = new Random().nextInt();
+  public static final Duration DELAY = Duration.ofMillis(new Random().nextInt());
 
   @ParameterizedTest
   @MethodSource("urls")
@@ -63,7 +64,7 @@ class HealthApiTest {
             {"url":"%s"}""".formatted(url))
         .post("http://localhost:%d/status".formatted(port))
         .then().assertThat().statusCode(200).body(equalTo("""
-        {"url":"%s","delay":%d,"status":%d}""".formatted(url, DELAY, serverStatusCode.value())));
+        {"url":"%s","delay":%d,"status":%d}""".formatted(url, DELAY.toMillis(), serverStatusCode.value())));
   }
 
   private static Stream<Arguments> urls() throws MalformedURLException {

@@ -56,7 +56,7 @@ public class HealthCheckerClient implements HealthChecker {
     }
 
     return new HealthCheckResponse(
-        healthCheckRequest.getUrl(), httpStatus, between(beforeRequest, now()).toMillis());
+        healthCheckRequest.getUrl(), httpStatus, between(beforeRequest, now()));
   }
 
   private HealthCheckResponse httpFetch(
@@ -73,6 +73,6 @@ public class HealthCheckerClient implements HealthChecker {
                 .build(),
             discarding());
     return new HealthCheckResponse(
-        send.uri().toURL(), send.statusCode(), between(beforeRequest, now()).toMillis());
+        send.uri().toURL(), send.statusCode(), between(beforeRequest, now()));
   }
 }

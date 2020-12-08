@@ -10,6 +10,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.net.URL;
 
+import static java.time.Duration.ofMillis;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,12 +25,15 @@ public class LandingApiTest {
   MockMvc mockMvc;
 
   @Autowired
-  HealthCheckResultsRepository healthCheckResultsRepository;
+  HealthCheckResultsRepository repository;
 
   @Test
   void shouldReturnLandingListSites() throws Exception {
-    healthCheckResultsRepository.add(new HealthCheckResponse(new URL("https://www.alexmoleiro.com"),200,200));
-    healthCheckResultsRepository.add(new HealthCheckResponse(new URL("https://www.yavendras.com"),500,123));
+    repository.add(new HealthCheckResponse(new URL("https://www.alexmoleiro.com"), OK.value(),
+        ofMillis(200)));
+    repository.add(new HealthCheckResponse(new URL("https://www.yavendras.com"), INTERNAL_SERVER_ERROR.value(),
+        ofMillis(123)
+    ));
 
       this.mockMvc.perform(post("/landing-list"))
           .andExpect(status().isOk())
@@ -38,4 +44,5 @@ public class LandingApiTest {
               ],
               "numUrls":2}"""));
   }
+
 }

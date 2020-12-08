@@ -1,4 +1,4 @@
-package com.alexmoleiro.healthchecker.infrastructure;
+package com.alexmoleiro.healthchecker.infrastructure.repositories;
 
 import com.alexmoleiro.healthchecker.core.HealthCheckResultsRepository;
 import com.alexmoleiro.healthchecker.core.Id;

@@ -1,6 +1,7 @@
-package com.alexmoleiro.healthchecker.infrastructure;
+package com.alexmoleiro.healthchecker.infrastructure.api;
 
 import com.alexmoleiro.healthchecker.core.HealthCheckResultsRepository;
+import com.alexmoleiro.healthchecker.infrastructure.dto.SiteResultsDto;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;

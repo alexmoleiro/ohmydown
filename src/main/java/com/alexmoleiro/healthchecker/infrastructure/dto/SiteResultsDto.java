@@ -1,4 +1,4 @@
-package com.alexmoleiro.healthchecker.infrastructure;
+package com.alexmoleiro.healthchecker.infrastructure.dto;
 
 import com.alexmoleiro.healthchecker.core.TimedHealthCheckResponse;
 

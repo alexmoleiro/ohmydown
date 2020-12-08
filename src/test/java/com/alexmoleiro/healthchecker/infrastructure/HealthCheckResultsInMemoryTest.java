@@ -3,6 +3,7 @@ package com.alexmoleiro.healthchecker.infrastructure;
 import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.Id;
 import com.alexmoleiro.healthchecker.core.TimedHealthCheckResponse;
+import com.alexmoleiro.healthchecker.infrastructure.repositories.HealthCheckResultsInMemory;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 

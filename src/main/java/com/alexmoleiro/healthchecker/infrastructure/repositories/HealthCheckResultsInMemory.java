@@ -32,9 +32,7 @@ public class HealthCheckResultsInMemory implements HealthCheckResultsRepository 
     if (!siteResults.containsKey(id)) {
       siteResults.put(id, new TimedHealthCheckResponses(id, response));
     } else {
-      final TimedHealthCheckResponses timedHealthCheckResponses = siteResults.get(id);
-      timedHealthCheckResponses.getHealthCheckResponse().addLast(response);
-      siteResults.put(id, timedHealthCheckResponses);
+      siteResults.get(id).addLast(response);
     }
   }
 }

@@ -24,7 +24,7 @@ public class HealthCheckResultsApi {
   @CrossOrigin(origins = "http://localhost:3000")
   @PostMapping(value = "/landing-list", produces = "application/json")
   SiteResultsDto webStatusResult() {
-    return new SiteResultsDto(healthCheckResultsRepository.getSiteResults());
+    return new SiteResultsDto(healthCheckResultsRepository.getTimedResults());
   }
 
   @CrossOrigin(origins = "http://localhost:3000")

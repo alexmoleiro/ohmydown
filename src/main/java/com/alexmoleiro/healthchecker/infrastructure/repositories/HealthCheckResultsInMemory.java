@@ -18,7 +18,7 @@ public class HealthCheckResultsInMemory implements HealthCheckResultsRepository 
   public HealthCheckResultsInMemory() {}
 
   @Override
-  public List<TimedHealthCheckResponses> getSiteResults() {
+  public List<TimedHealthCheckResponses> getTimedResults() {
     return siteResults.values().stream().collect(toList());
   }
 

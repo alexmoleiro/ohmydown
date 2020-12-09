@@ -34,7 +34,7 @@ class HealthCheckResultsInMemoryTest {
 
     healthCheckResultsInMemory.add(ID, healthCheckResponse);
 
-    final List<TimedHealthCheckResponses> siteResults = healthCheckResultsInMemory.getSiteResults();
+    final List<TimedHealthCheckResponses> siteResults = healthCheckResultsInMemory.getTimedResults();
 
     assertThat(siteResults).usingRecursiveComparison().isEqualTo(of(timedHealthCheckResponses));
   }
@@ -51,9 +51,9 @@ class HealthCheckResultsInMemoryTest {
     healthCheckResultsInMemory.add(ID, healthCheckResponse);
     healthCheckResultsInMemory.add(ID, healthCheckResponse);
 
-    final List<TimedHealthCheckResponses> siteResults = healthCheckResultsInMemory.getSiteResults();
+    final List<TimedHealthCheckResponses> timedResults = healthCheckResultsInMemory.getTimedResults();
 
-    assertThat(siteResults.size()).isEqualTo(1);
-    assertThat(siteResults.get(0).getHealthCheckResponse().size()).isEqualTo(3);
+    assertThat(timedResults.size()).isEqualTo(1);
+    assertThat(timedResults.get(0).getHealthCheckResponse().size()).isEqualTo(3);
   }
 }

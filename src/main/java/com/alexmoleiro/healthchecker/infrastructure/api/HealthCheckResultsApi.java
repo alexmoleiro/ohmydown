@@ -2,7 +2,6 @@ package com.alexmoleiro.healthchecker.infrastructure.api;
 
 import com.alexmoleiro.healthchecker.core.HealthCheckResultsRepository;
 import com.alexmoleiro.healthchecker.core.Id;
-import com.alexmoleiro.healthchecker.core.TimedHealthCheckResponses;
 import com.alexmoleiro.healthchecker.infrastructure.dto.HistoricResultsDto;
 import com.alexmoleiro.healthchecker.infrastructure.dto.SiteResultsDto;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -12,8 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 
 @RestController
 public class HealthCheckResultsApi {
@@ -33,13 +30,6 @@ public class HealthCheckResultsApi {
   @CrossOrigin(origins = "http://localhost:3000")
   @GetMapping(value = "/historical/{id}", produces = "application/json")
   List<HistoricResultsDto> historic(@PathVariable String id) {
-    final TimedHealthCheckResponses responses =
-        healthCheckResultsRepository.getResponses(new Id(id));
-    return responses.getHealthCheckResponse().stream()
-        .map(
-            response ->
-                new HistoricResultsDto(
-                    response.getUrl(), response.getDelay(), response.getStatus(), response.getTime()))
-        .collect(toList());
+    return new HistoricResultsDto(healthCheckResultsRepository.getResponses(new Id(id))).list();
   }
 }

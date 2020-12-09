@@ -1,11 +1,10 @@
 package com.alexmoleiro.healthchecker.service;
 
-import com.alexmoleiro.healthchecker.core.HealthChecker;
-import com.alexmoleiro.healthchecker.core.HealthCheckResultsRepository;
 import com.alexmoleiro.healthchecker.core.HealthCheckRequest;
 import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
+import com.alexmoleiro.healthchecker.core.HealthCheckResultsRepository;
+import com.alexmoleiro.healthchecker.core.HealthChecker;
 import com.alexmoleiro.healthchecker.core.Id;
-import com.alexmoleiro.healthchecker.core.TimedHealthCheckResponses;
 import org.slf4j.Logger;
 
 import java.time.LocalDateTime;
@@ -24,7 +23,10 @@ public class HealthCheckerCrawler {
   private final HealthCheckResultsRepository healthCheckResultsRepository;
   private final int nThreads;
 
-  public HealthCheckerCrawler(HealthChecker healthChecker, HealthCheckResultsRepository healthCheckResultsRepository, int nThreads) {
+  public HealthCheckerCrawler(
+      HealthChecker healthChecker,
+      HealthCheckResultsRepository healthCheckResultsRepository,
+      int nThreads) {
     this.healthChecker = healthChecker;
     this.healthCheckResultsRepository = healthCheckResultsRepository;
     this.nThreads = nThreads;
@@ -32,15 +34,17 @@ public class HealthCheckerCrawler {
 
   public void run(List<String> domains) {
     ConcurrentLinkedDeque<String> domainsQueue = new ConcurrentLinkedDeque<>(domains);
-    rangeClosed(1, nThreads).forEach(thread -> runAsync(() -> getHealthStatus(domainsQueue, now(systemUTC()))));
+    rangeClosed(1, nThreads)
+        .forEach(thread -> runAsync(() -> getHealthStatus(domainsQueue, now(systemUTC()))));
   }
 
   private void getHealthStatus(ConcurrentLinkedDeque<String> domains, LocalDateTime now) {
 
     while (domains.peek() != null) {
       final String polledDomain = domains.poll();
-      final HealthCheckResponse response = healthChecker.check(new HealthCheckRequest(polledDomain));
-      healthCheckResultsRepository.add(new TimedHealthCheckResponses(new Id(polledDomain), response));
+      final HealthCheckResponse response =
+          healthChecker.check(new HealthCheckRequest(polledDomain));
+      healthCheckResultsRepository.add(new Id(polledDomain), response);
       LOGGER.info(response.toString());
     }
   }

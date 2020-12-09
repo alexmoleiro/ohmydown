@@ -19,4 +19,8 @@ public class TimedHealthCheckResponses {
   public LinkedList<HealthCheckResponse> getHealthCheckResponse() {
     return healthCheckResponses;
   }
+
+  public void addLast(HealthCheckResponse response) {
+    healthCheckResponses.addLast(response);
+  }
 }

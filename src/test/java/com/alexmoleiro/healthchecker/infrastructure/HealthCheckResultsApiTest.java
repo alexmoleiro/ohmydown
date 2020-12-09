@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.net.URL;
 import java.time.LocalDateTime;
 
-import static java.time.Duration.ofMillis;
+import static java.time.LocalDateTime.now;
 import static java.time.LocalDateTime.of;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
@@ -40,17 +40,17 @@ public class HealthCheckResultsApiTest {
     final LocalDateTime second = of(2020, 12, 8, 23, 25);
 
     repository.add(
-        ID, new HealthCheckResponse(new URL(URL_STRING), OK.value(), ofMillis(444), first));
+        ID, new HealthCheckResponse(new URL(URL_STRING), OK.value(), first.minusHours(1), first));
 
     repository.add(
-        ID, new HealthCheckResponse(new URL(URL_STRING), INTERNAL_SERVER_ERROR.value(), ofMillis(123), second));
+        ID, new HealthCheckResponse(new URL(URL_STRING), INTERNAL_SERVER_ERROR.value(), second.minusHours(1), second));
 
     this.mockMvc.perform(get("/historical/www.a.com"))
         .andExpect(status().isOk())
         .andExpect(content().json("""
               [
-              {"url":"https://www.a.com","delay":444,"status":200,"time":"2020-12-08T23:20"},
-              {"url":"https://www.a.com","delay":123,"status":500,"time":"2020-12-08T23:25"}
+              {"url":"https://www.a.com","delay":3600000,"status":200,"time":"2020-12-08T23:20"},
+              {"url":"https://www.a.com","delay":3600000,"status":500,"time":"2020-12-08T23:25"}
               ]"""));
     }
 
@@ -58,18 +58,18 @@ public class HealthCheckResultsApiTest {
   void shouldReturnLandingListSites() throws Exception {
     repository.add(
         new Id("www.a.com"), new HealthCheckResponse(new URL("https://www.a.com"), OK.value(),
-        ofMillis(200), LocalDateTime.now()));
+        now().minusHours(1), LocalDateTime.now()));
     repository.add(new Id("www.b.com"),
         new HealthCheckResponse(new URL("https://www.b.com"), INTERNAL_SERVER_ERROR.value(),
-        ofMillis(123), LocalDateTime.now()
+        now().minusHours(1), LocalDateTime.now()
     ));
 
       this.mockMvc.perform(post("/landing-list"))
           .andExpect(status().isOk())
           .andExpect(content().json("""
               {"responses":[
-              {"url":"https://www.a.com","delay":200,"status":200,"id":"www.a.com"},
-              {"url":"https://www.b.com","delay":123,"status":500,"id":"www.b.com"}
+              {"url":"https://www.a.com","delay":3600000,"status":200,"id":"www.a.com"},
+              {"url":"https://www.b.com","delay":3600000,"status":500,"id":"www.b.com"}
               ],
               "numUrls":2}"""));
   }

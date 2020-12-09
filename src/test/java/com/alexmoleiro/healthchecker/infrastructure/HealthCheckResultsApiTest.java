@@ -25,6 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class HealthCheckResultsApiTest {
 
+  public static final Id ID = new Id("www.a.com");
+  public static final String URL_STRING = "https://www.a.com";
   @Autowired
   MockMvc mockMvc;
 
@@ -38,12 +40,12 @@ public class HealthCheckResultsApiTest {
     final LocalDateTime second = of(2020, 12, 8, 23, 25);
 
     repository.add(
-        new Id("www.a.com"),
-        new HealthCheckResponse(new URL("https://www.a.com"), OK.value(), ofMillis(444), first));
+        ID,
+        new HealthCheckResponse(new URL(URL_STRING), OK.value(), ofMillis(444), first));
 
     repository.add(
-        new Id("www.a.com"),
-        new HealthCheckResponse(new URL("https://www.a.com"), INTERNAL_SERVER_ERROR.value(), ofMillis(123),
+        ID,
+        new HealthCheckResponse(new URL(URL_STRING), INTERNAL_SERVER_ERROR.value(), ofMillis(123),
             second
         ));
 

@@ -21,14 +21,18 @@ class HealthCheckResultsInMemoryTest {
   @Test
   void returnHealthCheckResults() throws MalformedURLException {
     final HealthCheckResponse healthCheckResponse =
-        new HealthCheckResponse(new URL("https://www.a.com"), HttpStatus.OK.value(), ofMillis(123), LocalDateTime.now());
+        new HealthCheckResponse(
+            new URL("https://www.a.com"),
+            HttpStatus.OK.value(),
+            ofMillis(123),
+            LocalDateTime.now());
 
     final TimedHealthCheckResponses timedHealthCheckResponses =
         new TimedHealthCheckResponses(new Id("id"), healthCheckResponse);
 
     final HealthCheckResultsInMemory healthCheckResultsInMemory = new HealthCheckResultsInMemory();
 
-    healthCheckResultsInMemory.add(timedHealthCheckResponses);
+    healthCheckResultsInMemory.add(new Id("id"), healthCheckResponse);
 
     final List<TimedHealthCheckResponses> siteResults = healthCheckResultsInMemory.getSiteResults();
 
@@ -40,29 +44,18 @@ class HealthCheckResultsInMemoryTest {
     final String anid = "id";
 
     final HealthCheckResponse healthCheckResponse =
-        new HealthCheckResponse(new URL("https://www.a.com"), 200, ofMillis(123), LocalDateTime.now());
-
-    final TimedHealthCheckResponses timedHealthCheckResponses =
-        new TimedHealthCheckResponses(new Id(anid), healthCheckResponse);
-
-
-    final TimedHealthCheckResponses timedHealthCheckResponses2 =
-        new TimedHealthCheckResponses(new Id(anid), healthCheckResponse);
-
-
-    final TimedHealthCheckResponses timedHealthCheckResponses3 =
-        new TimedHealthCheckResponses(new Id(anid), healthCheckResponse);
+        new HealthCheckResponse(
+            new URL("https://www.a.com"), 200, ofMillis(123), LocalDateTime.now());
 
     final HealthCheckResultsInMemory healthCheckResultsInMemory = new HealthCheckResultsInMemory();
 
-    healthCheckResultsInMemory.add(timedHealthCheckResponses);
-    healthCheckResultsInMemory.add(timedHealthCheckResponses2);
-    healthCheckResultsInMemory.add(timedHealthCheckResponses3);
+    healthCheckResultsInMemory.add(new Id(anid), healthCheckResponse);
+    healthCheckResultsInMemory.add(new Id(anid), healthCheckResponse);
+    healthCheckResultsInMemory.add(new Id(anid), healthCheckResponse);
 
     final List<TimedHealthCheckResponses> siteResults = healthCheckResultsInMemory.getSiteResults();
 
     assertThat(siteResults.size()).isEqualTo(1);
     assertThat(siteResults.get(0).getHealthCheckResponse().size()).isEqualTo(3);
-
   }
 }

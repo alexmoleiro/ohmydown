@@ -3,7 +3,7 @@ package com.alexmoleiro.healthchecker.service;
 import com.alexmoleiro.healthchecker.core.HealthCheckRequest;
 import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.HealthCheckResultsRepository;
-import com.alexmoleiro.healthchecker.core.TimedHealthCheckResponses;
+import com.alexmoleiro.healthchecker.core.Id;
 import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
@@ -53,7 +53,7 @@ class HealthCheckerCrawlerTest {
                       argThat(request -> request.getUrl().toString().equals("http://" + domain)));
 
               verify(healthCheckResultsRepository, timeout(TIMEOUT).atLeast(nThreads))
-                  .add(any(TimedHealthCheckResponses.class));
+                  .add(any(Id.class),any(HealthCheckResponse.class));
             });
   }
 }

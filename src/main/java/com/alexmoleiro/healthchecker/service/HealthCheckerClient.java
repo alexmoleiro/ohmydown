@@ -3,7 +3,6 @@ package com.alexmoleiro.healthchecker.service;
 import com.alexmoleiro.healthchecker.core.HealthCheckRequest;
 import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.HealthChecker;
-import org.slf4j.Logger;
 
 import javax.net.ssl.SSLHandshakeException;
 import java.io.IOException;
@@ -20,9 +19,8 @@ import static com.alexmoleiro.healthchecker.core.CheckResultCode.SSL_CERTIFICATE
 import static com.alexmoleiro.healthchecker.core.UserAgent.random;
 import static java.net.http.HttpRequest.newBuilder;
 import static java.net.http.HttpResponse.BodyHandlers.discarding;
-import static java.time.Duration.between;
+import static java.time.Clock.systemUTC;
 import static java.time.LocalDateTime.now;
-import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.HttpHeaders.USER_AGENT;
 import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 
@@ -30,7 +28,6 @@ public class HealthCheckerClient implements HealthChecker {
 
   private final HttpClient client;
   private final Duration timeout;
-  private static Logger LOGGER = getLogger(HealthCheckerClient.class);
 
   public HealthCheckerClient(HttpClient client, Duration timeout) {
     this.client = client;
@@ -40,9 +37,9 @@ public class HealthCheckerClient implements HealthChecker {
   @Override
   public HealthCheckResponse check(HealthCheckRequest healthCheckRequest) {
     int httpStatus;
-    final LocalDateTime beforeRequest = now();
+    final LocalDateTime before = nowUtc();
     try {
-      return httpFetch(healthCheckRequest, beforeRequest);
+      return httpFetch(healthCheckRequest, before);
     } catch (HttpTimeoutException e) {
       httpStatus = SERVER_TIMEOUT.value();
     } catch (ConnectException e) {
@@ -55,8 +52,7 @@ public class HealthCheckerClient implements HealthChecker {
       httpStatus = SERVICE_UNAVAILABLE.value();
     }
 
-    return new HealthCheckResponse(
-        healthCheckRequest.getUrl(), httpStatus, between(beforeRequest, now()), now());
+    return new HealthCheckResponse(healthCheckRequest.getUrl(), httpStatus, before, nowUtc());
   }
 
   private HealthCheckResponse httpFetch(
@@ -72,7 +68,10 @@ public class HealthCheckerClient implements HealthChecker {
                 .timeout(timeout)
                 .build(),
             discarding());
-    return new HealthCheckResponse(
-        send.uri().toURL(), send.statusCode(), between(beforeRequest, now()), now());
+    return new HealthCheckResponse(send.uri().toURL(), send.statusCode(), beforeRequest, nowUtc());
+  }
+
+  private LocalDateTime nowUtc() {
+    return now(systemUTC());
   }
 }

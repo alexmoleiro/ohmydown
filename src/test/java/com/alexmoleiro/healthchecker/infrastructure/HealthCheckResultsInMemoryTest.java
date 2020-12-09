@@ -10,7 +10,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import static java.time.Duration.ofMillis;
 import static java.time.LocalDateTime.now;
 import static java.util.List.of;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,7 +24,7 @@ class HealthCheckResultsInMemoryTest {
   @Test
   void returnHealthCheckResults() throws MalformedURLException {
     final HealthCheckResponse healthCheckResponse =
-        new HealthCheckResponse(new URL(A_URL), OK.value(), ofMillis(MILLIS), now());
+        new HealthCheckResponse(new URL(A_URL), OK.value(), now(), now());
 
     final TimedHealthCheckResponses timedHealthCheckResponses =
         new TimedHealthCheckResponses(ID, healthCheckResponse);
@@ -43,7 +42,7 @@ class HealthCheckResultsInMemoryTest {
   void shouldReturnOnlyOneResults() throws MalformedURLException {
 
     final HealthCheckResponse healthCheckResponse =
-        new HealthCheckResponse(new URL(A_URL), OK.value(), ofMillis(MILLIS), now());
+        new HealthCheckResponse(new URL(A_URL), OK.value(), now(), now());
 
     final HealthCheckResultsInMemory healthCheckResultsInMemory = new HealthCheckResultsInMemory();
 

@@ -1,6 +1,5 @@
 package com.alexmoleiro.healthchecker.core;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.net.URL;
@@ -10,17 +9,15 @@ import java.time.LocalDateTime;
 public class HealthCheckResponse {
 
   private final int statusCode;
-  @JsonIgnore
-  private final LocalDateTime time;
+  @JsonIgnore private final LocalDateTime time;
   private URL url;
   private Duration delay;
 
-
-  public HealthCheckResponse(URL url, int statusCode, Duration delay, LocalDateTime time) {
+  public HealthCheckResponse(URL url, int statusCode, LocalDateTime before, LocalDateTime now) {
     this.url = url;
-    this.delay = delay;
+    this.delay = Duration.between(before, now);
     this.statusCode = statusCode;
-    this.time = time;
+    this.time = now;
   }
 
   public int getStatus() {

@@ -40,14 +40,10 @@ public class HealthCheckResultsApiTest {
     final LocalDateTime second = of(2020, 12, 8, 23, 25);
 
     repository.add(
-        ID,
-        new HealthCheckResponse(new URL(URL_STRING), OK.value(), ofMillis(444), first));
+        ID, new HealthCheckResponse(new URL(URL_STRING), OK.value(), ofMillis(444), first));
 
     repository.add(
-        ID,
-        new HealthCheckResponse(new URL(URL_STRING), INTERNAL_SERVER_ERROR.value(), ofMillis(123),
-            second
-        ));
+        ID, new HealthCheckResponse(new URL(URL_STRING), INTERNAL_SERVER_ERROR.value(), ofMillis(123), second));
 
     this.mockMvc.perform(get("/historical/www.a.com"))
         .andExpect(status().isOk())

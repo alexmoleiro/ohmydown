@@ -2,23 +2,29 @@ package com.alexmoleiro.healthchecker.infrastructure.repositories;
 
 import com.alexmoleiro.healthchecker.core.DomainsRepository;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
-import static java.util.Arrays.stream;
+import static java.nio.file.Files.lines;
+import static java.nio.file.Path.of;
 import static java.util.stream.Collectors.toList;
-import static org.jsoup.Jsoup.connect;
+import static org.springframework.util.ResourceUtils.getFile;
 
 public class DomainsRemote implements DomainsRepository {
 
-  public static final String URL =
-      "https://raw.githubusercontent.com/alexmoleiro/sitechecker/master/sites/domains-english.md";
+
+  public static final String DOMAINS_FILE = "classpath:sites/domains-english.md";
 
   @Override
   public List<String> getDomains() {
     List<String> list = null;
+
     try {
-      list = stream(connect(URL).get().body().html().split(" ")).sequential().collect(toList());
+      list = lines(of(getFile(DOMAINS_FILE).getAbsolutePath())).collect(toList());
+
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
     } catch (IOException e) {
       e.printStackTrace();
     }

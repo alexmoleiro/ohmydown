@@ -5,6 +5,7 @@ import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.HealthCheckRequest;
 import com.alexmoleiro.healthchecker.core.WebStatusRequestException;
 import com.alexmoleiro.healthchecker.infrastructure.dto.WebStatusRequestDto;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;

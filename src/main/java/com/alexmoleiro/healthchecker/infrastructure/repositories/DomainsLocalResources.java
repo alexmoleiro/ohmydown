@@ -11,8 +11,7 @@ import static java.nio.file.Path.of;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.util.ResourceUtils.getFile;
 
-public class DomainsRemote implements DomainsRepository {
-
+public class DomainsLocalResources implements DomainsRepository {
 
   public static final String DOMAINS_FILE = "classpath:sites/domains-english.md";
 

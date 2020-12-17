@@ -4,7 +4,7 @@ import com.alexmoleiro.healthchecker.core.DomainsRepository;
 import com.alexmoleiro.healthchecker.core.HealthChecker;
 import com.alexmoleiro.healthchecker.core.HealthCheckResultsRepository;
 import com.alexmoleiro.healthchecker.infrastructure.repositories.DomainsLocal;
-import com.alexmoleiro.healthchecker.infrastructure.repositories.DomainsRemote;
+import com.alexmoleiro.healthchecker.infrastructure.repositories.DomainsLocalResources;
 import com.alexmoleiro.healthchecker.infrastructure.repositories.HealthCheckResultsInMemory;
 import com.alexmoleiro.healthchecker.service.HealthCheckerClient;
 import com.alexmoleiro.healthchecker.service.HealthCheckerCrawler;
@@ -44,7 +44,7 @@ public class InfrastuctureConfiguration {
   @Bean
   @Profile("!test")
   DomainsRepository getDomains() {
-    return new DomainsRemote();
+    return new DomainsLocalResources();
   }
 
   @Bean

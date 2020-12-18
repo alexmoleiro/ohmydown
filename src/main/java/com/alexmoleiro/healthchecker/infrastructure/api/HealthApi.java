@@ -1,9 +1,9 @@
 package com.alexmoleiro.healthchecker.infrastructure.api;
 
-import com.alexmoleiro.healthchecker.core.HealthCheckRequest;
-import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
-import com.alexmoleiro.healthchecker.core.HealthChecker;
-import com.alexmoleiro.healthchecker.core.WebStatusRequestException;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRequest;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthChecker;
+import com.alexmoleiro.healthchecker.core.healthCheck.WebStatusRequestException;
 import com.alexmoleiro.healthchecker.infrastructure.dto.WebStatusRequestDto;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;

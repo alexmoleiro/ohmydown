@@ -2,7 +2,7 @@ package com.alexmoleiro.healthchecker.core;
 
 import org.junit.jupiter.api.Test;
 
-import static com.alexmoleiro.healthchecker.core.UserAgent.random;
+import static com.alexmoleiro.healthchecker.core.healthCheck.UserAgent.random;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class UserAgentTest {

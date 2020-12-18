@@ -1,7 +1,7 @@
 package com.alexmoleiro.healthchecker.infrastructure.dto;
 
-import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
-import com.alexmoleiro.healthchecker.core.TimedHealthCheckResponses;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
+import com.alexmoleiro.healthchecker.core.healthCheck.TimedHealthCheckResponses;
 
 public class TimedSitedResultDto {
   private final TimedHealthCheckResponses timedHealthCheckResponses;

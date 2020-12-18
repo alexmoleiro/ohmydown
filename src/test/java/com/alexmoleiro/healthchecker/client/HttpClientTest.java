@@ -1,6 +1,6 @@
 package com.alexmoleiro.healthchecker.client;
 
-import com.alexmoleiro.healthchecker.core.HealthCheckRequest;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRequest;
 import com.alexmoleiro.healthchecker.service.HealthCheckerClient;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,9 +1,9 @@
 package com.alexmoleiro.healthchecker.infrastructure.repositories;
 
-import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
-import com.alexmoleiro.healthchecker.core.HealthCheckResultsRepository;
-import com.alexmoleiro.healthchecker.core.Id;
-import com.alexmoleiro.healthchecker.core.TimedHealthCheckResponses;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResultsRepository;
+import com.alexmoleiro.healthchecker.core.healthCheck.Id;
+import com.alexmoleiro.healthchecker.core.healthCheck.TimedHealthCheckResponses;
 
 import java.util.HashMap;
 import java.util.List;

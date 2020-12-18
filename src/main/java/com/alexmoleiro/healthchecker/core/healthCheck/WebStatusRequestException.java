@@ -1,4 +1,4 @@
-package com.alexmoleiro.healthchecker.core;
+package com.alexmoleiro.healthchecker.core.healthCheck;
 
 public class WebStatusRequestException extends RuntimeException {
   private final String url;

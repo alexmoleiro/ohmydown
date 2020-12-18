@@ -1,8 +1,8 @@
 package com.alexmoleiro.healthchecker.infrastructure.api;
 
-import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
-import com.alexmoleiro.healthchecker.core.HealthCheckResultsRepository;
-import com.alexmoleiro.healthchecker.core.Id;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResultsRepository;
+import com.alexmoleiro.healthchecker.core.healthCheck.Id;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

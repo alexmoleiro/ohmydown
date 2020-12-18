@@ -1,8 +1,8 @@
 package com.alexmoleiro.healthchecker.infrastructure;
 
-import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
-import com.alexmoleiro.healthchecker.core.Id;
-import com.alexmoleiro.healthchecker.core.TimedHealthCheckResponses;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
+import com.alexmoleiro.healthchecker.core.healthCheck.Id;
+import com.alexmoleiro.healthchecker.core.healthCheck.TimedHealthCheckResponses;
 import com.alexmoleiro.healthchecker.infrastructure.repositories.HealthCheckResultsInMemory;
 import org.junit.jupiter.api.Test;
 

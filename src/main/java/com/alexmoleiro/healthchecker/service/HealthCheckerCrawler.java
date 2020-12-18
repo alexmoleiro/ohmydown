@@ -1,10 +1,10 @@
 package com.alexmoleiro.healthchecker.service;
 
-import com.alexmoleiro.healthchecker.core.HealthCheckRequest;
-import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
-import com.alexmoleiro.healthchecker.core.HealthCheckResultsRepository;
-import com.alexmoleiro.healthchecker.core.HealthChecker;
-import com.alexmoleiro.healthchecker.core.Id;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRequest;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResultsRepository;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthChecker;
+import com.alexmoleiro.healthchecker.core.healthCheck.Id;
 import org.slf4j.Logger;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.alexmoleiro.healthchecker.service;
 
-import com.alexmoleiro.healthchecker.core.DomainsRepository;
+import com.alexmoleiro.healthchecker.core.healthCheck.DomainsRepository;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;

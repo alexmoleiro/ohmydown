@@ -1,58 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
-    </script>
-    <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer>
-    </script>
-    <script>
-        function start() {
-            gapi.load('auth2', function() {
-                auth2 = gapi.auth2.init({
-                    client_id: '471923655035-cmkp5lvq2g3fb82t0gibr2ai10l75guo.apps.googleusercontent.com',
-                    // Scopes to request in addition to 'profile' and 'email'
-                    //scope: 'additional_scope'
-                });
-            });
-        }
-    </script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" content="471923655035-cmkp5lvq2g3fb82t0gibr2ai10l75guo.apps.googleusercontent.com">
 </head>
 <body>
-<h1>Google</h1>
-<button id="signinButton">Sign in with Google</button>
+<div class="g-signin2" data-onsuccess="onSignIn"></div>
 <script>
-    $('#signinButton').click(function() {
-        // signInCallback defined in step 6.
-        auth2.grantOfflineAccess().then(signInCallback);
-    });
+    function onSignIn(googleUser) {
+        var profileUser = googleUser.getBasicProfile();
+        console.log(googleUser.getAuthResponse().id_token)
+        console.log('ID: ' + profileUser.getId()); // Do not send to your backend! Use an ID token instead.
+        console.log('Name: ' + profileUser.getName());
+        console.log('Image URL: ' + profileUser.getImageUrl());
+        console.log('Emailaaa: ' + profileUser.getEmail()); // This is null if the 'email' scope is not present.
+    }
 </script>
+<a href="#" onclick="signOut();">Sign out</a>
 <script>
-    function signInCallback(authResult) {
-        console.log(authResult);
-        if (authResult['code']) {
-
-            // Hide the sign-in button now that the user is authorized, for example:
-            $('#signinButton').attr('style', 'display: none');
-
-            // Send the code to the server
-            $.ajax({
-                type: 'POST',
-                url: 'http://localhost:8080/storeauthcode',
-                // Always include an `X-Requested-With` header in every AJAX request,
-                // to protect against CSRF attacks.
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                contentType: 'application/octet-stream; charset=utf-8',
-                success: function(result) {
-                    // Handle or verify the server response.
-                },
-                processData: false,
-                data: authResult['code']
-            });
-        } else {
-            // There was an error.
-        }
+    function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+            console.log('User signed out.');
+        });
     }
 </script>
 </body>

@@ -1,4 +1,4 @@
-glovo.com
+https://www.joindrover.com/
 amazon.com
 sport.it
 gavalian.com

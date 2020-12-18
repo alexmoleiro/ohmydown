@@ -1,4 +1,4 @@
-package com.alexmoleiro.healthchecker.infrastructure;
+package com.alexmoleiro.healthchecker.infrastructure.api;
 
 
 import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
@@ -20,9 +20,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpConnectTimeoutException;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Random;
 import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
@@ -49,8 +47,6 @@ class HealthApiTest {
 
   @MockBean
   HttpClient httpClient;
-
-  public static final Duration DELAY = Duration.ofMillis(new Random().nextInt());
 
   @ParameterizedTest
   @MethodSource("urls")

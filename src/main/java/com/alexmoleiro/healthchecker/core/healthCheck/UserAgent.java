@@ -1,4 +1,4 @@
-package com.alexmoleiro.healthchecker.core;
+package com.alexmoleiro.healthchecker.core.healthCheck;
 
 import java.util.Random;
 

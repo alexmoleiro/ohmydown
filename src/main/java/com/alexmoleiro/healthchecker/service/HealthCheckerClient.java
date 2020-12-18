@@ -1,8 +1,8 @@
 package com.alexmoleiro.healthchecker.service;
 
-import com.alexmoleiro.healthchecker.core.HealthCheckRequest;
-import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
-import com.alexmoleiro.healthchecker.core.HealthChecker;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRequest;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthChecker;
 
 import javax.net.ssl.SSLHandshakeException;
 import java.io.IOException;
@@ -14,9 +14,9 @@ import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import static com.alexmoleiro.healthchecker.core.CheckResultCode.SERVER_TIMEOUT;
-import static com.alexmoleiro.healthchecker.core.CheckResultCode.SSL_CERTIFICATE_ERROR;
-import static com.alexmoleiro.healthchecker.core.UserAgent.random;
+import static com.alexmoleiro.healthchecker.core.healthCheck.CheckResultCode.SERVER_TIMEOUT;
+import static com.alexmoleiro.healthchecker.core.healthCheck.CheckResultCode.SSL_CERTIFICATE_ERROR;
+import static com.alexmoleiro.healthchecker.core.healthCheck.UserAgent.random;
 import static java.net.http.HttpRequest.newBuilder;
 import static java.net.http.HttpResponse.BodyHandlers.discarding;
 import static java.time.Clock.systemUTC;

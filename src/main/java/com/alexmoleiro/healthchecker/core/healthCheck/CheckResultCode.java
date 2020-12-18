@@ -1,4 +1,4 @@
-package com.alexmoleiro.healthchecker.core;
+package com.alexmoleiro.healthchecker.core.healthCheck;
 
 public enum CheckResultCode {
   SSL_CERTIFICATE_ERROR(495),

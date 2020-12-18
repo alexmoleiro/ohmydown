@@ -1,6 +1,7 @@
 package com.alexmoleiro.healthchecker.infrastructure.aaa;
 
-import com.alexmoleiro.healthchecker.core.ProfileUser;
+import com.alexmoleiro.healthchecker.core.profile.ProfileUser;
+import com.alexmoleiro.healthchecker.core.profile.User;
 import com.alexmoleiro.healthchecker.infrastructure.api.InvalidTokenException;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
@@ -11,10 +12,29 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 import static java.util.Collections.singletonList;
+/**
+    "at_hash" -> ""
+    "aud" -> "-cmkp5lvq2g3fb82t0gibr2ai10l75guo.apps.googleusercontent.com"
+    "azp" -> "-cmkp5lvq2g3fb82t0gibr2ai10l75guo.apps.googleusercontent.com"
+    "email" -> "alejandro@dominio.com"
+    "email_verified" -> {Boolean@7597} true
+    "exp" -> {Long@7599} 1608298282
+    "hd" -> "hola.com"
+    "iat" -> {Long@7603}
+    "iss" -> "accounts.google.com"
+    "jti" -> ""
+    "sub" -> "1002162"
+    "name" -> "Alejandro  "
+    "picture" -> "https://lh3.googleusercontent.com/a-/AOh14GhM0XSn0iJKH2BqhAJNlfHfC2Yp7KUrlazrEkGa=s96-c"
+    "given_name" -> "Nombre"
+    "family_name" -> "Apellido"
+    "locale" -> "en-GB"
+*/
 
 public class ProfileUserGoogle implements ProfileUser {
 
   GoogleIdTokenVerifier verifier;
+
 
   public ProfileUserGoogle(String googleid) {
     verifier =
@@ -24,15 +44,16 @@ public class ProfileUserGoogle implements ProfileUser {
   }
 
   @Override
-  public String getName(String token) {
+  public User getUser(String token) {
     GoogleIdToken googleIdToken;
-    String given_name;
     try {
       googleIdToken = verifier.verify(token);
-      given_name = (String) googleIdToken.getPayload().get("given_name");
     } catch (IllegalArgumentException | GeneralSecurityException | IOException e) {
       throw new InvalidTokenException();
     }
-    return given_name;
+    return new User(
+        (String) googleIdToken.getPayload().get("sub"),
+        (String) googleIdToken.getPayload().get("email")
+    );
   }
 }

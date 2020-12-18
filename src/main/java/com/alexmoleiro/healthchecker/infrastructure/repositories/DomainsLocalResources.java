@@ -1,6 +1,6 @@
 package com.alexmoleiro.healthchecker.infrastructure.repositories;
 
-import com.alexmoleiro.healthchecker.core.DomainsRepository;
+import com.alexmoleiro.healthchecker.core.healthCheck.DomainsRepository;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

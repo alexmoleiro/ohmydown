@@ -1,7 +1,7 @@
 package com.alexmoleiro.healthchecker.service;
 
-import com.alexmoleiro.healthchecker.core.HealthCheckRequest;
-import com.alexmoleiro.healthchecker.core.HealthCheckResponse;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRequest;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -23,8 +23,8 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Stream;
 
-import static com.alexmoleiro.healthchecker.core.CheckResultCode.SERVER_TIMEOUT;
-import static com.alexmoleiro.healthchecker.core.CheckResultCode.SSL_CERTIFICATE_ERROR;
+import static com.alexmoleiro.healthchecker.core.healthCheck.CheckResultCode.SERVER_TIMEOUT;
+import static com.alexmoleiro.healthchecker.core.healthCheck.CheckResultCode.SSL_CERTIFICATE_ERROR;
 import static java.time.Duration.ofSeconds;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.of;

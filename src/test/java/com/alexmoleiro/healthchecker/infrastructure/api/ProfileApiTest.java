@@ -1,6 +1,7 @@
 package com.alexmoleiro.healthchecker.infrastructure.api;
 
-import com.alexmoleiro.healthchecker.core.ProfileUser;
+import com.alexmoleiro.healthchecker.core.profile.ProfileUser;
+import com.alexmoleiro.healthchecker.core.profile.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class ProfileUserTest {
+class ProfileApiTest {
 
   @Autowired
   MockMvc mockMvc;
@@ -26,14 +27,15 @@ class ProfileUserTest {
   @Test
   void shouldResolveToken() throws Exception {
 
-    final String aName = "Alejandro";
+    final String anId = "id";
+    final String anEmail = "alex@email.com";
     final String aToken = "anything";
-    when(profileUser.getName(aToken)).thenReturn(aName);
+    when(profileUser.getUser(aToken)).thenReturn(new User(anId, anEmail));
 
     this.mockMvc.perform(get("/profile").header("token", aToken))
         .andExpect(status().isOk())
         .andExpect(content().json("""              
-              {"name":"%s"}
-              """.formatted(aName)));
+              {"id":"%s","email":"%s"}
+              """.formatted(anId, anEmail)));
   }
 }

@@ -18,7 +18,7 @@ public class ProfileApi {
 
   @CrossOrigin(origins = "http://localhost:3000")
   @GetMapping(value = "/profile", produces = "application/json")
-  public User webStatusResult(@RequestHeader("token") String token) {
+  public User webStatusResult(@RequestHeader("Token") String token) {
     return profileUser.getUser(token);
   }
 }

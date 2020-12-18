@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.alexmoleiro'
-version = '0.23'
+version = '0.25'
 sourceCompatibility = '15'
 
 repositories {
@@ -17,6 +17,7 @@ dependencies {
 	compile group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.5.0'
 	compile group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version: '2.4.1'
 	compile group: 'com.google.api-client', name: 'google-api-client', version: '1.31.1'
+	compile group: 'org.jsoup', name: 'jsoup', version: '1.13.1'
 
 
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {

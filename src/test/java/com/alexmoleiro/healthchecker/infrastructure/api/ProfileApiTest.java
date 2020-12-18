@@ -32,7 +32,7 @@ class ProfileApiTest {
     final String aToken = "anything";
     when(profileUser.getUser(aToken)).thenReturn(new User(anId, anEmail));
 
-    this.mockMvc.perform(get("/profile").header("token", aToken))
+    this.mockMvc.perform(get("/profile").header("Token", aToken))
         .andExpect(status().isOk())
         .andExpect(content().json("""              
               {"id":"%s","email":"%s"}

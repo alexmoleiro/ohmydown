@@ -1,9 +1,9 @@
 package com.alexmoleiro.healthchecker.infrastructure.repositories;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponses;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResultsRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.Id;
-import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponses;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,8 +18,13 @@ public class HealthCheckResultsInMemory implements HealthCheckResultsRepository 
   public HealthCheckResultsInMemory() {}
 
   @Override
-  public List<HealthCheckResponses> getTimedResults() {
+  public List<HealthCheckResponses> getResponses() {
     return siteResults.values().stream().collect(toList());
+  }
+
+  @Override
+  public List<HealthCheckResponses> getResponses(List<Id> ids) {
+    return  ids.stream().map(id -> getResponses(id)).collect(toList());
   }
 
   @Override

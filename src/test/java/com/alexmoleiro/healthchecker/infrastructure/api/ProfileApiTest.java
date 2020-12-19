@@ -1,6 +1,6 @@
 package com.alexmoleiro.healthchecker.infrastructure.api;
 
-import com.alexmoleiro.healthchecker.core.profile.ProfileUser;
+import com.alexmoleiro.healthchecker.core.profile.OauthService;
 import com.alexmoleiro.healthchecker.core.profile.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ class ProfileApiTest {
   MockMvc mockMvc;
 
   @MockBean
-  ProfileUser profileUser;
+  OauthService oauthService;
 
   @Test
   void shouldResolveToken() throws Exception {
@@ -30,7 +30,7 @@ class ProfileApiTest {
     final String anId = "id";
     final String anEmail = "alex@email.com";
     final String aToken = "anything";
-    when(profileUser.getUser(aToken)).thenReturn(new User(anId, anEmail));
+    when(oauthService.getUser(aToken)).thenReturn(new User(anId, anEmail));
 
     this.mockMvc.perform(get("/profile").header("Token", aToken))
         .andExpect(status().isOk())

@@ -1,6 +1,6 @@
 package com.alexmoleiro.healthchecker.infrastructure.aaa;
 
-import com.alexmoleiro.healthchecker.core.profile.ProfileUser;
+import com.alexmoleiro.healthchecker.core.profile.OauthService;
 import com.alexmoleiro.healthchecker.core.profile.User;
 import com.alexmoleiro.healthchecker.infrastructure.api.InvalidTokenException;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
@@ -31,12 +31,12 @@ import static java.util.Collections.singletonList;
     "locale" -> "en-GB"
 */
 
-public class ProfileUserGoogle implements ProfileUser {
+public class OauthServiceGoogle implements OauthService {
 
   GoogleIdTokenVerifier verifier;
 
 
-  public ProfileUserGoogle(String googleid) {
+  public OauthServiceGoogle(String googleid) {
     verifier =
         new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new JacksonFactory())
             .setAudience(singletonList(googleid))

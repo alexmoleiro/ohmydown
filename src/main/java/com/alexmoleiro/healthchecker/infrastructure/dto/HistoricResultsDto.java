@@ -1,6 +1,6 @@
 package com.alexmoleiro.healthchecker.infrastructure.dto;
 
-import com.alexmoleiro.healthchecker.core.healthCheck.TimedHealthCheckResponses;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponses;
 
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -10,13 +10,13 @@ import static java.util.stream.Collectors.toList;
 
 public class HistoricResultsDto {
 
-  private TimedHealthCheckResponses responses;
+  private HealthCheckResponses responses;
   private URL url;
   private long delay;
   private long status;
   private LocalDateTime time;
 
-  public HistoricResultsDto(TimedHealthCheckResponses responses) {
+  public HistoricResultsDto(HealthCheckResponses responses) {
     this.responses = responses;
   }
 

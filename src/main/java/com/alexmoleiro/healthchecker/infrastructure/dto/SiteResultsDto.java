@@ -1,6 +1,6 @@
 package com.alexmoleiro.healthchecker.infrastructure.dto;
 
-import com.alexmoleiro.healthchecker.core.healthCheck.TimedHealthCheckResponses;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponses;
 
 import java.util.List;
 
@@ -8,9 +8,9 @@ import static java.util.stream.Collectors.toList;
 
 public class SiteResultsDto {
 
-  List<TimedHealthCheckResponses> responses;
+  List<HealthCheckResponses> responses;
 
-  public SiteResultsDto(List<TimedHealthCheckResponses> responses) {
+  public SiteResultsDto(List<HealthCheckResponses> responses) {
     this.responses = responses;
   }
 
@@ -19,7 +19,7 @@ public class SiteResultsDto {
         .map(
             responses ->
                 new TimedSitedResultDto(
-                    new TimedHealthCheckResponses(
+                    new HealthCheckResponses(
                         responses.getId(), responses.getHealthCheckResponse().getLast())))
         .collect(toList());
   }

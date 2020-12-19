@@ -2,7 +2,7 @@ package com.alexmoleiro.healthchecker.infrastructure;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.healthCheck.Id;
-import com.alexmoleiro.healthchecker.core.healthCheck.TimedHealthCheckResponses;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponses;
 import com.alexmoleiro.healthchecker.infrastructure.repositories.HealthCheckResultsInMemory;
 import org.junit.jupiter.api.Test;
 
@@ -26,16 +26,16 @@ class HealthCheckResultsInMemoryTest {
     final HealthCheckResponse healthCheckResponse =
         new HealthCheckResponse(new URL(A_URL), OK.value(), now(), now());
 
-    final TimedHealthCheckResponses timedHealthCheckResponses =
-        new TimedHealthCheckResponses(ID, healthCheckResponse);
+    final HealthCheckResponses healthCheckResponses =
+        new HealthCheckResponses(ID, healthCheckResponse);
 
     final HealthCheckResultsInMemory healthCheckResultsInMemory = new HealthCheckResultsInMemory();
 
     healthCheckResultsInMemory.add(ID, healthCheckResponse);
 
-    final List<TimedHealthCheckResponses> siteResults = healthCheckResultsInMemory.getTimedResults();
+    final List<HealthCheckResponses> siteResults = healthCheckResultsInMemory.getTimedResults();
 
-    assertThat(siteResults).usingRecursiveComparison().isEqualTo(of(timedHealthCheckResponses));
+    assertThat(siteResults).usingRecursiveComparison().isEqualTo(of(healthCheckResponses));
   }
 
   @Test
@@ -50,7 +50,7 @@ class HealthCheckResultsInMemoryTest {
     healthCheckResultsInMemory.add(ID, healthCheckResponse);
     healthCheckResultsInMemory.add(ID, healthCheckResponse);
 
-    final List<TimedHealthCheckResponses> timedResults = healthCheckResultsInMemory.getTimedResults();
+    final List<HealthCheckResponses> timedResults = healthCheckResultsInMemory.getTimedResults();
 
     assertThat(timedResults.size()).isEqualTo(1);
     assertThat(timedResults.get(0).getHealthCheckResponse().size()).isEqualTo(3);

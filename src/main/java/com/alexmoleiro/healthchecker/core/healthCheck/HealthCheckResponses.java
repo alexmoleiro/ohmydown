@@ -2,12 +2,12 @@ package com.alexmoleiro.healthchecker.core.healthCheck;
 
 import java.util.LinkedList;
 
-public class TimedHealthCheckResponses {
+public class HealthCheckResponses {
 
   private final Id id;
   private  LinkedList<HealthCheckResponse> healthCheckResponses = new LinkedList<>();
 
-  public TimedHealthCheckResponses(Id id, HealthCheckResponse response) {
+  public HealthCheckResponses(Id id, HealthCheckResponse response) {
     this.id = id;
     this.healthCheckResponses.addLast(response);
   }

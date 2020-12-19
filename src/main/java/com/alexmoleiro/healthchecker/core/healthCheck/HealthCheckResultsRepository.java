@@ -4,7 +4,8 @@ import java.util.List;
 
 public interface HealthCheckResultsRepository {
 
-  List<TimedHealthCheckResponses> getTimedResults();
-  TimedHealthCheckResponses getResponses(Id id);
+  List<HealthCheckResponses> getResponses();
+  List<HealthCheckResponses> getResponses(List<Id> ids);
+  HealthCheckResponses getResponses(Id id);
   void add(Id id, HealthCheckResponse response);
 }

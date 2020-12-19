@@ -1,5 +1,5 @@
 package com.alexmoleiro.healthchecker.core.profile;
 
-public interface ProfileUser {
+public interface OauthService {
   User getUser(String token);
 }

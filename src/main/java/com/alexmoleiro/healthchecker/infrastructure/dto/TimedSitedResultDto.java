@@ -1,19 +1,19 @@
 package com.alexmoleiro.healthchecker.infrastructure.dto;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
-import com.alexmoleiro.healthchecker.core.healthCheck.TimedHealthCheckResponses;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponses;
 
 public class TimedSitedResultDto {
-  private final TimedHealthCheckResponses timedHealthCheckResponses;
+  private final HealthCheckResponses healthCheckResponses;
   private HealthCheckResponse lastResponse;
 
-  public TimedSitedResultDto(TimedHealthCheckResponses timedHealthCheckResponses) {
-    this.timedHealthCheckResponses = timedHealthCheckResponses;
-    this.lastResponse = timedHealthCheckResponses.getHealthCheckResponse().getLast();
+  public TimedSitedResultDto(HealthCheckResponses healthCheckResponses) {
+    this.healthCheckResponses = healthCheckResponses;
+    this.lastResponse = healthCheckResponses.getHealthCheckResponse().getLast();
   }
 
   public String getId() {
-    return timedHealthCheckResponses.getId().getValue();
+    return healthCheckResponses.getId().getValue();
   }
 
   public int getStatus() {

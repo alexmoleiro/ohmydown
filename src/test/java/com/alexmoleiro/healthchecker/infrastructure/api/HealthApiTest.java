@@ -65,7 +65,7 @@ class HealthApiTest {
             {"url":"%s"}""".formatted(url))
         .post("http://localhost:%d/status".formatted(port))
         .then().assertThat().statusCode(200).body(equalTo("""
-        {"url":"%s","delay":%d,"status":%d}""".formatted(url, 86400000, serverStatusCode.value())));
+        {"status":%d,"url":"%s","delay":%d}""".formatted(serverStatusCode.value(),url, 86400000)));
   }
 
   private static Stream<Arguments> urls() throws MalformedURLException {

@@ -1,4 +1,4 @@
-https://www.joindrover.com/
+joindrover.com
 amazon.com
 sport.it
 gavalian.com

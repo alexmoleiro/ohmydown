@@ -1,7 +1,5 @@
 package com.alexmoleiro.healthchecker.core.healthCheck;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -11,7 +9,7 @@ import static java.time.Duration.between;
 public class HealthCheckResponse {
 
   private final int statusCode;
-  @JsonIgnore private final LocalDateTime time;
+  private final LocalDateTime time;
   private URL url;
   private Duration delay;
 

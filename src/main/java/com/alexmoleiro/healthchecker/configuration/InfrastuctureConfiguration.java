@@ -1,10 +1,8 @@
 package com.alexmoleiro.healthchecker.configuration;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.DomainsRepository;
-import com.alexmoleiro.healthchecker.core.healthCheck.HealthChecker;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResultsRepository;
-import com.alexmoleiro.healthchecker.core.profile.OauthService;
-import com.alexmoleiro.healthchecker.infrastructure.aaa.OauthServiceGoogle;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthChecker;
 import com.alexmoleiro.healthchecker.infrastructure.repositories.DomainsLocal;
 import com.alexmoleiro.healthchecker.infrastructure.repositories.DomainsRemote;
 import com.alexmoleiro.healthchecker.infrastructure.repositories.HealthCheckResultsInMemory;
@@ -27,9 +25,6 @@ public class InfrastuctureConfiguration {
 
   @Value("${nthreads}")
   int nThreads;
-
-  @Value("${googleid}")
-  String googleid;
 
   @Bean
   HealthChecker httpChecker() {
@@ -58,8 +53,4 @@ public class InfrastuctureConfiguration {
     return new DomainsLocal();
   }
 
-  @Bean
-  OauthService getProfileUser() {
-    return new OauthServiceGoogle(googleid);
-  }
 }

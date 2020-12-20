@@ -2,7 +2,7 @@ package com.alexmoleiro.healthchecker.infrastructure.api;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResultsRepository;
 import com.alexmoleiro.healthchecker.core.profile.OauthService;
-import com.alexmoleiro.healthchecker.core.profile.Profile;
+import com.alexmoleiro.healthchecker.infrastructure.dto.ProfileDto;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -21,7 +21,7 @@ public class ProfileApi {
 
   @CrossOrigin(origins = "http://localhost:3000")
   @GetMapping(value = "/profile", produces = "application/json")
-  public Profile webStatusResult(@RequestHeader("Token") String token) {
-    return new Profile(oauthService.getUser(token), healthCheckResultsRepository);
+  public ProfileDto webStatusResult(@RequestHeader("Token") String token) {
+    return new ProfileDto(oauthService.getUser(token), healthCheckResultsRepository);
   }
 }

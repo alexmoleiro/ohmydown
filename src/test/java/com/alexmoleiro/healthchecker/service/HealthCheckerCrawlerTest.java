@@ -2,7 +2,7 @@ package com.alexmoleiro.healthchecker.service;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRequest;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
-import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResultsRepository;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.Id;
 import org.junit.jupiter.api.Test;
 
@@ -29,8 +29,8 @@ class HealthCheckerCrawlerTest {
   void shouldCallOnlyOnce() throws MalformedURLException {
 
     final HealthCheckerClient healthCheckerClient = mock(HealthCheckerClient.class);
-    final HealthCheckResultsRepository healthCheckResultsRepository =
-        mock(HealthCheckResultsRepository.class);
+    final HealthCheckRepository healthCheckRepository =
+        mock(HealthCheckRepository.class);
     final List<String> domains = of("www.a.com", "www.b.com", "www.c.com", "www.d.es", "www.e.com");
     final int nThreads = 5;
     final URL url = new URL("http://www.j.com");
@@ -38,7 +38,7 @@ class HealthCheckerCrawlerTest {
     when(healthCheckerClient.check(any(HealthCheckRequest.class)))
         .thenReturn(new HealthCheckResponse(url, OK.value(), now(), now()));
 
-    new HealthCheckerCrawler(healthCheckerClient, healthCheckResultsRepository, nThreads)
+    new HealthCheckerCrawler(healthCheckerClient, healthCheckRepository, nThreads)
         .run(domains);
 
     domains.stream()
@@ -48,7 +48,7 @@ class HealthCheckerCrawlerTest {
                   .check(
                       argThat(request -> request.getUrl().toString().equals("http://" + domain)));
 
-              verify(healthCheckResultsRepository, timeout(TIMEOUT).atLeast(nThreads))
+              verify(healthCheckRepository, timeout(TIMEOUT).atLeast(nThreads))
                   .add(any(Id.class),any(HealthCheckResponse.class));
             });
   }

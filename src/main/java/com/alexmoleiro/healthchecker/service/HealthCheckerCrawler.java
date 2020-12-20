@@ -2,7 +2,7 @@ package com.alexmoleiro.healthchecker.service;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRequest;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
-import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResultsRepository;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthChecker;
 import com.alexmoleiro.healthchecker.core.healthCheck.Id;
 import org.slf4j.Logger;
@@ -17,15 +17,15 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class HealthCheckerCrawler {
   private static final Logger LOGGER = getLogger(HealthCheckerCrawler.class);
   private final HealthChecker healthChecker;
-  private final HealthCheckResultsRepository healthCheckResultsRepository;
+  private final HealthCheckRepository healthCheckRepository;
   private final int nThreads;
 
   public HealthCheckerCrawler(
       HealthChecker healthChecker,
-      HealthCheckResultsRepository healthCheckResultsRepository,
+      HealthCheckRepository healthCheckRepository,
       int nThreads) {
     this.healthChecker = healthChecker;
-    this.healthCheckResultsRepository = healthCheckResultsRepository;
+    this.healthCheckRepository = healthCheckRepository;
     this.nThreads = nThreads;
   }
 
@@ -40,7 +40,7 @@ public class HealthCheckerCrawler {
       final String polledDomain = domains.poll();
       final HealthCheckResponse response =
           healthChecker.check(new HealthCheckRequest(polledDomain));
-      healthCheckResultsRepository.add(new Id(polledDomain), response);
+      healthCheckRepository.add(new Id(polledDomain), response);
       LOGGER.info(response.toString());
     }
   }

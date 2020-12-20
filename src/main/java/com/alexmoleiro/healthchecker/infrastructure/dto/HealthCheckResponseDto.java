@@ -1,9 +1,11 @@
 package com.alexmoleiro.healthchecker.infrastructure.dto;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import java.net.URL;
 
+@JsonPropertyOrder({"status", "url", "delay"})
 public class HealthCheckResponseDto {
 
   private final HealthCheckResponse response;

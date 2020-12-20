@@ -1,7 +1,7 @@
 package com.alexmoleiro.healthchecker.infrastructure.api;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
-import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResultsRepository;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.Id;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class HealthCheckResultsApiTest {
   MockMvc mockMvc;
 
   @Autowired
-  HealthCheckResultsRepository repository;
+  HealthCheckRepository repository;
 
   @Test
   void shouldReturnHistoricValues() throws Exception {

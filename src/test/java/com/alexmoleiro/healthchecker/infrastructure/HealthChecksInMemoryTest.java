@@ -1,10 +1,10 @@
 package com.alexmoleiro.healthchecker.infrastructure;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
-import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResultsRepository;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.Id;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponses;
-import com.alexmoleiro.healthchecker.infrastructure.repositories.HealthCheckResultsInMemory;
+import com.alexmoleiro.healthchecker.infrastructure.repositories.HealthChecksInMemory;
 import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
@@ -16,11 +16,11 @@ import static java.util.List.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.OK;
 
-class HealthCheckResultsInMemoryTest {
+class HealthChecksInMemoryTest {
 
   private static final Id ID = new Id("id");
   private static final String A_URL = "https://www.a.com";
-  private HealthCheckResultsRepository healthCheckResultsInMemory = new HealthCheckResultsInMemory();
+  private HealthCheckRepository healthCheckResultsInMemory = new HealthChecksInMemory();
 
   @Test
   void returnHealthCheckResults() throws MalformedURLException {

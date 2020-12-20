@@ -19,7 +19,7 @@ import static java.util.Collections.singletonList;
     "azp" -> "-cmkp5lvq2g3fb82t0gibr2ai10l75guo.apps.googleusercontent.com"
     "email" -> "alejandro@dominio.com"
     "email_verified" -> {Boolean@7597} true
-    "exp" -> {Long@7599} 1608298282
+    "exp" -> {Long@7599} 1608298
     "hd" -> "hola.com"
     "iat" -> {Long@7603}
     "iss" -> "accounts.google.com"
@@ -50,7 +50,7 @@ public class OauthServiceGoogle implements OauthService {
     try {
       googleIdToken = verifier.verify(token);
     } catch (IllegalArgumentException | GeneralSecurityException | IOException e) {
-      throw new InvalidTokenException();
+      throw new InvalidTokenException(e);
     }
     return new User(
         (String) googleIdToken.getPayload().get("sub"),

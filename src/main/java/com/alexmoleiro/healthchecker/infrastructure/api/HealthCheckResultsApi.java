@@ -1,6 +1,6 @@
 package com.alexmoleiro.healthchecker.infrastructure.api;
 
-import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResultsRepository;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.Id;
 import com.alexmoleiro.healthchecker.infrastructure.dto.HistoricResultsDto;
 import com.alexmoleiro.healthchecker.infrastructure.dto.SiteResultsDto;
@@ -15,21 +15,21 @@ import java.util.List;
 @RestController
 public class HealthCheckResultsApi {
 
-  private final HealthCheckResultsRepository healthCheckResultsRepository;
+  private final HealthCheckRepository healthCheckRepository;
 
-  public HealthCheckResultsApi(HealthCheckResultsRepository healthCheckResultsRepository) {
-    this.healthCheckResultsRepository = healthCheckResultsRepository;
+  public HealthCheckResultsApi(HealthCheckRepository healthCheckRepository) {
+    this.healthCheckRepository = healthCheckRepository;
   }
 
   @CrossOrigin(origins = "http://localhost:3000")
   @PostMapping(value = "/landing-list", produces = "application/json")
   SiteResultsDto webStatusResult() {
-    return new SiteResultsDto(healthCheckResultsRepository.getResponses());
+    return new SiteResultsDto(healthCheckRepository.getResponses());
   }
 
   @CrossOrigin(origins = "http://localhost:3000")
   @GetMapping(value = "/historical/{id}", produces = "application/json")
   List<HistoricResultsDto> historic(@PathVariable String id) {
-    return new HistoricResultsDto(healthCheckResultsRepository.getResponses(new Id(id))).list();
+    return new HistoricResultsDto(healthCheckRepository.getResponses(new Id(id))).list();
   }
 }

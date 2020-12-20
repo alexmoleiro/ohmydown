@@ -2,7 +2,7 @@ package com.alexmoleiro.healthchecker.core.healthCheck;
 
 import java.util.List;
 
-public interface HealthCheckResultsRepository {
+public interface HealthCheckRepository {
 
   List<HealthCheckResponses> getResponses();
   List<HealthCheckResponses> getResponses(List<Id> ids);

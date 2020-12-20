@@ -1,7 +1,7 @@
 package com.alexmoleiro.healthchecker.infrastructure.dto;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponses;
-import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResultsRepository;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.Id;
 import com.alexmoleiro.healthchecker.core.profile.User;
 
@@ -12,11 +12,11 @@ import static java.util.List.of;
 public class ProfileDto {
 
   private final User user;
-  private final HealthCheckResultsRepository healthCheckResultsRepository;
+  private final HealthCheckRepository healthCheckRepository;
 
-  public ProfileDto(User user, HealthCheckResultsRepository healthCheckResultsRepository) {
+  public ProfileDto(User user, HealthCheckRepository healthCheckRepository) {
     this.user = user;
-    this.healthCheckResultsRepository = healthCheckResultsRepository;
+    this.healthCheckRepository = healthCheckRepository;
   }
 
   public String getUserId() {
@@ -25,6 +25,6 @@ public class ProfileDto {
 
   public List<HealthCheckResponses> getResponses() {
     final List<Id> ids = of(new Id("amazon.com"), new Id("sport.it"), new Id("joindrover.com"));
-    return healthCheckResultsRepository.getResponses(ids);
+    return healthCheckRepository.getResponses(ids);
   }
 }

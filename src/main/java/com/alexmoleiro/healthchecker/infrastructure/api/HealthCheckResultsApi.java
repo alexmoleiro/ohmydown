@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.alexmoleiro.healthchecker.infrastructure.dto.HistoricResultsDto.list;
+
 @RestController
 public class HealthCheckResultsApi {
 
@@ -30,6 +32,6 @@ public class HealthCheckResultsApi {
   @CrossOrigin(origins = "http://localhost:3000")
   @GetMapping(value = "/historical/{id}", produces = "application/json")
   List<HistoricResultsDto> historic(@PathVariable String id) {
-    return new HistoricResultsDto(healthCheckRepository.getResponses(new Id(id))).list();
+    return list(healthCheckRepository.getResponses(new Id(id)));
   }
 }

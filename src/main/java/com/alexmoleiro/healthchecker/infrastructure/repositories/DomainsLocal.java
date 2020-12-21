@@ -11,6 +11,6 @@ public class DomainsLocal implements DomainsRepository {
   @Override
   public List<String> getDomains()  {
 
-    return of("www.as.com", "www.sport.com");
+    return of("www.amazon.com", "www.sport.it","www.sport.es","www.yavendras.com","joindrover.com");
   }
 }

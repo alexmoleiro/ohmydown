@@ -42,7 +42,7 @@ public class InfrastuctureConfiguration {
   }
 
   @Bean
-  @Profile("!test")
+  @Profile("pro")
   DomainsRepository getDomains() {
     return new DomainsRemote();
   }
@@ -50,6 +50,12 @@ public class InfrastuctureConfiguration {
   @Bean
   @Profile("test")
   DomainsRepository getDomainsTest() {
+    return new DomainsLocal();
+  }
+
+  @Bean
+  @Profile("fast")
+  DomainsRepository getDomainsTestFast() {
     return new DomainsLocal();
   }
 

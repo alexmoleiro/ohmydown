@@ -10,15 +10,11 @@ import static java.util.stream.Collectors.toList;
 
 public class HistoricResultsDto {
 
-  private HealthCheckResponses responses;
   private URL url;
   private long delay;
   private long status;
   private LocalDateTime time;
 
-  public HistoricResultsDto(HealthCheckResponses responses) {
-    this.responses = responses;
-  }
 
   private HistoricResultsDto(URL url, long delay, long status, LocalDateTime time) {
     this.url = url;
@@ -27,7 +23,7 @@ public class HistoricResultsDto {
     this.time = time;
   }
 
-  public List<HistoricResultsDto> list() {
+  public static List<HistoricResultsDto> list(HealthCheckResponses responses) {
     return responses.getHealthCheckResponse().stream()
         .map(
             response ->

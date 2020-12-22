@@ -3,9 +3,11 @@ package com.alexmoleiro.healthchecker.configuration;
 import com.alexmoleiro.healthchecker.core.healthCheck.DomainsRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthChecker;
+import com.alexmoleiro.healthchecker.core.profile.ProfileRepository;
 import com.alexmoleiro.healthchecker.infrastructure.repositories.DomainsLocal;
 import com.alexmoleiro.healthchecker.infrastructure.repositories.DomainsRemote;
 import com.alexmoleiro.healthchecker.infrastructure.repositories.HealthChecksInMemory;
+import com.alexmoleiro.healthchecker.infrastructure.repositories.ProfileRepositoryInMemory;
 import com.alexmoleiro.healthchecker.service.HealthCheckerClient;
 import com.alexmoleiro.healthchecker.service.HealthCheckerCrawler;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,9 +34,15 @@ public class InfrastuctureConfiguration {
   }
 
   @Bean
-  HealthCheckRepository siteResults() {
+  HealthCheckRepository healthCheckRepository() {
     return new HealthChecksInMemory();
   }
+
+  @Bean
+  ProfileRepository profileRepository() {
+    return new ProfileRepositoryInMemory();
+  }
+
 
   @Bean
   HealthCheckerCrawler checkDaemon(HealthChecker healthChecker, HealthCheckRepository healthCheckRepository) {

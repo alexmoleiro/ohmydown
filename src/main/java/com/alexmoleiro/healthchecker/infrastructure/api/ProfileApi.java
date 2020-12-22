@@ -3,6 +3,7 @@ package com.alexmoleiro.healthchecker.infrastructure.api;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.InvalidUrlException;
 import com.alexmoleiro.healthchecker.core.profile.OauthService;
+import com.alexmoleiro.healthchecker.core.profile.ProfileRepository;
 import com.alexmoleiro.healthchecker.infrastructure.dto.ProfileDto;
 import com.alexmoleiro.healthchecker.infrastructure.dto.WebStatusRequestDto;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,10 +27,15 @@ public class ProfileApi {
 
   private final OauthService oauthService;
   private final HealthCheckRepository healthCheckRepository;
+  private final ProfileRepository profileRepository;
 
-  public ProfileApi(OauthService oauthService, HealthCheckRepository healthCheckRepository) {
+  public ProfileApi(OauthService oauthService,
+                    HealthCheckRepository healthCheckRepository,
+                    ProfileRepository profileRepository
+  ) {
     this.oauthService = oauthService;
     this.healthCheckRepository = healthCheckRepository;
+    this.profileRepository = profileRepository;
   }
 
   @CrossOrigin(origins = "http://localhost:3000")
@@ -41,13 +47,17 @@ public class ProfileApi {
   @CrossOrigin(origins = "http://localhost:3000")
   @ResponseStatus(CREATED)
   @PostMapping(value = "/profile/addurl", produces = "application/json")
-  public void addUrl(@RequestHeader("Token") String token, @RequestBody WebStatusRequestDto webStatusRequestDto ) {
-    oauthService.getUser(token);
+  public void addUrl(
+      @RequestHeader("Token") String token,
+      @RequestBody WebStatusRequestDto webStatusRequestDto) {
+
+    URL url;
     try {
-      new URL(webStatusRequestDto.getUrl());
+      url = new URL(webStatusRequestDto.getUrl());
     } catch (MalformedURLException e) {
       throw new InvalidUrlException();
     }
+    profileRepository.addUrl(oauthService.getUser(token), url);
   }
 
   @ResponseStatus(value= FORBIDDEN)

@@ -42,6 +42,7 @@ public class ProfileApi {
   @ResponseStatus(CREATED)
   @PostMapping(value = "/profile/addurl", produces = "application/json")
   public void addUrl(@RequestHeader("Token") String token, @RequestBody WebStatusRequestDto webStatusRequestDto ) {
+    oauthService.getUser(token);
     try {
       new URL(webStatusRequestDto.getUrl());
     } catch (MalformedURLException e) {

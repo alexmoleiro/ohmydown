@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-class ProfileDtoApiTest {
+class ProfileApiTest {
 
   @Autowired
   MockMvc mockMvc;
@@ -44,7 +44,8 @@ class ProfileDtoApiTest {
   void shouldAddDomain() throws Exception {
     String aToken = "aToken";
     this.mockMvc.perform(
-        post("/profile/addurl").header("Token", aToken)
+        post("/profile/addurl")
+            .header("Token", aToken)
             .contentType(APPLICATION_JSON)
     .content("""
         {"url":"https://www.as.com"}"""))
@@ -62,6 +63,19 @@ class ProfileDtoApiTest {
         {"url":"invalidUrl"}"""))
         .andExpect(status().isBadRequest());
   }
+
+  @Test
+  void shouldReturnForbiddenWhenInvalidTokenTryingToAddAUrl() throws Exception {
+    doThrow(new InvalidTokenException(new Exception()))
+        .when(oauthService).getUser(anyString());
+
+    this.mockMvc.perform(post("/profile/addurl")
+        .header("Token", "")
+        .contentType(APPLICATION_JSON)
+        .content("""
+        {"url":"https://www.as.com"}"""))
+        .andExpect(status().isForbidden());
+    }
 
   @Test
   void shouldReturnForbiddenWhenInvalidToken() throws Exception {

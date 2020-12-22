@@ -20,7 +20,9 @@ import static java.time.LocalDateTime.of;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -37,6 +39,29 @@ class ProfileDtoApiTest {
 
   @MockBean
   OauthService oauthService;
+
+  @Test
+  void shouldAddDomain() throws Exception {
+    String aToken = "aToken";
+    this.mockMvc.perform(
+        post("/profile/addurl").header("Token", aToken)
+            .contentType(APPLICATION_JSON)
+    .content("""
+        {"url":"https://www.as.com"}"""))
+        .andExpect(status().isCreated());
+    }
+
+  @Test
+  void shouldReturn404whenInvalidDomain() throws Exception {
+    String aToken = "aToken";
+    this.mockMvc.perform(
+        post("/profile/addurl")
+            .header("Token", aToken)
+            .contentType(APPLICATION_JSON)
+            .content("""
+        {"url":"invalidUrl"}"""))
+        .andExpect(status().isBadRequest());
+  }
 
   @Test
   void shouldReturnForbiddenWhenInvalidToken() throws Exception {

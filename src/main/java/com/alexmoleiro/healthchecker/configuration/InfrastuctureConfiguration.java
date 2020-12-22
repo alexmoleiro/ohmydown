@@ -42,7 +42,7 @@ public class InfrastuctureConfiguration {
   }
 
   @Bean
-  @Profile("pro")
+  @Profile({"pro","default"})
   DomainsRepository getDomains() {
     return new DomainsRemote();
   }

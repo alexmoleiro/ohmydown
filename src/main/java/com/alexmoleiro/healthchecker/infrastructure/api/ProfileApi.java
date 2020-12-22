@@ -25,17 +25,14 @@ public class ProfileApi {
 
   private final OauthService oauthService;
   private final HealthCheckRepository healthCheckRepository;
-  private final ProfileRepository profileRepository;
   private final ProfileService profileService;
 
   public ProfileApi(OauthService oauthService,
                     HealthCheckRepository healthCheckRepository,
-                    ProfileRepository profileRepository,
                     ProfileService profileService
   ) {
     this.oauthService = oauthService;
     this.healthCheckRepository = healthCheckRepository;
-    this.profileRepository = profileRepository;
     this.profileService = profileService;
   }
 

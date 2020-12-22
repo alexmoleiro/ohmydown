@@ -10,6 +10,7 @@ import com.alexmoleiro.healthchecker.infrastructure.repositories.HealthChecksInM
 import com.alexmoleiro.healthchecker.infrastructure.repositories.ProfileRepositoryInMemory;
 import com.alexmoleiro.healthchecker.service.HealthCheckerClient;
 import com.alexmoleiro.healthchecker.service.HealthCheckerCrawler;
+import com.alexmoleiro.healthchecker.service.ProfileService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,7 +31,8 @@ public class InfrastuctureConfiguration {
 
   @Bean
   HealthChecker httpChecker() {
-    return new HealthCheckerClient(newBuilder().followRedirects(ALWAYS).build(), ofSeconds(seconds));
+    return new HealthCheckerClient(
+        newBuilder().followRedirects(ALWAYS).build(), ofSeconds(seconds));
   }
 
   @Bean
@@ -43,14 +45,19 @@ public class InfrastuctureConfiguration {
     return new ProfileRepositoryInMemory();
   }
 
+  @Bean
+  ProfileService profileService(ProfileRepository profileRepository) {
+    return new ProfileService(profileRepository);
+  }
 
   @Bean
-  HealthCheckerCrawler checkDaemon(HealthChecker healthChecker, HealthCheckRepository healthCheckRepository) {
+  HealthCheckerCrawler checkDaemon(
+      HealthChecker healthChecker, HealthCheckRepository healthCheckRepository) {
     return new HealthCheckerCrawler(healthChecker, healthCheckRepository, nThreads);
   }
 
   @Bean
-  @Profile({"pro","default"})
+  @Profile({"pro", "default"})
   DomainsRepository getDomains() {
     return new DomainsRemote();
   }
@@ -66,5 +73,4 @@ public class InfrastuctureConfiguration {
   DomainsRepository getDomainsTestFast() {
     return new DomainsLocal();
   }
-
 }

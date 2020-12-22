@@ -6,6 +6,7 @@ import com.alexmoleiro.healthchecker.core.profile.OauthService;
 import com.alexmoleiro.healthchecker.core.profile.ProfileRepository;
 import com.alexmoleiro.healthchecker.infrastructure.dto.ProfileDto;
 import com.alexmoleiro.healthchecker.infrastructure.dto.WebStatusRequestDto;
+import com.alexmoleiro.healthchecker.service.ProfileService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,9 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -28,14 +26,17 @@ public class ProfileApi {
   private final OauthService oauthService;
   private final HealthCheckRepository healthCheckRepository;
   private final ProfileRepository profileRepository;
+  private final ProfileService profileService;
 
   public ProfileApi(OauthService oauthService,
                     HealthCheckRepository healthCheckRepository,
-                    ProfileRepository profileRepository
+                    ProfileRepository profileRepository,
+                    ProfileService profileService
   ) {
     this.oauthService = oauthService;
     this.healthCheckRepository = healthCheckRepository;
     this.profileRepository = profileRepository;
+    this.profileService = profileService;
   }
 
   @CrossOrigin(origins = "http://localhost:3000")
@@ -51,13 +52,7 @@ public class ProfileApi {
       @RequestHeader("Token") String token,
       @RequestBody WebStatusRequestDto webStatusRequestDto) {
 
-    URL url;
-    try {
-      url = new URL(webStatusRequestDto.getUrl());
-    } catch (MalformedURLException e) {
-      throw new InvalidUrlException();
-    }
-    profileRepository.addUrl(oauthService.getUser(token), url);
+    profileService.addUrl(oauthService.getUser(token), webStatusRequestDto.getUrl());
   }
 
   @ResponseStatus(value= FORBIDDEN)

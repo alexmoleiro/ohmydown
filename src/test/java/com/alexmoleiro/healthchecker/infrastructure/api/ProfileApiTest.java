@@ -4,6 +4,7 @@ import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.healthCheck.Id;
 import com.alexmoleiro.healthchecker.core.profile.OauthService;
+import com.alexmoleiro.healthchecker.core.profile.ProfileRepository;
 import com.alexmoleiro.healthchecker.core.profile.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,9 @@ import java.time.LocalDateTime;
 
 import static java.time.LocalDateTime.of;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -29,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-class ProfileDtoApiTest {
+class ProfileApiTest {
 
   @Autowired
   MockMvc mockMvc;
@@ -40,15 +43,26 @@ class ProfileDtoApiTest {
   @MockBean
   OauthService oauthService;
 
+  @MockBean
+  ProfileRepository profileRepository;
+
   @Test
   void shouldAddDomain() throws Exception {
+
+    final User user = new User("id", "alex@email.com");
+    when(oauthService.getUser(anyString())).thenReturn(user);
     String aToken = "aToken";
+    final String validUrl = "https://www.as.com";
+
     this.mockMvc.perform(
-        post("/profile/addurl").header("Token", aToken)
+        post("/profile/addurl")
+            .header("Token", aToken)
             .contentType(APPLICATION_JSON)
     .content("""
-        {"url":"https://www.as.com"}"""))
+        {"url":"%s"}""".formatted(validUrl)))
         .andExpect(status().isCreated());
+
+    verify(profileRepository).addUrl(eq(user), eq(new URL(validUrl)));
     }
 
   @Test
@@ -62,6 +76,19 @@ class ProfileDtoApiTest {
         {"url":"invalidUrl"}"""))
         .andExpect(status().isBadRequest());
   }
+
+  @Test
+  void shouldReturnForbiddenWhenInvalidTokenTryingToAddAUrl() throws Exception {
+    doThrow(new InvalidTokenException(new Exception()))
+        .when(oauthService).getUser(anyString());
+
+    this.mockMvc.perform(post("/profile/addurl")
+        .header("Token", "")
+        .contentType(APPLICATION_JSON)
+        .content("""
+        {"url":"https://www.as.com"}"""))
+        .andExpect(status().isForbidden());
+    }
 
   @Test
   void shouldReturnForbiddenWhenInvalidToken() throws Exception {

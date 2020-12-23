@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.alexmoleiro'
-version = '0.31'
+version = '0.32'
 sourceCompatibility = '15'
 
 repositories {

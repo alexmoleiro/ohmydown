@@ -1,8 +1,8 @@
 package com.alexmoleiro.healthchecker.infrastructure.api;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.Endpoint;
-import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,7 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 public class HealthCheckResultsApiTest {
 
-  public static final Endpoint ENDPOINT = new Endpoint("www.a.com");
   public static final String URL_STRING = "https://www.a.com";
   @Autowired
   MockMvc mockMvc;
@@ -42,10 +41,14 @@ public class HealthCheckResultsApiTest {
     final LocalDateTime second = of(2020, 12, 8, 23, 25);
 
     repository.add(
-        ENDPOINT, new HealthCheckResponse(new URL(URL_STRING), OK.value(), first.minusHours(1), first));
+        new Endpoint("www.a.com"),
+        new HealthCheckResponse(new URL(URL_STRING), OK.value(), first.minusHours(1), first)
+    );
 
     repository.add(
-        ENDPOINT, new HealthCheckResponse(new URL(URL_STRING), INTERNAL_SERVER_ERROR.value(), second.minusHours(1), second));
+        new Endpoint("www.a.com"),
+        new HealthCheckResponse(new URL(URL_STRING), INTERNAL_SERVER_ERROR.value(), second.minusHours(1), second)
+    );
 
     this.mockMvc.perform(get("/historical/www.a.com"))
         .andExpect(status().isOk())
@@ -61,10 +64,10 @@ public class HealthCheckResultsApiTest {
   void shouldReturnLandingListSites() throws Exception {
     repository.add(
         new Endpoint("www.a.com"), new HealthCheckResponse(new URL("https://www.a.com"), OK.value(),
-        now().minusHours(1), LocalDateTime.now()));
+        now().minusHours(1), now()));
     repository.add(new Endpoint("www.b.com"),
         new HealthCheckResponse(new URL("https://www.b.com"), INTERNAL_SERVER_ERROR.value(),
-        now().minusHours(1), LocalDateTime.now()
+        now().minusHours(1), now()
     ));
 
       this.mockMvc.perform(post("/landing-list"))

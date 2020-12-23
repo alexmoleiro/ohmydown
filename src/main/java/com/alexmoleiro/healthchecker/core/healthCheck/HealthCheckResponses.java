@@ -12,7 +12,7 @@ public class HealthCheckResponses {
     this.healthCheckResponses.addLast(response);
   }
 
-  public Endpoint getId() {
+  public Endpoint getEndpoint() {
     return endpoint;
   }
 

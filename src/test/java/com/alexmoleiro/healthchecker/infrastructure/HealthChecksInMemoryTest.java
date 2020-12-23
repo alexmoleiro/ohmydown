@@ -1,8 +1,8 @@
 package com.alexmoleiro.healthchecker.infrastructure;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.Endpoint;
-import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponses;
 import com.alexmoleiro.healthchecker.infrastructure.repositories.HealthChecksInMemory;
 import org.junit.jupiter.api.Test;
@@ -54,7 +54,6 @@ class HealthChecksInMemoryTest {
     assertThat(timedResults.get(0).getHealthCheckResponse().size()).isEqualTo(3);
   }
 
-  //TODO flaky
   @Test
   void shouldGetHCResponsesOfListOfId() throws MalformedURLException {
     final HealthCheckResponse response =
@@ -66,10 +65,8 @@ class HealthChecksInMemoryTest {
     healthCheckResultsInMemory.add(new Endpoint("e"), response);
     healthCheckResultsInMemory.add(new Endpoint("f"), response2);
 
-    final List<HealthCheckResponses> responses = healthCheckResultsInMemory.getResponses(Set.of(new Endpoint("e"), new Endpoint("f")));
-
-    assertThat(responses.get(0)).usingRecursiveComparison().isEqualTo(new HealthCheckResponses(new Endpoint("e"), response));
-    assertThat(responses.get(1)).usingRecursiveComparison().isEqualTo(new HealthCheckResponses(new Endpoint("f"), response2));
-
+    final List<HealthCheckResponses> responses =
+        healthCheckResultsInMemory.getResponses(Set.of(new Endpoint("e"), new Endpoint("f")));
+    assertThat(responses).extracting("endpoint").extracting("url").contains("e", "f");
   }
 }

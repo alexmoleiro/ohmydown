@@ -3,14 +3,14 @@ package com.alexmoleiro.healthchecker.core.healthCheck;
 import java.util.Objects;
 
 public class Endpoint {
-  private final String id;
+  private String url;
 
-  public Endpoint(String id) {
-    this.id = id;
+  public Endpoint(String url) {
+    this.url = url;
   }
 
-  public String getValue() {
-    return id;
+  public String getUrl() {
+    return url;
   }
 
   @Override
@@ -21,12 +21,12 @@ public class Endpoint {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Endpoint endpoint1 = (Endpoint) o;
-    return Objects.equals(id, endpoint1.id);
+    Endpoint endpoint = (Endpoint) o;
+    return Objects.equals(url, endpoint.url);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id);
+    return Objects.hash(url);
   }
 }

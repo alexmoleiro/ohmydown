@@ -111,13 +111,13 @@ class ProfileApiTest {
     final User aUSer = new User(anId, anEmail);
     when(oauthService.getUser(aToken)).thenReturn(aUSer);
 
-    profileRepository.addUrl(aUSer, new Endpoint("amazon.com"));
+    profileRepository.addUrl(aUSer, new Endpoint("https://amazon.com"));
     profileRepository.addUrl(aUSer, new Endpoint("sport.it"));
     profileRepository.addUrl(aUSer, new Endpoint("joindrover.com"));
 
-    healthCheckRepository.add(new Endpoint("amazon.com"), new HealthCheckResponse(new URL("https://amazon.com"), 200,
+    healthCheckRepository.add(new Endpoint("https://amazon.com"), new HealthCheckResponse(new URL("https://amazon.com"), 200,
         time.minusMinutes(1), time ));
-    healthCheckRepository.add(new Endpoint("amazon.com"), new HealthCheckResponse(new URL("https://amazon.com"), 200,
+    healthCheckRepository.add(new Endpoint("https://amazon.com"), new HealthCheckResponse(new URL("https://amazon.com"), 200,
         time.minusMinutes(1), time ));
 
     healthCheckRepository.add(new Endpoint("sport.it"), new HealthCheckResponse(new URL("https://sport.it"), 200,
@@ -133,7 +133,20 @@ class ProfileApiTest {
     this.mockMvc.perform(get("/profile").header("Token", aToken))
         .andExpect(status().isOk())
         .andExpect(content().json("""              
-              {"responses":[{"id":{"value":"amazon.com"},"healthCheckResponse":[{"time":"2020-11-30T12:00:00","url":"https://amazon.com","delay":60000,"status":200},{"time":"2020-11-30T12:00:00","url":"https://amazon.com","delay":60000,"status":200}]},{"id":{"value":"sport.it"},"healthCheckResponse":[{"time":"2020-11-30T12:00:00","url":"https://sport.it","delay":60000,"status":200},{"time":"2020-11-30T12:00:00","url":"https://sport.it","delay":60000,"status":200}]},{"id":{"value":"joindrover.com"},"healthCheckResponse":[{"time":"2020-11-30T12:00:00","url":"https://joindrover.com","delay":60000,"status":200},{"time":"2020-11-30T12:00:00","url":"https://joindrover.com","delay":60000,"status":200}]}],"userId":"endpoint"}
+              {"responses":[
+              {"endpoint":{"url":"https://amazon.com"},
+              "healthCheckResponse":[
+              {"time":"2020-11-30T12:00:00","url":"https://amazon.com","delay":60000,"status":200},
+              {"time":"2020-11-30T12:00:00","url":"https://amazon.com","delay":60000,"status":200}]}
+              ,{"endpoint":{"url":"sport.it"},
+              "healthCheckResponse":[
+              {"time":"2020-11-30T12:00:00","url":"https://sport.it","delay":60000,"status":200},
+              {"time":"2020-11-30T12:00:00","url":"https://sport.it","delay":60000,"status":200}]},
+              {"endpoint":{"url":"joindrover.com"},
+              "healthCheckResponse":[
+              {"time":"2020-11-30T12:00:00","url":"https://joindrover.com","delay":60000,"status":200},
+              {"time":"2020-11-30T12:00:00","url":"https://joindrover.com","delay":60000,"status":200}]}],
+              "userId":"endpoint"}
               """));
   }
 }

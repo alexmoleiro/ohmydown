@@ -2,6 +2,7 @@ package com.alexmoleiro.healthchecker.service;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponses;
+import com.alexmoleiro.healthchecker.core.healthCheck.Id;
 import com.alexmoleiro.healthchecker.core.healthCheck.InvalidUrlException;
 import com.alexmoleiro.healthchecker.core.profile.Profile;
 import com.alexmoleiro.healthchecker.core.profile.ProfileRepository;
@@ -22,17 +23,20 @@ public class ProfileService {
   }
 
   public void addUrl(User user, String urlString) {
-    URL url;
-    try {
-      url = new URL(urlString);
-    } catch (MalformedURLException e) {
-      throw new InvalidUrlException();
-    }
-    profileRepository.addUrl(user, url);
+    validateUrl(urlString);
+    profileRepository.addUrl(user, new Id(urlString));
   }
 
   public List<HealthCheckResponses> getResponses(User user) {
     final Profile profile = profileRepository.get(user);
     return healthCheckRepository.getResponses(profile.getFollowing());
+  }
+
+  private void validateUrl(String urlString) {
+    try {
+      new URL(urlString);
+    } catch (MalformedURLException e) {
+      throw new InvalidUrlException();
+    }
   }
 }

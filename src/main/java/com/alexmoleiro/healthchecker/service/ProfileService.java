@@ -24,11 +24,11 @@ public class ProfileService {
   }
 
   public void addUrl(User user, String urlString) {
-    try {
+   /* try {
       new URL(urlString);
     } catch (MalformedURLException e) {
       throw new InvalidUrlException();
-    }
+    }*/
     profileRepository.addUrl(user, new Endpoint(urlString));
   }
 

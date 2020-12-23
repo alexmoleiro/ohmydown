@@ -1,9 +1,7 @@
 package com.alexmoleiro.healthchecker.infrastructure.api;
 
-import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.InvalidUrlException;
 import com.alexmoleiro.healthchecker.core.profile.OauthService;
-import com.alexmoleiro.healthchecker.core.profile.ProfileRepository;
 import com.alexmoleiro.healthchecker.infrastructure.dto.ProfileDto;
 import com.alexmoleiro.healthchecker.infrastructure.dto.WebStatusRequestDto;
 import com.alexmoleiro.healthchecker.service.ProfileService;
@@ -24,22 +22,18 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 public class ProfileApi {
 
   private final OauthService oauthService;
-  private final HealthCheckRepository healthCheckRepository;
   private final ProfileService profileService;
 
-  public ProfileApi(OauthService oauthService,
-                    HealthCheckRepository healthCheckRepository,
-                    ProfileService profileService
+  public ProfileApi(OauthService oauthService, ProfileService profileService
   ) {
     this.oauthService = oauthService;
-    this.healthCheckRepository = healthCheckRepository;
     this.profileService = profileService;
   }
 
   @CrossOrigin(origins = "http://localhost:3000")
   @GetMapping(value = "/profile", produces = "application/json")
   public ProfileDto profile(@RequestHeader("Token") String token) {
-    return new ProfileDto(oauthService.getUser(token), healthCheckRepository);
+    return new ProfileDto(profileService, oauthService.getUser(token));
   }
 
   @CrossOrigin(origins = "http://localhost:3000")

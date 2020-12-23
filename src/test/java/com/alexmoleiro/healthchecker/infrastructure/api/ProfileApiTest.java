@@ -4,6 +4,7 @@ import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.healthCheck.Id;
 import com.alexmoleiro.healthchecker.core.profile.OauthService;
+import com.alexmoleiro.healthchecker.core.profile.Profile;
 import com.alexmoleiro.healthchecker.core.profile.ProfileRepository;
 import com.alexmoleiro.healthchecker.core.profile.User;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import java.net.URL;
 import java.time.LocalDateTime;
 
 import static java.time.LocalDateTime.of;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -107,7 +109,9 @@ class ProfileApiTest {
     final String anEmail = "alex@email.com";
     final String aToken = "anything";
     LocalDateTime time = of(2020, 11, 30, 12, 00);
-    when(oauthService.getUser(aToken)).thenReturn(new User(anId, anEmail));
+    final User aUSer = new User(anId, anEmail);
+    when(oauthService.getUser(aToken)).thenReturn(aUSer);
+    when(profileRepository.get(any(User.class))).thenReturn(new Profile(aUSer));
 
     healthCheckRepository.add(new Id("amazon.com"), new HealthCheckResponse(new URL("https://amazon.com"), 200,
         time.minusMinutes(1), time ));

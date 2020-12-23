@@ -4,16 +4,16 @@ import java.util.LinkedList;
 
 public class HealthCheckResponses {
 
-  private final Id id;
+  private final Endpoint endpoint;
   private  LinkedList<HealthCheckResponse> healthCheckResponses = new LinkedList<>();
 
-  public HealthCheckResponses(Id id, HealthCheckResponse response) {
-    this.id = id;
+  public HealthCheckResponses(Endpoint endpoint, HealthCheckResponse response) {
+    this.endpoint = endpoint;
     this.healthCheckResponses.addLast(response);
   }
 
-  public Id getId() {
-    return id;
+  public Endpoint getEndpoint() {
+    return endpoint;
   }
 
   public LinkedList<HealthCheckResponse> getHealthCheckResponse() {

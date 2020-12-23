@@ -11,9 +11,9 @@ public class TimedSitedResultDto {
     this.healthCheckResponses = healthCheckResponses;
     this.lastResponse = healthCheckResponses.getHealthCheckResponse().getLast();
   }
-
+  //TODO decouple Id from Url
   public String getId() {
-    return healthCheckResponses.getId().getValue();
+    return healthCheckResponses.getEndpoint().getUrl();
   }
 
   public int getStatus() {

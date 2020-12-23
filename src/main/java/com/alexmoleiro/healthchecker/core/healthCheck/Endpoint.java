@@ -2,15 +2,15 @@ package com.alexmoleiro.healthchecker.core.healthCheck;
 
 import java.util.Objects;
 
-public class Id {
-  private final String id;
+public class Endpoint {
+  private String url;
 
-  public Id(String id) {
-    this.id = id;
+  public Endpoint(String url) {
+    this.url = url;
   }
 
-  public String getValue() {
-    return id;
+  public String getUrl() {
+    return url;
   }
 
   @Override
@@ -21,12 +21,12 @@ public class Id {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Id id1 = (Id) o;
-    return Objects.equals(id, id1.id);
+    Endpoint endpoint = (Endpoint) o;
+    return Objects.equals(url, endpoint.url);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id);
+    return Objects.hash(url);
   }
 }

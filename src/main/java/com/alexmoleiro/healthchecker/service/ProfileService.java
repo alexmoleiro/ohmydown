@@ -1,5 +1,6 @@
 package com.alexmoleiro.healthchecker.service;
 
+import com.alexmoleiro.healthchecker.core.healthCheck.Endpoint;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponses;
 import com.alexmoleiro.healthchecker.core.healthCheck.InvalidUrlException;
@@ -16,19 +17,19 @@ public class ProfileService {
   private final ProfileRepository profileRepository;
   private final HealthCheckRepository healthCheckRepository;
 
-  public ProfileService(ProfileRepository profileRepository, HealthCheckRepository healthCheckRepository) {
+  public ProfileService(
+      ProfileRepository profileRepository, HealthCheckRepository healthCheckRepository) {
     this.profileRepository = profileRepository;
     this.healthCheckRepository = healthCheckRepository;
   }
 
   public void addUrl(User user, String urlString) {
-    URL url;
     try {
-      url = new URL(urlString);
+      new URL(urlString);
     } catch (MalformedURLException e) {
       throw new InvalidUrlException();
     }
-    profileRepository.addUrl(user, url);
+    profileRepository.addUrl(user, new Endpoint(urlString));
   }
 
   public List<HealthCheckResponses> getResponses(User user) {

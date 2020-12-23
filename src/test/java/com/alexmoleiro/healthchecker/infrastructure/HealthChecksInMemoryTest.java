@@ -67,6 +67,6 @@ class HealthChecksInMemoryTest {
 
     final List<HealthCheckResponses> responses =
         healthCheckResultsInMemory.getResponses(Set.of(new Endpoint("e"), new Endpoint("f")));
-    assertThat(responses).extracting("endpoint").extracting("url").contains("e", "f");
+    assertThat(responses).extracting("endpoint").extracting("id").contains("e", "f");
   }
 }

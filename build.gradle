@@ -4,8 +4,8 @@ plugins {
 	id 'java'
 }
 
-group = 'com.alexmoleiro'
-version = '0.32'
+group = 'com.alfasexmoleiro'
+version = '0.33'
 sourceCompatibility = '15'
 
 repositories {

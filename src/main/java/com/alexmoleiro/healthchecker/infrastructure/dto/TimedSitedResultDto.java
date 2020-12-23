@@ -13,7 +13,7 @@ public class TimedSitedResultDto {
   }
   //TODO decouple Id from Url
   public String getId() {
-    return healthCheckResponses.getEndpoint().getUrl();
+    return healthCheckResponses.getEndpoint().getId();
   }
 
   public int getStatus() {

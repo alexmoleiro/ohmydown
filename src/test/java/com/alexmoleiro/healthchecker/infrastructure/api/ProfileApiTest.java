@@ -108,12 +108,12 @@ class ProfileApiTest {
     final String anEmail = "alex@email.com";
     final String aToken = "anything";
     LocalDateTime time = of(2020, 11, 30, 12, 00);
-    final User aUSer = new User(anId, anEmail);
-    when(oauthService.getUser(aToken)).thenReturn(aUSer);
+    final User aUser = new User(anId, anEmail);
+    when(oauthService.getUser(aToken)).thenReturn(aUser);
 
-    profileRepository.addUrl(aUSer, new Endpoint("https://amazon.com"));
-    profileRepository.addUrl(aUSer, new Endpoint("sport.it"));
-    profileRepository.addUrl(aUSer, new Endpoint("joindrover.com"));
+    profileRepository.addUrl(aUser, new Endpoint("https://amazon.com"));
+    profileRepository.addUrl(aUser, new Endpoint("sport.it"));
+    profileRepository.addUrl(aUser, new Endpoint("joindrover.com"));
 
     healthCheckRepository.add(new Endpoint("https://amazon.com"), new HealthCheckResponse(new URL("https://amazon.com"), 200,
         time.minusMinutes(1), time ));
@@ -134,15 +134,15 @@ class ProfileApiTest {
         .andExpect(status().isOk())
         .andExpect(content().json("""              
               {"responses":[
-              {"endpoint":{"url":"https://amazon.com"},
+              {"endpoint":{"id":"https://amazon.com"},
               "healthCheckResponse":[
               {"time":"2020-11-30T12:00:00","url":"https://amazon.com","delay":60000,"status":200},
               {"time":"2020-11-30T12:00:00","url":"https://amazon.com","delay":60000,"status":200}]}
-              ,{"endpoint":{"url":"sport.it"},
+              ,{"endpoint":{"id":"sport.it"},
               "healthCheckResponse":[
               {"time":"2020-11-30T12:00:00","url":"https://sport.it","delay":60000,"status":200},
               {"time":"2020-11-30T12:00:00","url":"https://sport.it","delay":60000,"status":200}]},
-              {"endpoint":{"url":"joindrover.com"},
+              {"endpoint":{"id":"joindrover.com"},
               "healthCheckResponse":[
               {"time":"2020-11-30T12:00:00","url":"https://joindrover.com","delay":60000,"status":200},
               {"time":"2020-11-30T12:00:00","url":"https://joindrover.com","delay":60000,"status":200}]}],

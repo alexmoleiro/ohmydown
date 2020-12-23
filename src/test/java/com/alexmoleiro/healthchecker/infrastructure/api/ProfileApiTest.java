@@ -4,7 +4,6 @@ import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.healthCheck.Id;
 import com.alexmoleiro.healthchecker.core.profile.OauthService;
-import com.alexmoleiro.healthchecker.core.profile.Profile;
 import com.alexmoleiro.healthchecker.core.profile.ProfileRepository;
 import com.alexmoleiro.healthchecker.core.profile.User;
 import org.junit.jupiter.api.Test;
@@ -21,11 +20,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static java.time.LocalDateTime.of;
-import static org.mockito.ArgumentMatchers.any;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -47,7 +44,7 @@ class ProfileApiTest {
   @MockBean
   OauthService oauthService;
 
-  @MockBean
+  @Autowired
   ProfileRepository profileRepository;
 
   @Test
@@ -66,7 +63,8 @@ class ProfileApiTest {
         {"url":"%s"}""".formatted(validUrl)))
         .andExpect(status().isCreated());
 
-    verify(profileRepository).addUrl(eq(user), eq(new URL(validUrl)));
+    assertThat(profileRepository.get(user).getFollowing())
+        .isEqualTo(Set.of(new Id("https://www.as.com")));
     }
 
   @Test
@@ -113,11 +111,10 @@ class ProfileApiTest {
     LocalDateTime time = of(2020, 11, 30, 12, 00);
     final User aUSer = new User(anId, anEmail);
     when(oauthService.getUser(aToken)).thenReturn(aUSer);
-    final Set<Id> ids = new HashSet<>();
-    ids.add(new Id("amazon.com"));
-    ids.add(new Id("sport.it"));
-    ids.add(new Id("joindrover.com"));
-    when(profileRepository.get(any(User.class))).thenReturn(new Profile(aUSer, ids));
+
+    profileRepository.addUrl(aUSer, new URL("amazon.com"));
+    profileRepository.addUrl(aUSer, new URL("sport.it"));
+    profileRepository.addUrl(aUSer, new URL("joindrover.com"));
 
     healthCheckRepository.add(new Id("amazon.com"), new HealthCheckResponse(new URL("https://amazon.com"), 200,
         time.minusMinutes(1), time ));

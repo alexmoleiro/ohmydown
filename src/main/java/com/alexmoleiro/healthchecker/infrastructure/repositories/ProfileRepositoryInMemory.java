@@ -8,10 +8,11 @@ import com.alexmoleiro.healthchecker.core.profile.User;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 public class ProfileRepositoryInMemory implements ProfileRepository {
 
-  private HashMap<User, Profile> users = new HashMap<>();
+  private Map<User, Profile> users = new HashMap<>();
 
   @Override
   public void addUrl(User user, URL url) {

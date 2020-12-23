@@ -16,14 +16,17 @@ class ProfileRepositoryInMemoryTest {
   @Test
   void shouldAddAUrl() throws MalformedURLException {
     final User user = new User("1", "alex@email.com");
+
     repository.addUrl(user, new URL("https://www.a.com"));
-
-    assertThat(repository.get(user).getFollowing())
-        .isEqualTo(of(new Id("https://www.a.com")));
-
     repository.addUrl(user, new URL("https://www.b.com"));
+    repository.addUrl(user, new URL("https://www.b.com"));
+    repository.addUrl(user, new URL("https://www.c.com"));
 
     assertThat(repository.get(user).getFollowing())
-        .isEqualTo(of(new Id("https://www.a.com"), new Id("https://www.b.com")));
+        .isEqualTo(of(
+            new Id("https://www.a.com"),
+            new Id("https://www.b.com"),
+            new Id("https://www.c.com")
+        ));
   }
 }

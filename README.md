@@ -1,4 +1,4 @@
-# Site checker
+# OhMyDown.com
 
 Backend for the OhMyDown.com project
 

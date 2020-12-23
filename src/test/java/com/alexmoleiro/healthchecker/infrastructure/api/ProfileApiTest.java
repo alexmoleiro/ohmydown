@@ -17,6 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 import static java.time.LocalDateTime.of;
 import static org.mockito.ArgumentMatchers.any;
@@ -111,7 +113,11 @@ class ProfileApiTest {
     LocalDateTime time = of(2020, 11, 30, 12, 00);
     final User aUSer = new User(anId, anEmail);
     when(oauthService.getUser(aToken)).thenReturn(aUSer);
-    when(profileRepository.get(any(User.class))).thenReturn(new Profile(aUSer));
+    final Set<Id> ids = new HashSet<>();
+    ids.add(new Id("amazon.com"));
+    ids.add(new Id("sport.it"));
+    ids.add(new Id("joindrover.com"));
+    when(profileRepository.get(any(User.class))).thenReturn(new Profile(aUSer, ids));
 
     healthCheckRepository.add(new Id("amazon.com"), new HealthCheckResponse(new URL("https://amazon.com"), 200,
         time.minusMinutes(1), time ));

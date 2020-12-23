@@ -1,28 +1,32 @@
 package com.alexmoleiro.healthchecker.infrastructure.repositories;
 
+import com.alexmoleiro.healthchecker.core.healthCheck.Id;
 import com.alexmoleiro.healthchecker.core.profile.Profile;
 import com.alexmoleiro.healthchecker.core.profile.ProfileRepository;
 import com.alexmoleiro.healthchecker.core.profile.User;
 
 import java.net.URL;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class ProfileRepositoryInMemory implements ProfileRepository {
 
-  private static final User USER = new User("1", "alex@email.com");
   private HashMap<User, Profile> users = new HashMap<>();
 
-  public ProfileRepositoryInMemory() {
-
-    users.put(USER, new Profile(USER));
+  @Override
+  public void addUrl(User user, URL url) {
+    if (!users.containsKey(user)) {
+      final HashSet<Id> urls = new HashSet<>();
+      urls.add(new Id(url.toString()));
+      users.put(user, new Profile(user, urls));
+    }
+    else {
+      users.get(user).getFollowing().add(new Id(url.toString()));
+    }
   }
 
   @Override
-  public void addUrl(User user, URL url) {}
-
-  //TODO temporarily hardcoded
-  @Override
   public Profile get(User user) {
-    return users.get(USER);
+    return users.get(user);
   }
 }

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.Set;
 
 import static java.time.LocalDateTime.now;
 import static java.util.List.of;
@@ -53,21 +54,22 @@ class HealthChecksInMemoryTest {
     assertThat(timedResults.get(0).getHealthCheckResponse().size()).isEqualTo(3);
   }
 
+  //TODO flaky
   @Test
   void shouldGetHCResponsesOfListOfId() throws MalformedURLException {
     final HealthCheckResponse response =
-        new HealthCheckResponse(new URL("http://www.a.com"), OK.value(), now(), now());
+        new HealthCheckResponse(new URL("http://www.e.com"), OK.value(), now(), now());
 
     final HealthCheckResponse response2 =
-        new HealthCheckResponse(new URL("http://www.b.com"), OK.value(), now(), now());
+        new HealthCheckResponse(new URL("http://www.f.com"), OK.value(), now(), now());
 
-    healthCheckResultsInMemory.add(new Id("a"), response);
-    healthCheckResultsInMemory.add(new Id("b"), response2);
+    healthCheckResultsInMemory.add(new Id("e"), response);
+    healthCheckResultsInMemory.add(new Id("f"), response2);
 
-    final List<HealthCheckResponses> responses = healthCheckResultsInMemory.getResponses(of(new Id("a"), new Id("b")));
+    final List<HealthCheckResponses> responses = healthCheckResultsInMemory.getResponses(Set.of(new Id("e"), new Id("f")));
 
-    assertThat(responses.get(0)).usingRecursiveComparison().isEqualTo(new HealthCheckResponses(new Id("a"), response));
-    assertThat(responses.get(1)).usingRecursiveComparison().isEqualTo(new HealthCheckResponses(new Id("b"), response2));
+    assertThat(responses.get(0)).usingRecursiveComparison().isEqualTo(new HealthCheckResponses(new Id("e"), response));
+    assertThat(responses.get(1)).usingRecursiveComparison().isEqualTo(new HealthCheckResponses(new Id("f"), response2));
 
   }
 }

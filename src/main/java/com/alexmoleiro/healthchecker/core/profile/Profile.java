@@ -2,19 +2,19 @@ package com.alexmoleiro.healthchecker.core.profile;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.Id;
 
-import java.util.List;
+import java.util.Set;
 
 public class Profile {
   private final User user;
-  private final List<Id> ids;
+  private Set<Id> ids;
 
-  public Profile(User user, List<Id> ids) {
+  public Profile(User user, Set<Id> ids) {
 
     this.user = user;
     this.ids = ids;
   }
 
-  public List<Id> getFollowing() {
+  public Set<Id> getFollowing() {
     return ids;
   }
 

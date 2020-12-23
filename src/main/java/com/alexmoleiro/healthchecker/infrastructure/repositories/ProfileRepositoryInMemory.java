@@ -7,24 +7,26 @@ import com.alexmoleiro.healthchecker.core.profile.User;
 
 import java.net.URL;
 import java.util.HashMap;
-
-import static java.util.List.of;
+import java.util.HashSet;
 
 public class ProfileRepositoryInMemory implements ProfileRepository {
 
-  private static final User USER = new User("1", "alex@email.com");
   private HashMap<User, Profile> users = new HashMap<>();
 
-  public ProfileRepositoryInMemory() {
-
-    users.put(USER, new Profile(USER, of(new Id("amazon.com"), new Id("sport.it"), new Id("joindrover.com"))));
+  @Override
+  public void addUrl(User user, URL url) {
+    if (!users.containsKey(user)) {
+      final HashSet<Id> urls = new HashSet<>();
+      urls.add(new Id(url.toString()));
+      users.put(user, new Profile(user, urls));
+    }
+    else {
+      users.get(user).getFollowing().add(new Id(url.toString()));
+    }
   }
 
   @Override
-  public void addUrl(User user, URL url) {}
-
-  @Override
   public Profile get(User user) {
-    return users.get(USER);
+    return users.get(user);
   }
 }

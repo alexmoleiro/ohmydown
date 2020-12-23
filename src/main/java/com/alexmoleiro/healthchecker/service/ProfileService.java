@@ -32,6 +32,7 @@ public class ProfileService {
   }
 
   public List<HealthCheckResponses> getResponses(User user) {
-    return healthCheckRepository.getResponses(new Profile(user).getFollowing());
+    final Profile profile = profileRepository.get(user);
+    return healthCheckRepository.getResponses(profile.getFollowing());
   }
 }

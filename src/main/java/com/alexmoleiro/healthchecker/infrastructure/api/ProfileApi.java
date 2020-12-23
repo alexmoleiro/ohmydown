@@ -24,8 +24,7 @@ public class ProfileApi {
   private final OauthService oauthService;
   private final ProfileService profileService;
 
-  public ProfileApi(OauthService oauthService,
-                    ProfileService profileService
+  public ProfileApi(OauthService oauthService, ProfileService profileService
   ) {
     this.oauthService = oauthService;
     this.profileService = profileService;

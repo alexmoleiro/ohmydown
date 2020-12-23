@@ -4,18 +4,18 @@ import com.alexmoleiro.healthchecker.core.healthCheck.Id;
 
 import java.util.List;
 
-import static java.util.List.of;
-
 public class Profile {
   private final User user;
+  private final List<Id> ids;
 
-  public Profile(User user) {
+  public Profile(User user, List<Id> ids) {
 
     this.user = user;
+    this.ids = ids;
   }
 
   public List<Id> getFollowing() {
-    return of(new Id("amazon.com"), new Id("sport.it"), new Id("joindrover.com"));
+    return ids;
   }
 
   public User getUser() {

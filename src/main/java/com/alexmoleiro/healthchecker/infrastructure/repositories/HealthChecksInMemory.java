@@ -1,9 +1,9 @@
 package com.alexmoleiro.healthchecker.infrastructure.repositories;
 
+import com.alexmoleiro.healthchecker.core.healthCheck.Endpoint;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponses;
-import com.alexmoleiro.healthchecker.core.healthCheck.Id;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +14,7 @@ import static java.util.stream.Collectors.toList;
 
 public class HealthChecksInMemory implements HealthCheckRepository {
 
-  private Map<Id, HealthCheckResponses> siteResults = new HashMap<>();
+  private Map<Endpoint, HealthCheckResponses> siteResults = new HashMap<>();
 
   public HealthChecksInMemory() {}
 
@@ -24,21 +24,21 @@ public class HealthChecksInMemory implements HealthCheckRepository {
   }
 
   @Override
-  public List<HealthCheckResponses> getResponses(Set<Id> ids) {
-    return  ids.stream().map(id -> getResponses(id)).collect(toList());
+  public List<HealthCheckResponses> getResponses(Set<Endpoint> endpoints) {
+    return  endpoints.stream().map(id -> getResponses(id)).collect(toList());
   }
 
   @Override
-  public HealthCheckResponses getResponses(Id id) {
-    return siteResults.get(id);
+  public HealthCheckResponses getResponses(Endpoint endpoint) {
+    return siteResults.get(endpoint);
   }
 
   @Override
-  public void add(Id id, HealthCheckResponse response) {
-    if (!siteResults.containsKey(id)) {
-      siteResults.put(id, new HealthCheckResponses(id, response));
+  public void add(Endpoint endpoint, HealthCheckResponse response) {
+    if (!siteResults.containsKey(endpoint)) {
+      siteResults.put(endpoint, new HealthCheckResponses(endpoint, response));
     } else {
-      siteResults.get(id).addLast(response);
+      siteResults.get(endpoint).addLast(response);
     }
   }
 }

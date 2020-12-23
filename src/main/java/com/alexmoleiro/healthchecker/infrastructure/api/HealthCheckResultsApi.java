@@ -1,7 +1,7 @@
 package com.alexmoleiro.healthchecker.infrastructure.api;
 
+import com.alexmoleiro.healthchecker.core.healthCheck.Endpoint;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
-import com.alexmoleiro.healthchecker.core.healthCheck.Id;
 import com.alexmoleiro.healthchecker.infrastructure.dto.HistoricResultsDto;
 import com.alexmoleiro.healthchecker.infrastructure.dto.SiteResultsDto;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -32,6 +32,6 @@ public class HealthCheckResultsApi {
   @CrossOrigin(origins = "http://localhost:3000")
   @GetMapping(value = "/historical/{id}", produces = "application/json")
   List<HistoricResultsDto> historic(@PathVariable String id) {
-    return list(healthCheckRepository.getResponses(new Id(id)));
+    return list(healthCheckRepository.getResponses(new Endpoint(id)));
   }
 }

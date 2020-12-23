@@ -1,10 +1,10 @@
 package com.alexmoleiro.healthchecker.service;
 
+import com.alexmoleiro.healthchecker.core.healthCheck.Endpoint;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRequest;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthChecker;
-import com.alexmoleiro.healthchecker.core.healthCheck.Id;
 import org.slf4j.Logger;
 
 import java.util.List;
@@ -40,7 +40,7 @@ public class HealthCheckerCrawler {
       final String polledDomain = domains.poll();
       final HealthCheckResponse response =
           healthChecker.check(new HealthCheckRequest(polledDomain));
-      healthCheckRepository.add(new Id(polledDomain), response);
+      healthCheckRepository.add(new Endpoint(polledDomain), response);
       LOGGER.info(response.toString());
     }
   }

@@ -2,10 +2,10 @@ package com.alexmoleiro.healthchecker.core.healthCheck;
 
 import java.util.Objects;
 
-public class Id {
+public class Endpoint {
   private final String id;
 
-  public Id(String id) {
+  public Endpoint(String id) {
     this.id = id;
   }
 
@@ -21,8 +21,8 @@ public class Id {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Id id1 = (Id) o;
-    return Objects.equals(id, id1.id);
+    Endpoint endpoint1 = (Endpoint) o;
+    return Objects.equals(id, endpoint1.id);
   }
 
   @Override

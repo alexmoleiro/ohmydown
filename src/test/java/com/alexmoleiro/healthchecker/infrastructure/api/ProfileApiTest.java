@@ -1,8 +1,8 @@
 package com.alexmoleiro.healthchecker.infrastructure.api;
 
+import com.alexmoleiro.healthchecker.core.healthCheck.Endpoint;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
-import com.alexmoleiro.healthchecker.core.healthCheck.Id;
 import com.alexmoleiro.healthchecker.core.profile.OauthService;
 import com.alexmoleiro.healthchecker.core.profile.ProfileRepository;
 import com.alexmoleiro.healthchecker.core.profile.User;
@@ -16,7 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.net.URL;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
 
 import static java.time.LocalDateTime.of;
@@ -50,7 +49,7 @@ class ProfileApiTest {
   @Test
   void shouldAddDomain() throws Exception {
 
-    final User user = new User("id", "alex@email.com");
+    final User user = new User("endpoint", "alex@email.com");
     when(oauthService.getUser(anyString())).thenReturn(user);
     String aToken = "aToken";
     final String validUrl = "https://www.as.com";
@@ -64,7 +63,7 @@ class ProfileApiTest {
         .andExpect(status().isCreated());
 
     assertThat(profileRepository.get(user).getFollowing())
-        .isEqualTo(Set.of(new Id("https://www.as.com")));
+        .isEqualTo(Set.of(new Endpoint("https://www.as.com")));
     }
 
   @Test
@@ -105,36 +104,36 @@ class ProfileApiTest {
   @Test
   void shouldRespondFollowebWebsites() throws Exception {
 
-    final String anId = "id";
+    final String anId = "endpoint";
     final String anEmail = "alex@email.com";
     final String aToken = "anything";
     LocalDateTime time = of(2020, 11, 30, 12, 00);
     final User aUSer = new User(anId, anEmail);
     when(oauthService.getUser(aToken)).thenReturn(aUSer);
 
-    profileRepository.addUrl(aUSer, new Id("amazon.com"));
-    profileRepository.addUrl(aUSer, new Id("sport.it"));
-    profileRepository.addUrl(aUSer, new Id("joindrover.com"));
+    profileRepository.addUrl(aUSer, new Endpoint("amazon.com"));
+    profileRepository.addUrl(aUSer, new Endpoint("sport.it"));
+    profileRepository.addUrl(aUSer, new Endpoint("joindrover.com"));
 
-    healthCheckRepository.add(new Id("amazon.com"), new HealthCheckResponse(new URL("https://amazon.com"), 200,
+    healthCheckRepository.add(new Endpoint("amazon.com"), new HealthCheckResponse(new URL("https://amazon.com"), 200,
         time.minusMinutes(1), time ));
-    healthCheckRepository.add(new Id("amazon.com"), new HealthCheckResponse(new URL("https://amazon.com"), 200,
-        time.minusMinutes(1), time ));
-
-    healthCheckRepository.add(new Id("sport.it"), new HealthCheckResponse(new URL("https://sport.it"), 200,
-        time.minusMinutes(1), time ));
-    healthCheckRepository.add(new Id("sport.it"), new HealthCheckResponse(new URL("https://sport.it"), 200,
+    healthCheckRepository.add(new Endpoint("amazon.com"), new HealthCheckResponse(new URL("https://amazon.com"), 200,
         time.minusMinutes(1), time ));
 
-    healthCheckRepository.add(new Id("joindrover.com"), new HealthCheckResponse(new URL("https://joindrover.com"), 200,
+    healthCheckRepository.add(new Endpoint("sport.it"), new HealthCheckResponse(new URL("https://sport.it"), 200,
         time.minusMinutes(1), time ));
-    healthCheckRepository.add(new Id("joindrover.com"), new HealthCheckResponse(new URL("https://joindrover.com"), 200,
+    healthCheckRepository.add(new Endpoint("sport.it"), new HealthCheckResponse(new URL("https://sport.it"), 200,
+        time.minusMinutes(1), time ));
+
+    healthCheckRepository.add(new Endpoint("joindrover.com"), new HealthCheckResponse(new URL("https://joindrover.com"), 200,
+        time.minusMinutes(1), time ));
+    healthCheckRepository.add(new Endpoint("joindrover.com"), new HealthCheckResponse(new URL("https://joindrover.com"), 200,
         time.minusMinutes(1), time ));
 
     this.mockMvc.perform(get("/profile").header("Token", aToken))
         .andExpect(status().isOk())
         .andExpect(content().json("""              
-              {"responses":[{"id":{"value":"amazon.com"},"healthCheckResponse":[{"time":"2020-11-30T12:00:00","url":"https://amazon.com","delay":60000,"status":200},{"time":"2020-11-30T12:00:00","url":"https://amazon.com","delay":60000,"status":200}]},{"id":{"value":"sport.it"},"healthCheckResponse":[{"time":"2020-11-30T12:00:00","url":"https://sport.it","delay":60000,"status":200},{"time":"2020-11-30T12:00:00","url":"https://sport.it","delay":60000,"status":200}]},{"id":{"value":"joindrover.com"},"healthCheckResponse":[{"time":"2020-11-30T12:00:00","url":"https://joindrover.com","delay":60000,"status":200},{"time":"2020-11-30T12:00:00","url":"https://joindrover.com","delay":60000,"status":200}]}],"userId":"id"}
+              {"responses":[{"id":{"value":"amazon.com"},"healthCheckResponse":[{"time":"2020-11-30T12:00:00","url":"https://amazon.com","delay":60000,"status":200},{"time":"2020-11-30T12:00:00","url":"https://amazon.com","delay":60000,"status":200}]},{"id":{"value":"sport.it"},"healthCheckResponse":[{"time":"2020-11-30T12:00:00","url":"https://sport.it","delay":60000,"status":200},{"time":"2020-11-30T12:00:00","url":"https://sport.it","delay":60000,"status":200}]},{"id":{"value":"joindrover.com"},"healthCheckResponse":[{"time":"2020-11-30T12:00:00","url":"https://joindrover.com","delay":60000,"status":200},{"time":"2020-11-30T12:00:00","url":"https://joindrover.com","delay":60000,"status":200}]}],"userId":"endpoint"}
               """));
   }
 }

@@ -13,7 +13,7 @@ class ProfileRepositoryInMemoryTest {
   ProfileRepositoryInMemory repository = new ProfileRepositoryInMemory();
 
   @Test
-  void shouldAddAUrl() throws MalformedURLException {
+  void shouldAddAUrl() {
     final User user = new User("1", "alex@email.com");
 
     repository.addUrl(user, new Endpoint("https://www.a.com"));
@@ -27,5 +27,10 @@ class ProfileRepositoryInMemoryTest {
             new Endpoint("https://www.b.com"),
             new Endpoint("https://www.c.com")
         ));
+  }
+
+  @Test
+  void shouldReturnUser() {
+
   }
 }

@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 import static java.time.LocalDateTime.of;
+import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
@@ -104,9 +105,9 @@ class ProfileApiTest {
   @Test
   void shouldRespondFollowebWebsites() throws Exception {
 
-    final String anId = "endpoint";
-    final String anEmail = "alex@email.com";
-    final String aToken = "anything";
+    final String anId = randomString();
+    final String anEmail = "alex@email2.com";
+    final String aToken = randomString();
     LocalDateTime time = of(2020, 11, 30, 12, 00);
     final User aUser = new User(anId, anEmail);
     when(oauthService.getUser(aToken)).thenReturn(aUser);
@@ -146,7 +147,11 @@ class ProfileApiTest {
               "healthCheckResponse":[
               {"time":"2020-11-30T12:00:00","url":"https://joindrover.com","delay":60000,"status":200},
               {"time":"2020-11-30T12:00:00","url":"https://joindrover.com","delay":60000,"status":200}]}],
-              "userId":"endpoint"}
-              """));
+              "userId":"%s"}
+              """.formatted(anId)));
+  }
+
+  private String randomString() {
+    return randomUUID().toString();
   }
 }

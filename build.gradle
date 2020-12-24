@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.alfasexmoleiro'
-version = '0.34'
+version = '0.35'
 sourceCompatibility = '15'
 
 repositories {

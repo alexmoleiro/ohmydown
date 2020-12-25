@@ -8,6 +8,9 @@ import com.alexmoleiro.healthchecker.core.profile.User;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
 
 public class ProfileRepositoryInMemory implements ProfileRepository {
 
@@ -26,7 +29,7 @@ public class ProfileRepositoryInMemory implements ProfileRepository {
   }
 
   @Override
-  public Profile get(User user) {
-    return users.get(user);
+  public Optional<Profile> get(User user) {
+    return ofNullable(users.get(user));
   }
 }

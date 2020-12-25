@@ -63,7 +63,7 @@ class ProfileApiTest {
         {"url":"%s"}""".formatted(validUrl)))
         .andExpect(status().isCreated());
 
-    assertThat(profileRepository.get(user).getFollowing())
+    assertThat(profileRepository.get(user).get().getFollowing())
         .isEqualTo(Set.of(new Endpoint("https://www.as.com")));
     }
 

@@ -2,7 +2,7 @@ package com.alexmoleiro.healthchecker.infrastructure.api;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.HttpUrl;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthChecker;
-import com.alexmoleiro.healthchecker.core.healthCheck.WebStatusRequestException;
+import com.alexmoleiro.healthchecker.core.healthCheck.InvalidHttpUrlException;
 import com.alexmoleiro.healthchecker.infrastructure.dto.HealthCheckResponseDto;
 import com.alexmoleiro.healthchecker.infrastructure.dto.WebStatusRequestDto;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -30,8 +30,8 @@ public class HealthApi {
   }
 
   @ResponseStatus(value= BAD_REQUEST)
-  @ExceptionHandler(WebStatusRequestException.class)
-  public String invalidDomainNames(WebStatusRequestException e) {
+  @ExceptionHandler(InvalidHttpUrlException.class)
+  public String invalidDomainNames(InvalidHttpUrlException e) {
     return e.toString();
   }
 

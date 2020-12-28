@@ -1,22 +1,14 @@
 package com.alexmoleiro.healthchecker.infrastructure.api;
 
-import com.alexmoleiro.healthchecker.core.healthCheck.InvalidUrlException;
+import com.alexmoleiro.healthchecker.core.healthCheck.HttpUrl;
+import com.alexmoleiro.healthchecker.core.healthCheck.InvalidHttpUrlException;
 import com.alexmoleiro.healthchecker.core.profile.OauthService;
 import com.alexmoleiro.healthchecker.infrastructure.dto.ProfileDto;
 import com.alexmoleiro.healthchecker.infrastructure.dto.WebStatusRequestDto;
 import com.alexmoleiro.healthchecker.service.ProfileService;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 public class ProfileApi {
@@ -43,7 +35,7 @@ public class ProfileApi {
       @RequestHeader("Token") String token,
       @RequestBody WebStatusRequestDto webStatusRequestDto) {
 
-    profileService.addUrl(oauthService.getUser(token), webStatusRequestDto.getUrl());
+    profileService.addUrl(oauthService.getUser(token), new HttpUrl(webStatusRequestDto.getUrl()));
   }
 
   @ResponseStatus(value= FORBIDDEN)
@@ -52,7 +44,7 @@ public class ProfileApi {
   }
 
   @ResponseStatus(value= BAD_REQUEST)
-  @ExceptionHandler(InvalidUrlException.class)
+  @ExceptionHandler(InvalidHttpUrlException.class)
   public void invalidUrl() {
   }
 

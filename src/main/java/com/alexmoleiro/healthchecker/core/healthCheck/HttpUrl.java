@@ -20,15 +20,20 @@ public class HttpUrl {
         throw new MalformedURLException("No http protocol");
       }
       if (!url.getHost().matches(DOMAIN_PATTERN) && !url.getHost().equals("localhost")) {
-        throw new WebStatusRequestException(urlString, "Invalid domain name");
+        throw new InvalidHttpUrlException(urlString, "Invalid domain name");
       }
     } catch (MalformedURLException e) {
       if (e.getMessage().contains("no protocol")) {
         setUrl("http://" + urlString);
       } else {
-        throw new WebStatusRequestException(urlString, e.getMessage());
+        throw new InvalidHttpUrlException(urlString, e.getMessage());
       }
     }
+  }
+
+  @Override
+  public String toString() {
+    return url.toString();
   }
 
   public URL getUrl() {

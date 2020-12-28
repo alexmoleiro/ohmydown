@@ -41,4 +41,8 @@ public class HealthChecksInMemory implements HealthCheckRepository {
       siteResults.get(endpoint).addLast(response);
     }
   }
+
+  public void deleteAll() {
+    siteResults.clear();
+  }
 }

@@ -24,7 +24,7 @@ public class ProfileService {
   }
 
   public void addUrl(User user, HttpUrl httpUrl) {
-    profileRepository.addUrl(user, new Endpoint(httpUrl.toString()));
+    profileRepository.addUrl(user, new Endpoint(httpUrl));
   }
 
   public List<HealthCheckResponses> getResponses(User user) {

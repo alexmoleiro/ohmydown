@@ -9,4 +9,5 @@ public interface HealthCheckRepository {
   List<HealthCheckResponses> getResponses(Set<Endpoint> endpoints);
   HealthCheckResponses getResponses(Endpoint endpoint);
   void add(Endpoint endpoint, HealthCheckResponse response);
+  void deleteAll();
 }

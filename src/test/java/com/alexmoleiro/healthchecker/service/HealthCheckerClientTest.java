@@ -1,6 +1,6 @@
 package com.alexmoleiro.healthchecker.service;
 
-import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRequest;
+import com.alexmoleiro.healthchecker.core.healthCheck.HttpUrl;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 
 import static com.alexmoleiro.healthchecker.core.healthCheck.CheckResultCode.SERVER_TIMEOUT;
 import static com.alexmoleiro.healthchecker.core.healthCheck.CheckResultCode.SSL_CERTIFICATE_ERROR;
+import static java.net.URI.create;
 import static java.time.Duration.ofSeconds;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.of;
@@ -35,7 +36,7 @@ import static org.mockito.Mockito.when;
 
 class HealthCheckerClientTest {
 
-  public static final String URL = "http://www.alexmoleiro.com";
+  public static final String URL_STRING = "http://www.alexmoleiro.com";
 
   @Test
   void shouldReturnStatusCode() throws InterruptedException, IOException {
@@ -44,9 +45,9 @@ class HealthCheckerClientTest {
     final int statusCode = new Random().nextInt();
 
     when(mock.send(any(HttpRequest.class), any(BodyHandler.class)))
-        .thenReturn(getHttpResponse(statusCode, URL));
+        .thenReturn(getHttpResponse(statusCode, URL_STRING));
 
-    final HealthCheckResponse check = new HealthCheckerClient(mock, ofSeconds(5)).check(new HealthCheckRequest(URL));
+    final HealthCheckResponse check = new HealthCheckerClient(mock, ofSeconds(5)).check(new HttpUrl(URL_STRING));
 
     assertThat(check.getStatus()).isEqualTo(statusCode);
   }
@@ -57,7 +58,7 @@ class HealthCheckerClientTest {
     final HttpClient mock = mock(HttpClient.class);
     doThrow(e).when(mock).send(any(HttpRequest.class), any(BodyHandler.class));
 
-    final HealthCheckResponse check = new HealthCheckerClient(mock, ofSeconds(5)).check(new HealthCheckRequest(URL));
+    final HealthCheckResponse check = new HealthCheckerClient(mock, ofSeconds(5)).check(new HttpUrl(URL_STRING));
 
     assertThat(check.getStatus()).isEqualTo(statusCode);
   }
@@ -105,7 +106,7 @@ class HealthCheckerClientTest {
 
       @Override
       public URI uri() {
-        return URI.create(url);
+        return create(url);
       }
 
       @Override

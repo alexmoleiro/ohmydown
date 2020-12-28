@@ -1,7 +1,7 @@
 package com.alexmoleiro.healthchecker.service;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.Endpoint;
-import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRequest;
+import com.alexmoleiro.healthchecker.core.healthCheck.HttpUrl;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ class HealthCheckerCrawlerTest {
     final int nThreads = 5;
     final URL url = new URL("http://www.j.com");
 
-    when(healthCheckerClient.check(any(HealthCheckRequest.class)))
+    when(healthCheckerClient.check(any(HttpUrl.class)))
         .thenReturn(new HealthCheckResponse(url, OK.value(), now(), now()));
 
     new HealthCheckerCrawler(healthCheckerClient, healthCheckRepository, nThreads)

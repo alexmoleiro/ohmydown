@@ -1,14 +1,11 @@
 package com.alexmoleiro.healthchecker.service;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.DomainsRepository;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-@EnableScheduling
+
 public class Scheduler {
 
   private final HealthCheckerCrawler healthCheckerCrawler;

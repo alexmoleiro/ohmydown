@@ -1,7 +1,7 @@
 package com.alexmoleiro.healthchecker.service;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.Endpoint;
-import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRequest;
+import com.alexmoleiro.healthchecker.core.healthCheck.HttpUrl;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthChecker;
@@ -39,7 +39,7 @@ public class HealthCheckerCrawler {
     while (domains.peek() != null) {
       final String polledDomain = domains.poll();
       final HealthCheckResponse response =
-          healthChecker.check(new HealthCheckRequest(polledDomain));
+          healthChecker.check(new HttpUrl(polledDomain));
       healthCheckRepository.add(new Endpoint(polledDomain), response);
       LOGGER.info(response.toString());
     }

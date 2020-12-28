@@ -1,6 +1,6 @@
 package com.alexmoleiro.healthchecker.infrastructure.api;
 
-import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRequest;
+import com.alexmoleiro.healthchecker.core.healthCheck.HttpUrl;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthChecker;
 import com.alexmoleiro.healthchecker.core.healthCheck.WebStatusRequestException;
 import com.alexmoleiro.healthchecker.infrastructure.dto.HealthCheckResponseDto;
@@ -26,7 +26,7 @@ public class HealthApi {
   @CrossOrigin(origins = "http://localhost:3000")
   @PostMapping("/status")
   HealthCheckResponseDto healthCheck(@RequestBody WebStatusRequestDto webStatusRequestDto) {
-    return new HealthCheckResponseDto(healthChecker.check(new HealthCheckRequest(webStatusRequestDto.getUrl())));
+    return new HealthCheckResponseDto(healthChecker.check(new HttpUrl(webStatusRequestDto.getUrl())));
   }
 
   @ResponseStatus(value= BAD_REQUEST)

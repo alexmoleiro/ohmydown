@@ -1,14 +1,10 @@
 package com.alexmoleiro.healthchecker.infrastructure.dto;
 
-public class WebStatusRequestDto {
+public class UrlDto {
 
   private  String url;
 
-  public WebStatusRequestDto() {
-  }
-
-  public WebStatusRequestDto(String url) {
-    this.url = url;
+  public UrlDto() {
   }
 
   public String getUrl() {

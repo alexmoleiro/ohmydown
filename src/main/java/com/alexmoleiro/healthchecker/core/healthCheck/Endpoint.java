@@ -3,10 +3,13 @@ package com.alexmoleiro.healthchecker.core.healthCheck;
 import java.util.Objects;
 
 public class Endpoint {
+
+  private HttpUrl httpUrl;
   private String id;
 
-  public Endpoint(String id) {
-    this.id = id;
+  public Endpoint(HttpUrl httpUrl) {
+    this.httpUrl = httpUrl;
+    this.id = httpUrl.toString();
   }
 
   public String getId() {
@@ -15,12 +18,8 @@ public class Endpoint {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
     Endpoint endpoint = (Endpoint) o;
     return Objects.equals(id, endpoint.id);
   }

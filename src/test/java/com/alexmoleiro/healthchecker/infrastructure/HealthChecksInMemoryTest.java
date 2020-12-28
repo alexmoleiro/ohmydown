@@ -1,9 +1,6 @@
 package com.alexmoleiro.healthchecker.infrastructure;
 
-import com.alexmoleiro.healthchecker.core.healthCheck.Endpoint;
-import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
-import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
-import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponses;
+import com.alexmoleiro.healthchecker.core.healthCheck.*;
 import com.alexmoleiro.healthchecker.infrastructure.repositories.HealthChecksInMemory;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +16,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 class HealthChecksInMemoryTest {
 
-  private static final Endpoint ENDPOINT = new Endpoint("id");
+  private static final Endpoint ENDPOINT = new Endpoint(new HttpUrl("http://www.id.com"));
   private static final String A_URL = "https://www.a.com";
   private HealthCheckRepository healthCheckResultsInMemory = new HealthChecksInMemory();
 
@@ -62,11 +59,11 @@ class HealthChecksInMemoryTest {
     final HealthCheckResponse response2 =
         new HealthCheckResponse(new URL("http://www.f.com"), OK.value(), now(), now());
 
-    healthCheckResultsInMemory.add(new Endpoint("e"), response);
-    healthCheckResultsInMemory.add(new Endpoint("f"), response2);
+    healthCheckResultsInMemory.add(new Endpoint(new HttpUrl("http://www.e.com")), response);
+    healthCheckResultsInMemory.add(new Endpoint(new HttpUrl("http://www.f.com")), response2);
 
     final List<HealthCheckResponses> responses =
-        healthCheckResultsInMemory.getResponses(Set.of(new Endpoint("e"), new Endpoint("f")));
-    assertThat(responses).extracting("endpoint").extracting("id").contains("e", "f");
+        healthCheckResultsInMemory.getResponses(Set.of(new Endpoint(new HttpUrl("http://www.e.com")), new Endpoint(new HttpUrl("http://www.f.com"))));
+    assertThat(responses).extracting("endpoint").extracting("id").contains("http://www.e.com", "http://www.f.com");
   }
 }

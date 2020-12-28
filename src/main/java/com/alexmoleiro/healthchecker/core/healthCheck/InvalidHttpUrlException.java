@@ -1,10 +1,10 @@
 package com.alexmoleiro.healthchecker.core.healthCheck;
 
-public class WebStatusRequestException extends RuntimeException {
+public class InvalidHttpUrlException extends RuntimeException {
   private final String url;
   private final String message;
 
-  public WebStatusRequestException(String url, String message) {
+  public InvalidHttpUrlException(String url, String message) {
     this.url = url;
     this.message = message;
   }

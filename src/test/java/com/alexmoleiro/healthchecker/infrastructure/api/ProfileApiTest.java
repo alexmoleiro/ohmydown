@@ -3,6 +3,7 @@ package com.alexmoleiro.healthchecker.infrastructure.api;
 import com.alexmoleiro.healthchecker.core.healthCheck.Endpoint;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
+import com.alexmoleiro.healthchecker.core.healthCheck.HttpUrl;
 import com.alexmoleiro.healthchecker.core.profile.OauthService;
 import com.alexmoleiro.healthchecker.core.profile.ProfileRepository;
 import com.alexmoleiro.healthchecker.core.profile.User;
@@ -63,8 +64,8 @@ class ProfileApiTest {
         {"url":"%s"}""".formatted(validUrl)))
         .andExpect(status().isCreated());
 
-    assertThat(profileRepository.get(user).get().getFollowing())
-        .isEqualTo(Set.of(new Endpoint("https://www.as.com")));
+    assertThat(profileRepository.get(user).get().getFollowing()).usingRecursiveComparison()
+        .isEqualTo(Set.of(new Endpoint(new HttpUrl("https://www.as.com"))));
     }
 
   @Test
@@ -112,23 +113,23 @@ class ProfileApiTest {
     final User aUser = new User(anId, anEmail);
     when(oauthService.getUser(aToken)).thenReturn(aUser);
 
-    profileRepository.addUrl(aUser, new Endpoint("https://amazon.com"));
-    profileRepository.addUrl(aUser, new Endpoint("sport.it"));
-    profileRepository.addUrl(aUser, new Endpoint("joindrover.com"));
+    profileRepository.addUrl(aUser, new Endpoint(new HttpUrl("https://amazon.com")));
+    profileRepository.addUrl(aUser, new Endpoint(new HttpUrl("https://sport.it")));
+    profileRepository.addUrl(aUser, new Endpoint(new HttpUrl("https://joindrover.com")));
 
-    healthCheckRepository.add(new Endpoint("https://amazon.com"), new HealthCheckResponse(new URL("https://amazon.com"), 200,
+    healthCheckRepository.add(new Endpoint(new HttpUrl("https://amazon.com")), new HealthCheckResponse(new URL("https://amazon.com"), 200,
         time.minusMinutes(1), time ));
-    healthCheckRepository.add(new Endpoint("https://amazon.com"), new HealthCheckResponse(new URL("https://amazon.com"), 200,
-        time.minusMinutes(1), time ));
-
-    healthCheckRepository.add(new Endpoint("sport.it"), new HealthCheckResponse(new URL("https://sport.it"), 200,
-        time.minusMinutes(1), time ));
-    healthCheckRepository.add(new Endpoint("sport.it"), new HealthCheckResponse(new URL("https://sport.it"), 200,
+    healthCheckRepository.add(new Endpoint(new HttpUrl("https://amazon.com")), new HealthCheckResponse(new URL("https://amazon.com"), 200,
         time.minusMinutes(1), time ));
 
-    healthCheckRepository.add(new Endpoint("joindrover.com"), new HealthCheckResponse(new URL("https://joindrover.com"), 200,
+    healthCheckRepository.add(new Endpoint(new HttpUrl("https://sport.it")), new HealthCheckResponse(new URL("https://sport.it"), 200,
         time.minusMinutes(1), time ));
-    healthCheckRepository.add(new Endpoint("joindrover.com"), new HealthCheckResponse(new URL("https://joindrover.com"), 200,
+    healthCheckRepository.add(new Endpoint(new HttpUrl("https://sport.it")), new HealthCheckResponse(new URL("https://sport.it"), 200,
+        time.minusMinutes(1), time ));
+
+    healthCheckRepository.add(new Endpoint(new HttpUrl("https://joindrover.com")), new HealthCheckResponse(new URL("https://joindrover.com"), 200,
+        time.minusMinutes(1), time ));
+    healthCheckRepository.add(new Endpoint(new HttpUrl("https://joindrover.com")), new HealthCheckResponse(new URL("https://joindrover.com"), 200,
         time.minusMinutes(1), time ));
 
     this.mockMvc.perform(get("/profile").header("Token", aToken))
@@ -139,11 +140,11 @@ class ProfileApiTest {
               "healthCheckResponse":[
               {"time":"2020-11-30T12:00:00","url":"https://amazon.com","delay":60000,"status":200},
               {"time":"2020-11-30T12:00:00","url":"https://amazon.com","delay":60000,"status":200}]}
-              ,{"endpoint":{"id":"sport.it"},
+              ,{"endpoint":{"id":"https://sport.it"},
               "healthCheckResponse":[
               {"time":"2020-11-30T12:00:00","url":"https://sport.it","delay":60000,"status":200},
               {"time":"2020-11-30T12:00:00","url":"https://sport.it","delay":60000,"status":200}]},
-              {"endpoint":{"id":"joindrover.com"},
+              {"endpoint":{"id":"https://joindrover.com"},
               "healthCheckResponse":[
               {"time":"2020-11-30T12:00:00","url":"https://joindrover.com","delay":60000,"status":200},
               {"time":"2020-11-30T12:00:00","url":"https://joindrover.com","delay":60000,"status":200}]}],

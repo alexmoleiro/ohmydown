@@ -11,15 +11,18 @@ import com.alexmoleiro.healthchecker.infrastructure.repositories.ProfileReposito
 import com.alexmoleiro.healthchecker.service.HealthCheckerClient;
 import com.alexmoleiro.healthchecker.service.HealthCheckerCrawler;
 import com.alexmoleiro.healthchecker.service.ProfileService;
+import com.alexmoleiro.healthchecker.service.Scheduler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import static java.net.http.HttpClient.Redirect.ALWAYS;
 import static java.net.http.HttpClient.newBuilder;
 import static java.time.Duration.ofSeconds;
 
+@EnableScheduling
 @Configuration
 public class InfrastuctureConfiguration {
 
@@ -54,6 +57,11 @@ public class InfrastuctureConfiguration {
   HealthCheckerCrawler checkDaemon(
       HealthChecker healthChecker, HealthCheckRepository healthCheckRepository) {
     return new HealthCheckerCrawler(healthChecker, healthCheckRepository, nThreads);
+  }
+
+  @Bean
+  Scheduler scheduler(HealthCheckerCrawler healthCheckerCrawler, DomainsRepository domainsRepository) {
+    return new Scheduler(healthCheckerCrawler, domainsRepository);
   }
 
   @Bean

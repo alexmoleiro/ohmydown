@@ -1,6 +1,6 @@
 package com.alexmoleiro.healthchecker.client;
 
-import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRequest;
+import com.alexmoleiro.healthchecker.core.healthCheck.HttpUrl;
 import com.alexmoleiro.healthchecker.service.HealthCheckerClient;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +31,7 @@ public class HttpClientTest {
 
     stubFor(get(urlEqualTo("/log")).willReturn(aResponse().withStatus(OK.value())));
 
-    new HealthCheckerClient(client, ofSeconds(2)).check(new HealthCheckRequest("http://localhost:8765/log"));
+    new HealthCheckerClient(client, ofSeconds(2)).check(new HttpUrl("http://localhost:8765/log"));
 
     verify(getRequestedFor(urlMatching("/log")));
   }

@@ -1,6 +1,6 @@
 package com.alexmoleiro.healthchecker.core;
 
-import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRequest;
+import com.alexmoleiro.healthchecker.core.healthCheck.HttpUrl;
 import com.alexmoleiro.healthchecker.core.healthCheck.WebStatusRequestException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -11,13 +11,13 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.params.provider.Arguments.of;
 
-class HealthCheckRequestTest {
+class HttpUrlTest {
 
   @ParameterizedTest
   @MethodSource("invalidUrl")
   void shouldThrowExceptionWhenInvalidUrl(String invalidUrl) {
 
-    assertThatThrownBy(() -> new HealthCheckRequest(invalidUrl))
+    assertThatThrownBy(() -> new HttpUrl(invalidUrl))
         .isInstanceOf(WebStatusRequestException.class);
   }
 

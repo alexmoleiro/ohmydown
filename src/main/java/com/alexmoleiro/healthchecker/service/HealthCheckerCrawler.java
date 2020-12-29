@@ -6,7 +6,7 @@ import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthChecker;
 import org.slf4j.Logger;
 
-import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import static java.util.concurrent.CompletableFuture.runAsync;
@@ -28,17 +28,17 @@ public class HealthCheckerCrawler {
     this.nThreads = nThreads;
   }
 
-  public void run(List<Endpoint> endpoints) {
-    ConcurrentLinkedDeque<Endpoint> domainsQueue = new ConcurrentLinkedDeque<>(endpoints);
-    rangeClosed(1, nThreads).forEach(thread -> runAsync(() -> getHealthStatus(domainsQueue)));
+  public void run(Set<Endpoint> endpoints) {
+    ConcurrentLinkedDeque<Endpoint> endpointsQueue = new ConcurrentLinkedDeque<>(endpoints);
+    rangeClosed(1, nThreads).forEach(thread -> runAsync(() -> getHealthStatus(endpointsQueue)));
   }
 
   private void getHealthStatus(ConcurrentLinkedDeque<Endpoint> endpoints) {
 
     while (endpoints.peek() != null) {
-      final Endpoint polledEnpoint = endpoints.poll();
-      final HealthCheckResponse response = healthChecker.check(polledEnpoint.getUrl());
-      healthCheckRepository.add(polledEnpoint, response);
+      final Endpoint polledEndpoint = endpoints.poll();
+      final HealthCheckResponse response = healthChecker.check(polledEndpoint.getUrl());
+      healthCheckRepository.add(polledEndpoint, response);
       LOGGER.info(response.toString());
     }
   }

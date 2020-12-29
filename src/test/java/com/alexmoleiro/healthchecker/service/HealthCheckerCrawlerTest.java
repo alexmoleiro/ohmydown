@@ -7,6 +7,7 @@ import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.time.LocalDateTime.now;
 import static java.util.List.of;
@@ -30,6 +31,7 @@ class HealthCheckerCrawlerTest {
     final HealthCheckRepository healthCheckRepository =
         mock(HealthCheckRepository.class);
     final List<String> domains = of("www.a.com", "www.b.com", "www.c.com", "www.d.es", "www.e.com");
+    List<Endpoint> endpoints = domains.stream().map(domain -> new Endpoint(new HttpUrl(domain))).collect(Collectors.toList());
     final int nThreads = 5;
     final HttpUrl url = new HttpUrl("http://www.j.com");
 
@@ -37,7 +39,7 @@ class HealthCheckerCrawlerTest {
         .thenReturn(new HealthCheckResponse(url, OK.value(), now(), now()));
 
     new HealthCheckerCrawler(healthCheckerClient, healthCheckRepository, nThreads)
-        .run(domains);
+        .run(endpoints);
 
     domains.stream()
         .forEach(

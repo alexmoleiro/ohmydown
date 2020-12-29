@@ -62,22 +62,22 @@ public class HealthCheckResultsApiTest {
     //TODO flaky tests
   @Test
   void shouldReturnLandingListSites() throws Exception {
+    LocalDateTime now = now();
     repository.deleteAll();
     repository.add(
-        new Endpoint(new HttpUrl("https://www.z.com")), new HealthCheckResponse(new HttpUrl("https://www.z.com"), OK.value(),
-        now().minusHours(1), now()));
+        new Endpoint(new HttpUrl("https://www.z.com"))
+            , new HealthCheckResponse(new HttpUrl("https://www.z.com"), OK.value(), now, now));
 
     repository.add(new Endpoint(new HttpUrl("https://www.x.com")),
-        new HealthCheckResponse(new HttpUrl("https://www.x.com"), INTERNAL_SERVER_ERROR.value(),
-        now().minusHours(1), now()
+        new HealthCheckResponse(new HttpUrl("https://www.x.com"), INTERNAL_SERVER_ERROR.value(), now, now
     ));
 
       this.mockMvc.perform(post("/landing-list"))
           .andExpect(status().isOk())
           .andExpect(content().json("""
               {"responses":[
-              {"url":"https://www.z.com","delay":3600000,"status":200,"id":"https://www.z.com"},
-              {"url":"https://www.x.com","delay":3600000,"status":500,"id":"https://www.x.com"}
+              {"url":"https://www.z.com","delay":0,"status":200,"id":"https://www.z.com"},
+              {"url":"https://www.x.com","delay":0,"status":500,"id":"https://www.x.com"}
               ],
               "numUrls":2}"""));
   }

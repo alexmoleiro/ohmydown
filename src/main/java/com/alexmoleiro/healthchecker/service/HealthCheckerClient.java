@@ -63,7 +63,7 @@ public class HealthCheckerClient implements HealthChecker {
         client.send(
             newBuilder()
                 .GET()
-                .uri(create(httpUrl.getUrl().toString()))
+                .uri(create(httpUrl.toString()))
                 .setHeader(USER_AGENT, random())
                 .timeout(timeout)
                 .build(),

@@ -112,28 +112,25 @@ class ProfileApiTest {
     final User aUser = new User(anId, anEmail);
     when(oauthService.getUser(aToken)).thenReturn(aUser);
 
-    Endpoint endpointA = new Endpoint(new HttpUrl("https://amazon.com"));
-    Endpoint endPointB = new Endpoint(new HttpUrl("https://sport.it"));
-    Endpoint endpointC = new Endpoint(new HttpUrl("https://joindrover.com"));
+    HttpUrl httpUrlA = new HttpUrl("https://amazon.com");
+    Endpoint endpointA = new Endpoint(httpUrlA);
+    HttpUrl httpUrlB = new HttpUrl("https://sport.it");
+    Endpoint endPointB = new Endpoint(httpUrlB);
+    HttpUrl httpUrlC = new HttpUrl("https://joindrover.com");
+    Endpoint endpointC = new Endpoint(httpUrlC);
 
     profileRepository.addUrl(aUser, endpointA);
     profileRepository.addUrl(aUser, endPointB);
     profileRepository.addUrl(aUser, endpointC);
 
-    healthCheckRepository.add(endpointA, new HealthCheckResponse(new HttpUrl("https://amazon.com"), 200,
-        time.minusMinutes(1), time ));
-    healthCheckRepository.add(endpointA, new HealthCheckResponse(new HttpUrl("https://amazon.com"), 200,
-        time.minusMinutes(1), time ));
+    healthCheckRepository.add(endpointA, new HealthCheckResponse(httpUrlA, 200, time.minusMinutes(1), time ));
+    healthCheckRepository.add(endpointA, new HealthCheckResponse(httpUrlA, 200, time.minusMinutes(1), time ));
 
-    healthCheckRepository.add(endPointB, new HealthCheckResponse(new HttpUrl("https://sport.it"), 200,
-        time.minusMinutes(1), time ));
-    healthCheckRepository.add(endPointB, new HealthCheckResponse(new HttpUrl("https://sport.it"), 200,
-        time.minusMinutes(1), time ));
+    healthCheckRepository.add(endPointB, new HealthCheckResponse(httpUrlB, 200, time.minusMinutes(1), time ));
+    healthCheckRepository.add(endPointB, new HealthCheckResponse(httpUrlB, 200, time.minusMinutes(1), time ));
 
-    healthCheckRepository.add(endpointC, new HealthCheckResponse(new HttpUrl("https://joindrover.com"), 200,
-        time.minusMinutes(1), time ));
-    healthCheckRepository.add(endpointC, new HealthCheckResponse(new HttpUrl("https://joindrover.com"), 200,
-        time.minusMinutes(1), time ));
+    healthCheckRepository.add(endpointC, new HealthCheckResponse(httpUrlC, 200, time.minusMinutes(1), time ));
+    healthCheckRepository.add(endpointC, new HealthCheckResponse(httpUrlC, 200, time.minusMinutes(1), time ));
 
     this.mockMvc.perform(get("/profile").header("Token", aToken))
         .andExpect(status().isOk())

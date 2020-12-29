@@ -1,15 +1,17 @@
 package com.alexmoleiro.healthchecker.service;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.Endpoint;
-import com.alexmoleiro.healthchecker.core.healthCheck.HttpUrl;
-import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
+import com.alexmoleiro.healthchecker.core.healthCheck.HttpUrl;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Set;
 
 import static java.time.LocalDateTime.now;
 import static java.util.List.of;
+import static java.util.stream.Collectors.toSet;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
@@ -30,6 +32,7 @@ class HealthCheckerCrawlerTest {
     final HealthCheckRepository healthCheckRepository =
         mock(HealthCheckRepository.class);
     final List<String> domains = of("www.a.com", "www.b.com", "www.c.com", "www.d.es", "www.e.com");
+    Set<Endpoint> endpoints = domains.stream().map(domain -> new Endpoint(new HttpUrl(domain))).collect(toSet());
     final int nThreads = 5;
     final HttpUrl url = new HttpUrl("http://www.j.com");
 
@@ -37,7 +40,7 @@ class HealthCheckerCrawlerTest {
         .thenReturn(new HealthCheckResponse(url, OK.value(), now(), now()));
 
     new HealthCheckerCrawler(healthCheckerClient, healthCheckRepository, nThreads)
-        .run(domains);
+        .run(endpoints);
 
     domains.stream()
         .forEach(

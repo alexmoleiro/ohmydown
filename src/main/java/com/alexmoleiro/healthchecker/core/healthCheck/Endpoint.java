@@ -16,6 +16,10 @@ public class Endpoint {
     return id;
   }
 
+  public HttpUrl getUrl() {
+    return httpUrl;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

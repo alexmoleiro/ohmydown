@@ -1,13 +1,12 @@
 package com.alexmoleiro.healthchecker.service;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.Endpoint;
-import com.alexmoleiro.healthchecker.core.healthCheck.HttpUrl;
-import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthChecker;
 import org.slf4j.Logger;
 
-import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import static java.util.concurrent.CompletableFuture.runAsync;
@@ -29,18 +28,17 @@ public class HealthCheckerCrawler {
     this.nThreads = nThreads;
   }
 
-  public void run(List<String> domains) {
-    ConcurrentLinkedDeque<String> domainsQueue = new ConcurrentLinkedDeque<>(domains);
-    rangeClosed(1, nThreads).forEach(thread -> runAsync(() -> getHealthStatus(domainsQueue)));
+  public void run(Set<Endpoint> endpoints) {
+    ConcurrentLinkedDeque<Endpoint> endpointsQueue = new ConcurrentLinkedDeque<>(endpoints);
+    rangeClosed(1, nThreads).forEach(thread -> runAsync(() -> getHealthStatus(endpointsQueue)));
   }
 
-  private void getHealthStatus(ConcurrentLinkedDeque<String> domains) {
+  private void getHealthStatus(ConcurrentLinkedDeque<Endpoint> endpoints) {
 
-    while (domains.peek() != null) {
-      final String polledDomain = domains.poll();
-      final HealthCheckResponse response =
-          healthChecker.check(new HttpUrl(polledDomain));
-      healthCheckRepository.add(new Endpoint(new HttpUrl(polledDomain)), response);
+    while (endpoints.peek() != null) {
+      final Endpoint polledEndpoint = endpoints.poll();
+      final HealthCheckResponse response = healthChecker.check(polledEndpoint.getUrl());
+      healthCheckRepository.add(polledEndpoint, response);
       LOGGER.info(response.toString());
     }
   }

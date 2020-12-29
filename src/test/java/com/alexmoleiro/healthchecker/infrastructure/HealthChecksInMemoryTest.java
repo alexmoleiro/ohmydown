@@ -5,7 +5,6 @@ import com.alexmoleiro.healthchecker.infrastructure.repositories.HealthChecksInM
 import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 import java.util.Set;
 
@@ -21,9 +20,9 @@ class HealthChecksInMemoryTest {
   private HealthCheckRepository healthCheckResultsInMemory = new HealthChecksInMemory();
 
   @Test
-  void returnHealthCheckResults() throws MalformedURLException {
+  void returnHealthCheckResults() {
     final HealthCheckResponse healthCheckResponse =
-        new HealthCheckResponse(new URL(A_URL), OK.value(), now(), now());
+        new HealthCheckResponse(new HttpUrl(A_URL), OK.value(), now(), now());
 
     final HealthCheckResponses healthCheckResponses =
         new HealthCheckResponses(ENDPOINT, healthCheckResponse);
@@ -36,10 +35,10 @@ class HealthChecksInMemoryTest {
   }
 
   @Test
-  void shouldReturnOnlyOneResults() throws MalformedURLException {
+  void shouldReturnOnlyOneResults() {
 
     final HealthCheckResponse healthCheckResponse =
-        new HealthCheckResponse(new URL(A_URL), OK.value(), now(), now());
+        new HealthCheckResponse(new HttpUrl(A_URL), OK.value(), now(), now());
 
     healthCheckResultsInMemory.add(ENDPOINT, healthCheckResponse);
     healthCheckResultsInMemory.add(ENDPOINT, healthCheckResponse);
@@ -52,12 +51,12 @@ class HealthChecksInMemoryTest {
   }
 
   @Test
-  void shouldGetHCResponsesOfListOfId() throws MalformedURLException {
+  void shouldGetHCResponsesOfListOfId() {
     final HealthCheckResponse response =
-        new HealthCheckResponse(new URL("http://www.e.com"), OK.value(), now(), now());
+        new HealthCheckResponse(new HttpUrl("http://www.e.com"), OK.value(), now(), now());
 
     final HealthCheckResponse response2 =
-        new HealthCheckResponse(new URL("http://www.f.com"), OK.value(), now(), now());
+        new HealthCheckResponse(new HttpUrl("http://www.f.com"), OK.value(), now(), now());
 
     healthCheckResultsInMemory.add(new Endpoint(new HttpUrl("http://www.e.com")), response);
     healthCheckResultsInMemory.add(new Endpoint(new HttpUrl("http://www.f.com")), response2);

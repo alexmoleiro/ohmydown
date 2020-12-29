@@ -15,7 +15,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -113,24 +112,25 @@ class ProfileApiTest {
     final User aUser = new User(anId, anEmail);
     when(oauthService.getUser(aToken)).thenReturn(aUser);
 
-    profileRepository.addUrl(aUser, new Endpoint(new HttpUrl("https://amazon.com")));
-    profileRepository.addUrl(aUser, new Endpoint(new HttpUrl("https://sport.it")));
-    profileRepository.addUrl(aUser, new Endpoint(new HttpUrl("https://joindrover.com")));
+    HttpUrl httpUrlA = new HttpUrl("https://amazon.com");
+    Endpoint endpointA = new Endpoint(httpUrlA);
+    HttpUrl httpUrlB = new HttpUrl("https://sport.it");
+    Endpoint endPointB = new Endpoint(httpUrlB);
+    HttpUrl httpUrlC = new HttpUrl("https://joindrover.com");
+    Endpoint endpointC = new Endpoint(httpUrlC);
 
-    healthCheckRepository.add(new Endpoint(new HttpUrl("https://amazon.com")), new HealthCheckResponse(new URL("https://amazon.com"), 200,
-        time.minusMinutes(1), time ));
-    healthCheckRepository.add(new Endpoint(new HttpUrl("https://amazon.com")), new HealthCheckResponse(new URL("https://amazon.com"), 200,
-        time.minusMinutes(1), time ));
+    profileRepository.addUrl(aUser, endpointA);
+    profileRepository.addUrl(aUser, endPointB);
+    profileRepository.addUrl(aUser, endpointC);
 
-    healthCheckRepository.add(new Endpoint(new HttpUrl("https://sport.it")), new HealthCheckResponse(new URL("https://sport.it"), 200,
-        time.minusMinutes(1), time ));
-    healthCheckRepository.add(new Endpoint(new HttpUrl("https://sport.it")), new HealthCheckResponse(new URL("https://sport.it"), 200,
-        time.minusMinutes(1), time ));
+    healthCheckRepository.add(endpointA, new HealthCheckResponse(httpUrlA, 200, time.minusMinutes(1), time ));
+    healthCheckRepository.add(endpointA, new HealthCheckResponse(httpUrlA, 200, time.minusMinutes(1), time ));
 
-    healthCheckRepository.add(new Endpoint(new HttpUrl("https://joindrover.com")), new HealthCheckResponse(new URL("https://joindrover.com"), 200,
-        time.minusMinutes(1), time ));
-    healthCheckRepository.add(new Endpoint(new HttpUrl("https://joindrover.com")), new HealthCheckResponse(new URL("https://joindrover.com"), 200,
-        time.minusMinutes(1), time ));
+    healthCheckRepository.add(endPointB, new HealthCheckResponse(httpUrlB, 200, time.minusMinutes(1), time ));
+    healthCheckRepository.add(endPointB, new HealthCheckResponse(httpUrlB, 200, time.minusMinutes(1), time ));
+
+    healthCheckRepository.add(endpointC, new HealthCheckResponse(httpUrlC, 200, time.minusMinutes(1), time ));
+    healthCheckRepository.add(endpointC, new HealthCheckResponse(httpUrlC, 200, time.minusMinutes(1), time ));
 
     this.mockMvc.perform(get("/profile").header("Token", aToken))
         .andExpect(status().isOk())
@@ -156,3 +156,4 @@ class ProfileApiTest {
     return randomUUID().toString();
   }
 }
+

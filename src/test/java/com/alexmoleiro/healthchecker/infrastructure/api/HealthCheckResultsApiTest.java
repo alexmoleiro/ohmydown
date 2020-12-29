@@ -11,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.net.URL;
 import java.time.LocalDateTime;
 
 import static java.time.LocalDateTime.now;
@@ -43,12 +42,12 @@ public class HealthCheckResultsApiTest {
     repository.deleteAll();
     repository.add(
         new Endpoint(new HttpUrl("www.a.com")),
-        new HealthCheckResponse(new URL(URL_STRING), OK.value(), first.minusHours(1), first)
+        new HealthCheckResponse(new HttpUrl(URL_STRING), OK.value(), first.minusHours(1), first)
     );
 
     repository.add(
         new Endpoint(new HttpUrl("www.a.com")),
-        new HealthCheckResponse(new URL(URL_STRING), INTERNAL_SERVER_ERROR.value(), second.minusHours(1), second)
+        new HealthCheckResponse(new HttpUrl(URL_STRING), INTERNAL_SERVER_ERROR.value(), second.minusHours(1), second)
     );
 
     this.mockMvc.perform(get("/historical/www.a.com"))
@@ -65,11 +64,11 @@ public class HealthCheckResultsApiTest {
   void shouldReturnLandingListSites() throws Exception {
     repository.deleteAll();
     repository.add(
-        new Endpoint(new HttpUrl("https://www.z.com")), new HealthCheckResponse(new URL("https://www.z.com"), OK.value(),
+        new Endpoint(new HttpUrl("https://www.z.com")), new HealthCheckResponse(new HttpUrl("https://www.z.com"), OK.value(),
         now().minusHours(1), now()));
 
     repository.add(new Endpoint(new HttpUrl("https://www.x.com")),
-        new HealthCheckResponse(new URL("https://www.x.com"), INTERNAL_SERVER_ERROR.value(),
+        new HealthCheckResponse(new HttpUrl("https://www.x.com"), INTERNAL_SERVER_ERROR.value(),
         now().minusHours(1), now()
     ));
 

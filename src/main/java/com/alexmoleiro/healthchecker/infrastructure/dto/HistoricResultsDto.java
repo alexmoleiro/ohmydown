@@ -2,7 +2,6 @@ package com.alexmoleiro.healthchecker.infrastructure.dto;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponses;
 
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -10,13 +9,13 @@ import static java.util.stream.Collectors.toList;
 
 public class HistoricResultsDto {
 
-  private URL url;
+  private String url;
   private long delay;
   private long status;
   private LocalDateTime time;
 
 
-  private HistoricResultsDto(URL url, long delay, long status, LocalDateTime time) {
+  private HistoricResultsDto(String url, long delay, long status, LocalDateTime time) {
     this.url = url;
     this.delay = delay;
     this.status = status;
@@ -28,7 +27,7 @@ public class HistoricResultsDto {
         .map(
             response ->
                 new HistoricResultsDto(
-                    response.getUrl(),
+                        response.getUrl(),
                     response.getDelay(),
                     response.getStatus(),
                     response.getTime()))
@@ -36,7 +35,7 @@ public class HistoricResultsDto {
   }
 
   public String getUrl() {
-    return url.toString();
+    return url;
   }
 
   public long getDelay() {

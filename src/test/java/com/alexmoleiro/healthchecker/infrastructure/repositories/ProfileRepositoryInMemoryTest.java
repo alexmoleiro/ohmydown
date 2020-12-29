@@ -20,18 +20,22 @@ class ProfileRepositoryInMemoryTest {
   void shouldAddAUrl() {
     final User user = new User("1", "alex@email.com");
 
-    repository.addUrl(user, new Endpoint(new HttpUrl("https://www.a.com")));
-    repository.addUrl(user, new Endpoint(new HttpUrl("https://www.b.com")));
-    repository.addUrl(user, new Endpoint(new HttpUrl("https://www.b.com")));
-    repository.addUrl(user, new Endpoint(new HttpUrl("https://www.c.com")));
+    HttpUrl httpUrlA = new HttpUrl("https://www.a.com");
+    HttpUrl httpUrlB = new HttpUrl("https://www.b.com");
+    HttpUrl httpUrlC = new HttpUrl("https://www.c.com");
+
+    repository.addUrl(user, new Endpoint(httpUrlA));
+    repository.addUrl(user, new Endpoint(httpUrlB));
+    repository.addUrl(user, new Endpoint(httpUrlB));
+    repository.addUrl(user, new Endpoint(httpUrlC));
 
     Set<Endpoint> following = repository.get(user).get().getFollowing();
     assertThat(following)
         .isEqualTo(
             of(
-                new Endpoint(new HttpUrl("https://www.a.com")),
-                new Endpoint(new HttpUrl("https://www.b.com")),
-                new Endpoint(new HttpUrl("https://www.c.com"))));
+                new Endpoint(httpUrlA),
+                new Endpoint(httpUrlB),
+                new Endpoint(httpUrlC)));
   }
 
   @Test

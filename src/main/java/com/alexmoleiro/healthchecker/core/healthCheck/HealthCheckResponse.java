@@ -1,6 +1,5 @@
 package com.alexmoleiro.healthchecker.core.healthCheck;
 
-import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -10,10 +9,10 @@ public class HealthCheckResponse {
 
   private final int statusCode;
   private final LocalDateTime time;
-  private URL url;
+  private HttpUrl url;
   private Duration delay;
 
-  public HealthCheckResponse(URL url, int statusCode, LocalDateTime before, LocalDateTime now) {
+  public HealthCheckResponse(HttpUrl url, int statusCode, LocalDateTime before, LocalDateTime now) {
     this.url = url;
     this.delay = between(before, now);
     this.statusCode = statusCode;
@@ -24,8 +23,8 @@ public class HealthCheckResponse {
     return statusCode;
   }
 
-  public URL getUrl() {
-    return url;
+  public String getUrl() {
+    return url.toString();
   }
 
   public long getDelay() {

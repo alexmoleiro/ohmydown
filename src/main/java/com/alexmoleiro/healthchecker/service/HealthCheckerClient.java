@@ -52,7 +52,7 @@ public class HealthCheckerClient implements HealthChecker {
       httpStatus = SERVICE_UNAVAILABLE.value();
     }
 
-    return new HealthCheckResponse(httpUrl.getUrl(), httpStatus, before, nowUtc());
+    return new HealthCheckResponse(httpUrl, httpStatus, before, nowUtc());
   }
 
   private HealthCheckResponse httpFetch(
@@ -68,7 +68,7 @@ public class HealthCheckerClient implements HealthChecker {
                 .timeout(timeout)
                 .build(),
             discarding());
-    return new HealthCheckResponse(send.uri().toURL(), send.statusCode(), beforeRequest, nowUtc());
+    return new HealthCheckResponse(new HttpUrl(send.uri().toString()), send.statusCode(), beforeRequest, nowUtc());
   }
 
   private LocalDateTime nowUtc() {

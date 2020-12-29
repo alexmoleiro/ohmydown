@@ -3,6 +3,7 @@ package com.alexmoleiro.healthchecker.infrastructure.api;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthChecker;
+import com.alexmoleiro.healthchecker.core.healthCheck.HttpUrl;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -15,8 +16,6 @@ import org.springframework.test.context.ActiveProfiles;
 import javax.net.ssl.SSLHandshakeException;
 import java.io.IOException;
 import java.net.ConnectException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpConnectTimeoutException;
 import java.net.http.HttpRequest;
@@ -52,13 +51,13 @@ class HealthApiTest {
 
   @ParameterizedTest
   @MethodSource("urls")
-  void shouldReturnHttpStatus(URL url, HttpStatus serverStatusCode) {
+  void shouldReturnHttpStatus(HttpUrl url, HttpStatus serverStatusCode) {
 
     LocalDateTime before = of(2020, 12, 9, 10, 11, 2);
     LocalDateTime now = of(2020, 12, 10, 10, 11, 2);
 
     when(healthChecker.check(
-        argThat(webRequest-> webRequest.getUrl().equals(url))))
+        argThat(webRequest-> webRequest.getUrl().toString().equals(url.toString()))))
         .thenReturn(new HealthCheckResponse(url, serverStatusCode.value(), before, now));
 
     given()
@@ -70,10 +69,10 @@ class HealthApiTest {
         {"status":%d,"url":"%s","delay":%d}""".formatted(serverStatusCode.value(),url, 86400000)));
   }
 
-  private static Stream<Arguments> urls() throws MalformedURLException {
+  private static Stream<Arguments> urls() {
     return Stream.of(
-        of(new URL("https://www.down.com"), BAD_REQUEST),
-        of(new URL("https://www.up.com"), OK)
+        of(new HttpUrl("https://www.down.com"), BAD_REQUEST),
+        of(new HttpUrl("https://www.up.com"), OK)
     );
   }
 

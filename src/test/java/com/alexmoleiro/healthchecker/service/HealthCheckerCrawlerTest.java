@@ -6,8 +6,6 @@ import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import org.junit.jupiter.api.Test;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
 import static java.time.LocalDateTime.now;
@@ -26,14 +24,14 @@ class HealthCheckerCrawlerTest {
   private static final int TIMEOUT = 2_000;
 
   @Test
-  void shouldCallOnlyOnce() throws MalformedURLException {
+  void shouldCallOnlyOnce() {
 
     final HealthCheckerClient healthCheckerClient = mock(HealthCheckerClient.class);
     final HealthCheckRepository healthCheckRepository =
         mock(HealthCheckRepository.class);
     final List<String> domains = of("www.a.com", "www.b.com", "www.c.com", "www.d.es", "www.e.com");
     final int nThreads = 5;
-    final URL url = new URL("http://www.j.com");
+    final HttpUrl url = new HttpUrl("http://www.j.com");
 
     when(healthCheckerClient.check(any(HttpUrl.class)))
         .thenReturn(new HealthCheckResponse(url, OK.value(), now(), now()));

@@ -1,11 +1,13 @@
 package com.alexmoleiro.healthchecker.configuration;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.DomainsRepository;
+import com.alexmoleiro.healthchecker.core.healthCheck.EndpointRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthChecker;
 import com.alexmoleiro.healthchecker.core.profile.ProfileRepository;
 import com.alexmoleiro.healthchecker.infrastructure.repositories.DomainsLocal;
 import com.alexmoleiro.healthchecker.infrastructure.repositories.DomainsRemote;
+import com.alexmoleiro.healthchecker.infrastructure.repositories.EndpointInMemory;
 import com.alexmoleiro.healthchecker.infrastructure.repositories.HealthChecksInMemory;
 import com.alexmoleiro.healthchecker.infrastructure.repositories.ProfileRepositoryInMemory;
 import com.alexmoleiro.healthchecker.service.HealthCheckerClient;
@@ -44,13 +46,21 @@ public class InfrastuctureConfiguration {
   }
 
   @Bean
+  EndpointRepository endpointRepository() {
+    return new EndpointInMemory();
+  }
+
+  @Bean
   ProfileRepository profileRepository() {
     return new ProfileRepositoryInMemory();
   }
 
   @Bean
-  ProfileService profileService(ProfileRepository profileRepository, HealthCheckRepository healthCheckRepository) {
-    return new ProfileService(profileRepository, healthCheckRepository);
+  ProfileService profileService(
+          ProfileRepository profileRepository,
+          HealthCheckRepository healthCheckRepository,
+          EndpointRepository endpointRepository) {
+    return new ProfileService(profileRepository, healthCheckRepository, endpointRepository);
   }
 
   @Bean
@@ -60,8 +70,11 @@ public class InfrastuctureConfiguration {
   }
 
   @Bean
-  EndpointService scheduler(HealthCheckerCrawler healthCheckerCrawler, DomainsRepository domainsRepository) {
-    return new EndpointService(healthCheckerCrawler, domainsRepository);
+  EndpointService endpointService(
+          HealthCheckerCrawler healthCheckerCrawler,
+          DomainsRepository domainsRepository,
+          EndpointRepository endpointRepository) {
+    return new EndpointService(healthCheckerCrawler, domainsRepository, endpointRepository);
   }
 
   @Bean

@@ -1,5 +1,6 @@
 package com.alexmoleiro.healthchecker.infrastructure.api;
 
+import com.alexmoleiro.healthchecker.core.healthCheck.Endpoint;
 import com.alexmoleiro.healthchecker.core.healthCheck.HttpUrl;
 import com.alexmoleiro.healthchecker.core.healthCheck.InvalidHttpUrlException;
 import com.alexmoleiro.healthchecker.core.profile.OauthService;
@@ -35,7 +36,7 @@ public class ProfileApi {
       @RequestHeader("Token") String token,
       @RequestBody UrlDto urlDto) {
 
-    profileService.addUrl(oauthService.getUser(token), new HttpUrl(urlDto.getUrl()));
+    profileService.addUrl(oauthService.getUser(token), new Endpoint(new HttpUrl(urlDto.getUrl())));
   }
 
   @ResponseStatus(value= FORBIDDEN)

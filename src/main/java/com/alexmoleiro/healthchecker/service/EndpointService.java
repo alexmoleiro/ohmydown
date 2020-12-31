@@ -11,6 +11,7 @@ public class EndpointService {
 
     private final HealthCheckerCrawler healthCheckerCrawler;
     private final EndpointRepository endpointRepository;
+    private final DomainsRepository domainsRepository;
 
     public EndpointService(
             HealthCheckerCrawler healthCheckerCrawler,
@@ -18,11 +19,16 @@ public class EndpointService {
             EndpointRepository endpointRepository) {
         this.endpointRepository = endpointRepository;
         this.healthCheckerCrawler = healthCheckerCrawler;
-        domainsRepository.getDomains()
+        this.domainsRepository = domainsRepository;
+
+        this.domainsToEndpoints();
+    }
+
+    private void domainsToEndpoints() {
+        this.domainsRepository.getDomains()
                 .stream()
                 .forEach(domain -> endpointRepository.add(new Endpoint(new HttpUrl(domain))));
     }
-
 
     @Scheduled(cron = "${cron.expression}")
     public void crawlerJob() {

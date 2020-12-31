@@ -56,8 +56,11 @@ public class InfrastuctureConfiguration {
   }
 
   @Bean
-  ProfileService profileService(ProfileRepository profileRepository, HealthCheckRepository healthCheckRepository) {
-    return new ProfileService(profileRepository, healthCheckRepository);
+  ProfileService profileService(
+          ProfileRepository profileRepository,
+          HealthCheckRepository healthCheckRepository,
+          EndpointRepository endpointRepository) {
+    return new ProfileService(profileRepository, healthCheckRepository, endpointRepository);
   }
 
   @Bean

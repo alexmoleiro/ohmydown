@@ -136,20 +136,20 @@ class ProfileApiTest {
         .andExpect(status().isOk())
         .andExpect(content().json("""              
               {"responses":[
-              {"endpoint":{"id":"https://amazon.com"},
+              {"endpoint":{"id":"%s"},
               "healthCheckResponse":[
               {"time":"2020-11-30T12:00:00","url":"https://amazon.com","delay":60000,"status":200},
               {"time":"2020-11-30T12:00:00","url":"https://amazon.com","delay":60000,"status":200}]}
-              ,{"endpoint":{"id":"https://sport.it"},
+              ,{"endpoint":{"id":"%s"},
               "healthCheckResponse":[
               {"time":"2020-11-30T12:00:00","url":"https://sport.it","delay":60000,"status":200},
               {"time":"2020-11-30T12:00:00","url":"https://sport.it","delay":60000,"status":200}]},
-              {"endpoint":{"id":"https://joindrover.com"},
+              {"endpoint":{"id":"%s"},
               "healthCheckResponse":[
               {"time":"2020-11-30T12:00:00","url":"https://joindrover.com","delay":60000,"status":200},
               {"time":"2020-11-30T12:00:00","url":"https://joindrover.com","delay":60000,"status":200}]}],
               "userId":"%s"}
-              """.formatted(anId)));
+              """.formatted(endpointA.getId(), endPointB.getId(), endpointC.getId(),anId)));
   }
 
   private String randomString() {

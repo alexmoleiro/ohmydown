@@ -11,7 +11,7 @@ import com.alexmoleiro.healthchecker.infrastructure.repositories.ProfileReposito
 import com.alexmoleiro.healthchecker.service.HealthCheckerClient;
 import com.alexmoleiro.healthchecker.service.HealthCheckerCrawler;
 import com.alexmoleiro.healthchecker.service.ProfileService;
-import com.alexmoleiro.healthchecker.service.Scheduler;
+import com.alexmoleiro.healthchecker.service.EndpointService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -60,8 +60,8 @@ public class InfrastuctureConfiguration {
   }
 
   @Bean
-  Scheduler scheduler(HealthCheckerCrawler healthCheckerCrawler, DomainsRepository domainsRepository) {
-    return new Scheduler(healthCheckerCrawler, domainsRepository);
+  EndpointService scheduler(HealthCheckerCrawler healthCheckerCrawler, DomainsRepository domainsRepository) {
+    return new EndpointService(healthCheckerCrawler, domainsRepository);
   }
 
   @Bean

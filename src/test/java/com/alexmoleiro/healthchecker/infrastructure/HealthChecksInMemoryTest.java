@@ -1,10 +1,13 @@
 package com.alexmoleiro.healthchecker.infrastructure;
 
-import com.alexmoleiro.healthchecker.core.healthCheck.*;
+import com.alexmoleiro.healthchecker.core.healthCheck.Endpoint;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponses;
+import com.alexmoleiro.healthchecker.core.healthCheck.HttpUrl;
 import com.alexmoleiro.healthchecker.infrastructure.repositories.HealthChecksInMemory;
 import org.junit.jupiter.api.Test;
 
-import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Set;
 
@@ -52,17 +55,21 @@ class HealthChecksInMemoryTest {
 
   @Test
   void shouldGetHCResponsesOfListOfId() {
+    HttpUrl httpUrlE = new HttpUrl("http://www.e.com");
     final HealthCheckResponse response =
-        new HealthCheckResponse(new HttpUrl("http://www.e.com"), OK.value(), now(), now());
+        new HealthCheckResponse(httpUrlE, OK.value(), now(), now());
 
+    HttpUrl httpUrlF = new HttpUrl("http://www.f.com");
     final HealthCheckResponse response2 =
-        new HealthCheckResponse(new HttpUrl("http://www.f.com"), OK.value(), now(), now());
+        new HealthCheckResponse(httpUrlF, OK.value(), now(), now());
 
-    healthCheckResultsInMemory.add(new Endpoint(new HttpUrl("http://www.e.com")), response);
-    healthCheckResultsInMemory.add(new Endpoint(new HttpUrl("http://www.f.com")), response2);
+    healthCheckResultsInMemory.add(new Endpoint(httpUrlE), response);
+    healthCheckResultsInMemory.add(new Endpoint(httpUrlF), response2);
 
     final List<HealthCheckResponses> responses =
-        healthCheckResultsInMemory.getResponses(Set.of(new Endpoint(new HttpUrl("http://www.e.com")), new Endpoint(new HttpUrl("http://www.f.com"))));
-    assertThat(responses).extracting("endpoint").extracting("id").contains("http://www.e.com", "http://www.f.com");
+        healthCheckResultsInMemory.getResponses(Set.of(new Endpoint(httpUrlE), new Endpoint(httpUrlF)));
+    assertThat(responses).extracting("endpoint")
+            .extracting("httpUrl")
+            .contains(httpUrlE, httpUrlF);
   }
 }

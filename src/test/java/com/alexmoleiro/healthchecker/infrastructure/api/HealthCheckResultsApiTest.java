@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 
-import static java.time.LocalDateTime.now;
 import static java.time.LocalDateTime.of;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
@@ -32,22 +31,22 @@ public class HealthCheckResultsApiTest {
   MockMvc mockMvc;
 
   @Autowired
-  HealthCheckRepository repository;
+  private HealthCheckRepository repository;
+  private static final LocalDateTime FIRST = of(2020, 12, 8, 23, 20);
+  private static final LocalDateTime SECOND = of(2020, 12, 8, 23, 25);
 
   @Test
   void shouldReturnHistoricValues() throws Exception {
 
-    final LocalDateTime first = of(2020, 12, 8, 23, 20);
-    final LocalDateTime second = of(2020, 12, 8, 23, 25);
     repository.deleteAll();
     repository.add(
         new Endpoint(new HttpUrl("www.a.com")),
-        new HealthCheckResponse(new HttpUrl(URL_STRING), OK.value(), first.minusHours(1), first)
+        new HealthCheckResponse(new HttpUrl(URL_STRING), OK.value(), FIRST.minusHours(1), FIRST)
     );
 
     repository.add(
         new Endpoint(new HttpUrl("www.a.com")),
-        new HealthCheckResponse(new HttpUrl(URL_STRING), INTERNAL_SERVER_ERROR.value(), second.minusHours(1), second)
+        new HealthCheckResponse(new HttpUrl(URL_STRING), INTERNAL_SERVER_ERROR.value(), SECOND.minusHours(1), SECOND)
     );
 
     this.mockMvc.perform(get("/historical/www.a.com"))
@@ -59,26 +58,26 @@ public class HealthCheckResultsApiTest {
               ]"""));
     }
 
-    //TODO flaky tests
+
   @Test
   void shouldReturnLandingListSites() throws Exception {
-    LocalDateTime now = now();
     repository.deleteAll();
-    repository.add(
-        new Endpoint(new HttpUrl("https://www.z.com"))
-            , new HealthCheckResponse(new HttpUrl("https://www.z.com"), OK.value(), now, now));
+    HttpUrl httpUrlZ = new HttpUrl("https://www.z.com");
+    Endpoint endpointZ = new Endpoint(httpUrlZ);
+    repository.add(endpointZ, new HealthCheckResponse(httpUrlZ, OK.value(), FIRST, SECOND));
 
-    repository.add(new Endpoint(new HttpUrl("https://www.x.com")),
-        new HealthCheckResponse(new HttpUrl("https://www.x.com"), INTERNAL_SERVER_ERROR.value(), now, now
+    HttpUrl httpUrlX = new HttpUrl("https://www.x.com");
+    Endpoint endpointX = new Endpoint(httpUrlX);
+    repository.add(endpointX, new HealthCheckResponse(httpUrlX, INTERNAL_SERVER_ERROR.value(), FIRST, SECOND
     ));
 
       this.mockMvc.perform(post("/landing-list"))
           .andExpect(status().isOk())
           .andExpect(content().json("""
               {"responses":[
-              {"url":"https://www.z.com","delay":0,"status":200,"id":"https://www.z.com"},
-              {"url":"https://www.x.com","delay":0,"status":500,"id":"https://www.x.com"}
+              {"url":"https://www.z.com","delay":300000,"status":200,"id":"%s"},
+              {"url":"https://www.x.com","delay":300000,"status":500,"id":"%s"}
               ],
-              "numUrls":2}"""));
+              "numUrls":2}""".formatted(endpointZ.getId(), endpointX.getId())));
   }
 }

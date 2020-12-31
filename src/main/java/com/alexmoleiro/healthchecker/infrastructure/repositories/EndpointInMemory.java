@@ -5,6 +5,9 @@ import com.alexmoleiro.healthchecker.core.healthCheck.EndpointRepository;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+
+import static java.util.stream.Collectors.toSet;
 
 public class EndpointInMemory implements EndpointRepository {
 
@@ -18,5 +21,10 @@ public class EndpointInMemory implements EndpointRepository {
     @Override
     public Endpoint get(String id) {
         return endpoints.get(id);
+    }
+
+    @Override
+    public Set<Endpoint> getAll() {
+        return endpoints.values().stream().collect(toSet());
     }
 }

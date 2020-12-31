@@ -67,8 +67,11 @@ public class InfrastuctureConfiguration {
   }
 
   @Bean
-  EndpointService endpointService(HealthCheckerCrawler healthCheckerCrawler, DomainsRepository domainsRepository) {
-    return new EndpointService(healthCheckerCrawler, domainsRepository);
+  EndpointService endpointService(
+          HealthCheckerCrawler healthCheckerCrawler,
+          DomainsRepository domainsRepository,
+          EndpointRepository endpointRepository) {
+    return new EndpointService(healthCheckerCrawler, domainsRepository, endpointRepository);
   }
 
   @Bean

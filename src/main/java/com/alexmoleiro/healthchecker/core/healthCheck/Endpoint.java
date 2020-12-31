@@ -1,6 +1,7 @@
 package com.alexmoleiro.healthchecker.core.healthCheck;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class Endpoint {
 
@@ -9,7 +10,7 @@ public class Endpoint {
 
   public Endpoint(HttpUrl httpUrl) {
     this.httpUrl = httpUrl;
-    this.id = httpUrl.toString();
+    this.id = UUID.randomUUID().toString();
   }
 
   public String getId() {
@@ -25,11 +26,11 @@ public class Endpoint {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Endpoint endpoint = (Endpoint) o;
-    return Objects.equals(id, endpoint.id);
+    return Objects.equals(httpUrl.getUrl().toString(), endpoint.httpUrl.getUrl().toString());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id);
+    return Objects.hash(httpUrl.getUrl().toString());
   }
 }

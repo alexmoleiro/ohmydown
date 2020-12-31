@@ -3,7 +3,7 @@ package com.alexmoleiro.healthchecker.configuration;
 import com.alexmoleiro.healthchecker.core.healthCheck.Endpoint;
 import com.alexmoleiro.healthchecker.core.healthCheck.HttpUrl;
 import com.alexmoleiro.healthchecker.service.HealthCheckerCrawler;
-import com.alexmoleiro.healthchecker.service.Scheduler;
+import com.alexmoleiro.healthchecker.service.EndpointService;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.verify;
 
 @ActiveProfiles("test")
 @SpringBootTest
-class SchedulerTest {
+class EndpointServiceTest {
 
     private static final int ONCE = 1;
     private static final int TIMEOUT = 5_000;
@@ -32,7 +32,7 @@ class SchedulerTest {
     HealthCheckerCrawler healthCheckerCrawler;
 
     @Autowired
-    Scheduler scheduler;
+    EndpointService endpointService;
 
     @Captor
     ArgumentCaptor<Set<Endpoint>> endpointsCaptor;
@@ -45,8 +45,8 @@ class SchedulerTest {
     @Test
     void shouldAddEndpointToTheList() {
 
-        scheduler.add(new Endpoint(new HttpUrl(URL_STRING)));
-        scheduler.add(new Endpoint(new HttpUrl(URL_STRING)));
+        endpointService.add(new Endpoint(new HttpUrl(URL_STRING)));
+        endpointService.add(new Endpoint(new HttpUrl(URL_STRING)));
 
         verify(healthCheckerCrawler, timeout(TIMEOUT).atLeast(ONCE)).run(endpointsCaptor.capture());
 

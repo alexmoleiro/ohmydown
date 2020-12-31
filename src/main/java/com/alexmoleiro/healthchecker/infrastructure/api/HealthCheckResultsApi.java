@@ -1,8 +1,8 @@
 package com.alexmoleiro.healthchecker.infrastructure.api;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.Endpoint;
+import com.alexmoleiro.healthchecker.core.healthCheck.EndpointRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
-import com.alexmoleiro.healthchecker.core.healthCheck.HttpUrl;
 import com.alexmoleiro.healthchecker.infrastructure.dto.HistoricResultsDto;
 import com.alexmoleiro.healthchecker.infrastructure.dto.SiteResultsDto;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,9 +19,11 @@ import static com.alexmoleiro.healthchecker.infrastructure.dto.HistoricResultsDt
 public class HealthCheckResultsApi {
 
   private final HealthCheckRepository healthCheckRepository;
+  private final EndpointRepository endpointRepository;
 
-  public HealthCheckResultsApi(HealthCheckRepository healthCheckRepository) {
+  public HealthCheckResultsApi(HealthCheckRepository healthCheckRepository, EndpointRepository endpointRepository) {
     this.healthCheckRepository = healthCheckRepository;
+    this.endpointRepository = endpointRepository;
   }
 
   @CrossOrigin(origins = "http://localhost:3000")
@@ -31,8 +33,9 @@ public class HealthCheckResultsApi {
   }
 
   @CrossOrigin(origins = "http://localhost:3000")
-  @GetMapping(value = "/historical/{url}", produces = "application/json")
-  List<HistoricResultsDto> historic(@PathVariable String url) {
-    return list(healthCheckRepository.getResponses(new Endpoint(new HttpUrl(url))));
+  @GetMapping(value = "/historical/{id}", produces = "application/json")
+  List<HistoricResultsDto> historic(@PathVariable String id) {
+    Endpoint endpoint = endpointRepository.get(id);
+    return list(healthCheckRepository.getResponses(endpoint));
   }
 }

@@ -1,9 +1,11 @@
 package com.alexmoleiro.healthchecker.infrastructure.api;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.Endpoint;
+import com.alexmoleiro.healthchecker.core.healthCheck.EndpointRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.healthCheck.HttpUrl;
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -31,25 +33,33 @@ public class HealthCheckResultsApiTest {
   MockMvc mockMvc;
 
   @Autowired
-  private HealthCheckRepository repository;
+  private HealthCheckRepository healthCheckRepository;
+
+  @Autowired
+  private EndpointRepository endpointRepository;
+
   private static final LocalDateTime FIRST = of(2020, 12, 8, 23, 20);
   private static final LocalDateTime SECOND = of(2020, 12, 8, 23, 25);
 
   @Test
-  void shouldReturnHistoricValues() throws Exception {
+  void shouldReturnHistoricalValues() throws Exception {
 
-    repository.deleteAll();
-    repository.add(
-        new Endpoint(new HttpUrl("www.a.com")),
+    healthCheckRepository.deleteAll();
+    Endpoint endpointA = new Endpoint(new HttpUrl("www.a.com"));
+
+    endpointRepository.add(endpointA);
+
+    healthCheckRepository.add(
+            endpointA,
         new HealthCheckResponse(new HttpUrl(URL_STRING), OK.value(), FIRST.minusHours(1), FIRST)
     );
 
-    repository.add(
-        new Endpoint(new HttpUrl("www.a.com")),
+    healthCheckRepository.add(
+            endpointA,
         new HealthCheckResponse(new HttpUrl(URL_STRING), INTERNAL_SERVER_ERROR.value(), SECOND.minusHours(1), SECOND)
     );
 
-    this.mockMvc.perform(get("/historical/www.a.com"))
+    this.mockMvc.perform(get("/historical/" + endpointA.getId()))
         .andExpect(status().isOk())
         .andExpect(content().json("""
               [
@@ -61,14 +71,14 @@ public class HealthCheckResultsApiTest {
 
   @Test
   void shouldReturnLandingListSites() throws Exception {
-    repository.deleteAll();
+    healthCheckRepository.deleteAll();
     HttpUrl httpUrlZ = new HttpUrl("https://www.z.com");
     Endpoint endpointZ = new Endpoint(httpUrlZ);
-    repository.add(endpointZ, new HealthCheckResponse(httpUrlZ, OK.value(), FIRST, SECOND));
+    healthCheckRepository.add(endpointZ, new HealthCheckResponse(httpUrlZ, OK.value(), FIRST, SECOND));
 
     HttpUrl httpUrlX = new HttpUrl("https://www.x.com");
     Endpoint endpointX = new Endpoint(httpUrlX);
-    repository.add(endpointX, new HealthCheckResponse(httpUrlX, INTERNAL_SERVER_ERROR.value(), FIRST, SECOND
+    healthCheckRepository.add(endpointX, new HealthCheckResponse(httpUrlX, INTERNAL_SERVER_ERROR.value(), FIRST, SECOND
     ));
 
       this.mockMvc.perform(post("/landing-list"))

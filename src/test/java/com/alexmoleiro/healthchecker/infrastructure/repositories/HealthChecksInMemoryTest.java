@@ -1,11 +1,10 @@
-package com.alexmoleiro.healthchecker.infrastructure;
+package com.alexmoleiro.healthchecker.infrastructure.repositories;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.Endpoint;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponses;
 import com.alexmoleiro.healthchecker.core.healthCheck.HttpUrl;
-import com.alexmoleiro.healthchecker.infrastructure.repositories.HealthChecksInMemory;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -70,6 +69,6 @@ class HealthChecksInMemoryTest {
         healthCheckResultsInMemory.getResponses(Set.of(new Endpoint(httpUrlE), new Endpoint(httpUrlF)));
     assertThat(responses).extracting("endpoint")
             .extracting("httpUrl")
-            .contains(httpUrlE, httpUrlF);
+            .containsOnly(httpUrlE, httpUrlF);
   }
 }

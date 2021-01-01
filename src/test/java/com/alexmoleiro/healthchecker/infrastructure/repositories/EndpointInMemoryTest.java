@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class EndpointInMemoryTest {
 
@@ -20,13 +19,13 @@ class EndpointInMemoryTest {
     }
 
     @Test
-    void shouldThrownAnExceptionWhenExistingEndpoint() {
+    void shouldFindOnlyOneEndpointIfItsTheSame() {
         Endpoint endpoint = new Endpoint(new HttpUrl("www.alexmoleiro.com"));
         endpointInMemory.add(endpoint);
-        assertThatThrownBy(
-                () -> endpointInMemory.add(endpoint)
-        ).isInstanceOf(EndpointExistingException.class);
+        endpointInMemory.add(endpoint);
 
+        assertThat(endpointInMemory.getAll())
+                .containsOnly(endpoint);
 
     }
 }

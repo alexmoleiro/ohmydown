@@ -13,14 +13,11 @@ import static java.util.Optional.ofNullable;
 
 public class EndpointInMemory implements EndpointRepository {
 
-    Map<String, Endpoint> endpoints = new HashMap<>();
+    private Map<String, Endpoint> endpoints = new HashMap<>();
 
     @Override
     public void add(Endpoint endpoint) {
-        if(endpoints.containsValue(endpoint)) {
-            throw new EndpointExistingException();
-        }
-        endpoints.put(endpoint.getId(), endpoint);
+        endpoints.putIfAbsent(endpoint.getId(), endpoint);
     }
 
     @Override

@@ -10,7 +10,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toSet;
 
 public class EndpointInMemory implements EndpointRepository {
 

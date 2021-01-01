@@ -5,7 +5,6 @@ import com.alexmoleiro.healthchecker.core.healthCheck.EndpointRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.healthCheck.HttpUrl;
-import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -90,4 +89,6 @@ public class HealthCheckResultsApiTest {
               ],
               "numUrls":2}""".formatted(endpointZ.getId(), endpointX.getId())));
   }
+
+
 }

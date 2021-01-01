@@ -5,8 +5,10 @@ import com.alexmoleiro.healthchecker.core.healthCheck.EndpointRepository;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toSet;
 
 public class EndpointInMemory implements EndpointRepository {
@@ -19,8 +21,8 @@ public class EndpointInMemory implements EndpointRepository {
     }
 
     @Override
-    public Endpoint get(String id) {
-        return endpoints.get(id);
+    public Optional<Endpoint> get(String id) {
+        return ofNullable(endpoints.get(id));
     }
 
     @Override

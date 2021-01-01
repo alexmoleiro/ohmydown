@@ -26,7 +26,6 @@ public class EndpointService {
 
     private void domainsToEndpoints() {
         this.domainsRepository.getDomains()
-                .stream()
                 .forEach(domain -> endpointRepository.add(new Endpoint(new HttpUrl(domain))));
     }
 
@@ -35,7 +34,4 @@ public class EndpointService {
         healthCheckerCrawler.run(endpointRepository.getAll());
     }
 
-    public void add(Endpoint endpoint) {
-        endpointRepository.add(endpoint);
-    }
 }

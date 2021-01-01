@@ -17,7 +17,7 @@ public class ProfileRepositoryInMemory implements ProfileRepository {
   private Map<User, Profile> users = new HashMap<>();
 
   @Override
-  public void addUrl(User user, Endpoint endpoint) {
+  public void addEndpoint(User user, Endpoint endpoint) {
     if (!users.containsKey(user)) {
       final HashSet<Endpoint> urls = new HashSet<>();
       urls.add(endpoint);

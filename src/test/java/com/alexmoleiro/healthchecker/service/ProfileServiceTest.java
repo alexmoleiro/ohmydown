@@ -47,10 +47,10 @@ class ProfileServiceTest {
     Endpoint endpoint = new Endpoint(new HttpUrl("www.as.com"));
 
     new ProfileService(profileRepository, new HealthChecksInMemory(), endpointRepository)
-            .addUrl(RANDOM_USER, endpoint);
+            .addEndpoint(RANDOM_USER, endpoint);
 
     verify(endpointRepository).add(endpoint);
-    verify(profileRepository).addUrl(RANDOM_USER, endpoint);
+    verify(profileRepository).addEndpoint(RANDOM_USER, endpoint);
 
   }
 }

@@ -4,6 +4,7 @@ import com.alexmoleiro.healthchecker.core.healthCheck.Endpoint;
 import com.alexmoleiro.healthchecker.core.healthCheck.EndpointRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponses;
+import com.alexmoleiro.healthchecker.core.profile.Profile;
 import com.alexmoleiro.healthchecker.core.profile.ProfileRepository;
 import com.alexmoleiro.healthchecker.core.profile.User;
 
@@ -27,14 +28,14 @@ public class ProfileService {
         this.endpointRepository = endpointRepository;
     }
 
-    public void addUrl(User user, Endpoint endpoint) {
-        profileRepository.addUrl(user, endpoint);
+    public void addEndpoint(User user, Endpoint endpoint) {
         endpointRepository.add(endpoint);
+        profileRepository.addEndpoint(user, endpoint);
     }
 
     public List<HealthCheckResponses> getResponses(User user) {
         return healthCheckRepository.getResponses(
-                profileRepository.get(user).map(profile -> profile.getFollowing())
+                profileRepository.get(user).map(Profile::getFollowing)
                         .orElse(emptySet())
         );
     }

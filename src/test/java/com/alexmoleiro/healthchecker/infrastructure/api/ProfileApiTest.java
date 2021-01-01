@@ -108,7 +108,7 @@ class ProfileApiTest {
     final String anId = randomString();
     final String anEmail = "alex@email2.com";
     final String aToken = randomString();
-    LocalDateTime time = of(2020, 11, 30, 12, 00);
+    LocalDateTime time = of(2020, 11, 30, 12, 0);
     final User aUser = new User(anId, anEmail);
     when(oauthService.getUser(aToken)).thenReturn(aUser);
 
@@ -119,9 +119,9 @@ class ProfileApiTest {
     HttpUrl httpUrlC = new HttpUrl("https://joindrover.com");
     Endpoint endpointC = new Endpoint(httpUrlC);
 
-    profileRepository.addUrl(aUser, endpointA);
-    profileRepository.addUrl(aUser, endPointB);
-    profileRepository.addUrl(aUser, endpointC);
+    profileRepository.addEndpoint(aUser, endpointA);
+    profileRepository.addEndpoint(aUser, endPointB);
+    profileRepository.addEndpoint(aUser, endpointC);
 
     healthCheckRepository.add(endpointA, new HealthCheckResponse(httpUrlA, 200, time.minusMinutes(1), time ));
     healthCheckRepository.add(endpointA, new HealthCheckResponse(httpUrlA, 200, time.minusMinutes(1), time ));

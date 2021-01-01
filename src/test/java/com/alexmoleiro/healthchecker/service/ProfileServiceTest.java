@@ -48,7 +48,7 @@ class ProfileServiceTest {
 
 
     new ProfileService(profileRepository, new HealthChecksInMemory(), endpointRepository)
-            .addEndpoint(RANDOM_USER, ENDPOINT);
+            .addEndpointToEndpointsAndUserProfile(RANDOM_USER, ENDPOINT);
 
     verify(endpointRepository).add(ENDPOINT);
     verify(profileRepository).addEndpoint(RANDOM_USER, ENDPOINT);
@@ -65,8 +65,8 @@ class ProfileServiceTest {
             new HealthChecksInMemory(),
             new EndpointInMemory());
 
-    profileService.addEndpoint(RANDOM_USER, ENDPOINT);
-    profileService.addEndpoint(ANOTHER_RANDOM_USER, ENDPOINT);
+    profileService.addEndpointToEndpointsAndUserProfile(RANDOM_USER, ENDPOINT);
+    profileService.addEndpointToEndpointsAndUserProfile(ANOTHER_RANDOM_USER, ENDPOINT);
 
     verify(profileRepository).addEndpoint(RANDOM_USER, ENDPOINT);
     verify(profileRepository).addEndpoint(ANOTHER_RANDOM_USER, ENDPOINT);

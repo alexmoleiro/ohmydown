@@ -30,6 +30,7 @@ public class HealthChecksInMemory implements HealthCheckRepository {
 
   @Override
   public HealthCheckResponses getResponses(Endpoint endpoint) {
+    //TODO responses can be null
     return siteResults.get(endpoint);
   }
 

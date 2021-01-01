@@ -7,7 +7,6 @@ import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponses;
 import com.alexmoleiro.healthchecker.core.profile.Profile;
 import com.alexmoleiro.healthchecker.core.profile.ProfileRepository;
 import com.alexmoleiro.healthchecker.core.profile.User;
-import com.alexmoleiro.healthchecker.infrastructure.repositories.EndpointExistingException;
 
 import java.util.List;
 
@@ -29,13 +28,8 @@ public class ProfileService {
         this.endpointRepository = endpointRepository;
     }
 
-    public void addEndpoint(User user, Endpoint endpoint) {
-        try {
-            endpointRepository.add(endpoint);
-        }catch (EndpointExistingException e) {
-            endpoint = endpointRepository.get(endpoint.getId()).get();
-        }
-
+    public void addEndpointToEndpointsAndUserProfile(User user, Endpoint endpoint) {
+        endpointRepository.add(endpoint);
         profileRepository.addEndpoint(user, endpoint);
     }
 

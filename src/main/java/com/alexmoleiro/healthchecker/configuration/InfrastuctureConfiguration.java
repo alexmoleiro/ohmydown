@@ -90,7 +90,7 @@ public class InfrastuctureConfiguration {
   }
 
   @Bean
-  @Profile("fast")
+  @Profile({"fast","alex"})
   DomainsRepository getDomainsTestFast() {
     return new DomainsLocal();
   }

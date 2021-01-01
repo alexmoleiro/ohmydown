@@ -36,7 +36,10 @@ public class ProfileApi {
       @RequestHeader("Token") String token,
       @RequestBody UrlDto urlDto) {
 
-    profileService.addEndpoint(oauthService.getUser(token), new Endpoint(new HttpUrl(urlDto.getUrl())));
+    profileService.addEndpointToEndpointsAndUserProfile(
+            oauthService.getUser(token),
+            new Endpoint(new HttpUrl(urlDto.getUrl()))
+    );
   }
 
   @ResponseStatus(value= FORBIDDEN)

@@ -22,6 +22,8 @@ import static org.mockito.Mockito.verify;
 class ProfileServiceTest {
 
   public static final User RANDOM_USER = new User("randomUser", "a@a.com");
+  public static final User ANOTHER_RANDOM_USER = new User("randomUser2", "a@b.com");
+  public static final Endpoint ENDPOINT = new Endpoint(new HttpUrl("www.as.com"));
 
   @Test
   void shouldRespondEmptyHealthCheckResponses() {
@@ -44,13 +46,30 @@ class ProfileServiceTest {
     EndpointRepository endpointRepository = mock(EndpointRepository.class);
     ProfileRepository profileRepository = mock(ProfileRepository.class);
 
-    Endpoint endpoint = new Endpoint(new HttpUrl("www.as.com"));
 
     new ProfileService(profileRepository, new HealthChecksInMemory(), endpointRepository)
-            .addEndpoint(RANDOM_USER, endpoint);
+            .addEndpoint(RANDOM_USER, ENDPOINT);
 
-    verify(endpointRepository).add(endpoint);
-    verify(profileRepository).addEndpoint(RANDOM_USER, endpoint);
+    verify(endpointRepository).add(ENDPOINT);
+    verify(profileRepository).addEndpoint(RANDOM_USER, ENDPOINT);
+
+  }
+
+  @Test
+  void shouldAddExistingEndpointToAnotherUser() {
+
+    ProfileRepository profileRepository = mock(ProfileRepository.class);
+
+    ProfileService profileService = new ProfileService(
+            profileRepository,
+            new HealthChecksInMemory(),
+            new EndpointInMemory());
+
+    profileService.addEndpoint(RANDOM_USER, ENDPOINT);
+    profileService.addEndpoint(ANOTHER_RANDOM_USER, ENDPOINT);
+
+    verify(profileRepository).addEndpoint(RANDOM_USER, ENDPOINT);
+    verify(profileRepository).addEndpoint(ANOTHER_RANDOM_USER, ENDPOINT);
 
   }
 }

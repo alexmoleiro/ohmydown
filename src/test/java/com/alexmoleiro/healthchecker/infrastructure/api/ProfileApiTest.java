@@ -136,20 +136,25 @@ class ProfileApiTest {
         .andExpect(status().isOk())
         .andExpect(content().json("""              
               {"responses":[
-              {"endpoint":{"id":"%s"},
+              {"endpoint":{"id":"%s","url":"%s"},
               "healthCheckResponse":[
               {"time":"2020-11-30T12:00:00","url":"https://amazon.com","delay":60000,"status":200},
               {"time":"2020-11-30T12:00:00","url":"https://amazon.com","delay":60000,"status":200}]}
-              ,{"endpoint":{"id":"%s"},
+              ,{"endpoint":{"id":"%s","url":"%s"},
               "healthCheckResponse":[
               {"time":"2020-11-30T12:00:00","url":"https://sport.it","delay":60000,"status":200},
               {"time":"2020-11-30T12:00:00","url":"https://sport.it","delay":60000,"status":200}]},
-              {"endpoint":{"id":"%s"},
+              {"endpoint":{"id":"%s","url":"%s"},
               "healthCheckResponse":[
               {"time":"2020-11-30T12:00:00","url":"https://joindrover.com","delay":60000,"status":200},
               {"time":"2020-11-30T12:00:00","url":"https://joindrover.com","delay":60000,"status":200}]}],
               "userId":"%s"}
-              """.formatted(endpointA.getId(), endPointB.getId(), endpointC.getId(),anId)));
+              """.formatted(
+                      endpointA.getId(), endpointA.getHttpUrl().toString(),
+                      endPointB.getId(), endPointB.getHttpUrl().toString(),
+                endpointC.getId(),  endpointC.getHttpUrl().toString(),
+                anId
+        )));
   }
 
   private String randomString() {

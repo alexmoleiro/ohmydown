@@ -37,7 +37,7 @@ public class HealthCheckerCrawler {
 
     while (endpoints.peek() != null) {
       final Endpoint polledEndpoint = endpoints.poll();
-      final HealthCheckResponse response = healthChecker.check(polledEndpoint.getUrl());
+      final HealthCheckResponse response = healthChecker.check(polledEndpoint.getHttpUrl());
       healthCheckRepository.add(polledEndpoint, response);
       LOGGER.info(response.toString());
     }

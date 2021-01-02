@@ -12,63 +12,93 @@ import java.util.Set;
 
 import static java.time.LocalDateTime.now;
 import static java.util.List.of;
+import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.OK;
 
 class HealthChecksInMemoryTest {
 
-  private static final Endpoint ENDPOINT = new Endpoint(new HttpUrl("http://www.id.com"));
-  private static final String A_URL = "https://www.a.com";
-  private HealthCheckRepository healthCheckResultsInMemory = new HealthChecksInMemory();
+    private static final Endpoint ENDPOINT = new Endpoint(new HttpUrl("http://www.id.com"));
+    private static final String A_URL = "https://www.a.com";
+    private HealthCheckRepository healthCheckResultsInMemory = new HealthChecksInMemory();
 
-  @Test
-  void returnHealthCheckResults() {
-    final HealthCheckResponse healthCheckResponse =
-        new HealthCheckResponse(new HttpUrl(A_URL), OK.value(), now(), now());
+    @Test
+    void returnHealthCheckResults() {
+        final HealthCheckResponse healthCheckResponse =
+                new HealthCheckResponse(new HttpUrl(A_URL), OK.value(), now(), now());
 
-    final HealthCheckResponses healthCheckResponses =
-        new HealthCheckResponses(ENDPOINT, healthCheckResponse);
+        final HealthCheckResponses healthCheckResponses =
+                new HealthCheckResponses(ENDPOINT, healthCheckResponse);
 
-    healthCheckResultsInMemory.add(ENDPOINT, healthCheckResponse);
+        healthCheckResultsInMemory.add(ENDPOINT, healthCheckResponse);
 
-    final List<HealthCheckResponses> siteResults = healthCheckResultsInMemory.getResponses();
+        final List<HealthCheckResponses> siteResults = healthCheckResultsInMemory.getResponses();
 
-    assertThat(siteResults).usingRecursiveComparison().isEqualTo(of(healthCheckResponses));
-  }
+        assertThat(siteResults).usingRecursiveComparison().isEqualTo(of(healthCheckResponses));
+    }
 
-  @Test
-  void shouldReturnOnlyOneResults() {
+    @Test
+    void shouldReturnOnlyOneResults() {
 
-    final HealthCheckResponse healthCheckResponse =
-        new HealthCheckResponse(new HttpUrl(A_URL), OK.value(), now(), now());
+        final HealthCheckResponse healthCheckResponse =
+                new HealthCheckResponse(new HttpUrl(A_URL), OK.value(), now(), now());
 
-    healthCheckResultsInMemory.add(ENDPOINT, healthCheckResponse);
-    healthCheckResultsInMemory.add(ENDPOINT, healthCheckResponse);
-    healthCheckResultsInMemory.add(ENDPOINT, healthCheckResponse);
+        healthCheckResultsInMemory.add(ENDPOINT, healthCheckResponse);
+        healthCheckResultsInMemory.add(ENDPOINT, healthCheckResponse);
+        healthCheckResultsInMemory.add(ENDPOINT, healthCheckResponse);
 
-    final List<HealthCheckResponses> timedResults = healthCheckResultsInMemory.getResponses();
+        final List<HealthCheckResponses> timedResults = healthCheckResultsInMemory.getResponses();
 
-    assertThat(timedResults.size()).isEqualTo(1);
-    assertThat(timedResults.get(0).getHealthCheckResponse().size()).isEqualTo(3);
-  }
+        assertThat(timedResults.size()).isEqualTo(1);
+        assertThat(timedResults.get(0).getHealthCheckResponse().size()).isEqualTo(3);
+    }
 
-  @Test
-  void shouldGetHCResponsesOfListOfId() {
-    HttpUrl httpUrlE = new HttpUrl("http://www.e.com");
-    final HealthCheckResponse response =
-        new HealthCheckResponse(httpUrlE, OK.value(), now(), now());
+    @Test
+    void shouldGetHCResponsesOfListOfId() {
+        HttpUrl httpUrlE = new HttpUrl("http://www.e.com");
+        final HealthCheckResponse response = new HealthCheckResponse(httpUrlE, OK.value(), now(), now());
 
-    HttpUrl httpUrlF = new HttpUrl("http://www.f.com");
-    final HealthCheckResponse response2 =
-        new HealthCheckResponse(httpUrlF, OK.value(), now(), now());
+        HttpUrl httpUrlF = new HttpUrl("http://www.f.com");
+        final HealthCheckResponse response2 = new HealthCheckResponse(httpUrlF, OK.value(), now(), now());
 
-    healthCheckResultsInMemory.add(new Endpoint(httpUrlE), response);
-    healthCheckResultsInMemory.add(new Endpoint(httpUrlF), response2);
+        healthCheckResultsInMemory.add(new Endpoint(httpUrlE), response);
+        healthCheckResultsInMemory.add(new Endpoint(httpUrlF), response2);
 
-    final List<HealthCheckResponses> responses =
-        healthCheckResultsInMemory.getResponses(Set.of(new Endpoint(httpUrlE), new Endpoint(httpUrlF)));
-    assertThat(responses).extracting("endpoint")
-            .extracting("httpUrl")
-            .containsOnly(httpUrlE, httpUrlF);
-  }
+        final List<HealthCheckResponses> responses =
+                healthCheckResultsInMemory.getResponses(Set.of(new Endpoint(httpUrlE), new Endpoint(httpUrlF)));
+        assertThat(responses).extracting("endpoint")
+                .extracting("httpUrl")
+                .containsOnly(httpUrlE, httpUrlF);
+    }
+
+    @Test
+    void shouldReturnEmptyListWhenNoHealthCheckResultsPresentYetForAGivenEndpoint() {
+        assertThat(healthCheckResultsInMemory.getResponses(new Endpoint(new HttpUrl("www.a.com"))))
+                .isEqualTo(empty());
+
+        assertThat(healthCheckResultsInMemory.getResponses(Set.of(
+                new Endpoint(new HttpUrl("www.a.com")),
+                new Endpoint(new HttpUrl("www.b.com")))))
+                .isEmpty();
+    }
+
+    @Test
+    void shouldntReturnResponsesForEndpointThatDoesntHaveAnyChecksYet() {
+
+        HttpUrl httpUrlE = new HttpUrl("http://www.e.com");
+        final HealthCheckResponse response = new HealthCheckResponse(httpUrlE, OK.value(), now(), now());
+
+        healthCheckResultsInMemory.add(new Endpoint(httpUrlE), response);
+
+        final List<HealthCheckResponses> responses =
+                healthCheckResultsInMemory.getResponses(Set.of(
+                        new Endpoint(httpUrlE),
+                        new Endpoint(new HttpUrl("www.endpointWithoutResults.com")))
+                );
+
+        assertThat(responses).extracting("endpoint")
+                .extracting("httpUrl")
+                .containsOnly(httpUrlE);
+    }
+
 }

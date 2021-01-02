@@ -1,5 +1,7 @@
 package com.alexmoleiro.healthchecker.core.healthCheck;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -17,8 +19,13 @@ public class Endpoint {
     return id;
   }
 
-  public HttpUrl getUrl() {
+  @JsonIgnore
+  public HttpUrl getHttpUrl() {
     return httpUrl;
+  }
+
+  public String getUrl() {
+    return httpUrl.toString();
   }
 
   @Override

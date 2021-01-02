@@ -34,9 +34,9 @@ public class HealthCheckResultsApi {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(value = "/historical/{id}", produces = "application/json")
-    List<HistoricResultsDto> historic(@PathVariable String id) {
+    List<HistoricResultsDto> historical(@PathVariable String id) {
         return endpointRepository.get(id)
-                .map(e -> list(healthCheckRepository.getResponses(e)))
+                .map(e -> list(healthCheckRepository.getResponses(e).orElse(null)))
                 .orElse(emptyList());
     }
 }

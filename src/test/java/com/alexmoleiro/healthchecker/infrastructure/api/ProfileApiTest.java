@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -111,6 +112,7 @@ class ProfileApiTest {
     final String aToken = randomString();
     LocalDateTime time = of(2020, 11, 30, 12, 0);
     final User aUser = new User(anId, anEmail);
+
     when(oauthService.getUser(aToken)).thenReturn(aUser);
 
     Endpoint endpointA = new Endpoint(new HttpUrl("a.com"));
@@ -120,8 +122,8 @@ class ProfileApiTest {
     List.of(endpointA, endPointB, endpointC).forEach(e->
     {
       profileRepository.addEndpoint(aUser,e);
-      healthCheckRepository.add(e, new HealthCheckResponse(e.getHttpUrl(), 200, time.minusMinutes(1), time ));
-      healthCheckRepository.add(e, new HealthCheckResponse(e.getHttpUrl(), 200, time.minusMinutes(1), time ));
+      healthCheckRepository.add(e, new HealthCheckResponse(e.getHttpUrl(), OK.value(), time.minusMinutes(2), time ));
+      healthCheckRepository.add(e, new HealthCheckResponse(e.getHttpUrl(), OK.value(), time.minusMinutes(1), time ));
     });
 
 
@@ -131,15 +133,15 @@ class ProfileApiTest {
               {"responses":[
               {"endpoint":{"id":"%s","url":"%s"},
               "healthCheckResponse":[
-              {"time":"2020-11-30T12:00:00","url":"http://a.com","delay":60000,"status":200},
+              {"time":"2020-11-30T12:00:00","url":"http://a.com","delay":120000,"status":200},
               {"time":"2020-11-30T12:00:00","url":"http://a.com","delay":60000,"status":200}]}
               ,{"endpoint":{"id":"%s","url":"%s"},
               "healthCheckResponse":[
-              {"time":"2020-11-30T12:00:00","url":"http://b.it","delay":60000,"status":200},
+              {"time":"2020-11-30T12:00:00","url":"http://b.it","delay":120000,"status":200},
               {"time":"2020-11-30T12:00:00","url":"http://b.it","delay":60000,"status":200}]},
               {"endpoint":{"id":"%s","url":"%s"},
               "healthCheckResponse":[
-              {"time":"2020-11-30T12:00:00","url":"http://c.es","delay":60000,"status":200},
+              {"time":"2020-11-30T12:00:00","url":"http://c.es","delay":120000,"status":200},
               {"time":"2020-11-30T12:00:00","url":"http://c.es","delay":60000,"status":200}]}],
               "userId":"%s"}
               """.formatted(

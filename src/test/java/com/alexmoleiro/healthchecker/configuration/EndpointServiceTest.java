@@ -18,7 +18,6 @@ class EndpointServiceTest {
 
     private static final int ONCE = 1;
     private static final int TIMEOUT = 5_000;
-    private String URL_STRING = "http://www.added.com";
 
     @MockBean
     HealthCheckerCrawler healthCheckerCrawler;

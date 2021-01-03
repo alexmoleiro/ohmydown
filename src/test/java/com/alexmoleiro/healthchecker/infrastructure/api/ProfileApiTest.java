@@ -16,6 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 import static java.time.LocalDateTime.of;
@@ -24,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -106,31 +108,24 @@ class ProfileApiTest {
   void shouldRespondFollowebWebsites() throws Exception {
 
     final String anId = randomString();
-    final String anEmail = "alex@email2.com";
+    final String anEmail = randomString();
     final String aToken = randomString();
     LocalDateTime time = of(2020, 11, 30, 12, 0);
     final User aUser = new User(anId, anEmail);
+
     when(oauthService.getUser(aToken)).thenReturn(aUser);
 
-    HttpUrl httpUrlA = new HttpUrl("https://amazon.com");
-    Endpoint endpointA = new Endpoint(httpUrlA);
-    HttpUrl httpUrlB = new HttpUrl("https://sport.it");
-    Endpoint endPointB = new Endpoint(httpUrlB);
-    HttpUrl httpUrlC = new HttpUrl("https://joindrover.com");
-    Endpoint endpointC = new Endpoint(httpUrlC);
+    Endpoint endpointA = new Endpoint(new HttpUrl("a.com"));
+    Endpoint endPointB = new Endpoint(new HttpUrl("b.it"));
+    Endpoint endpointC = new Endpoint(new HttpUrl("c.es"));
 
-    profileRepository.addEndpoint(aUser, endpointA);
-    profileRepository.addEndpoint(aUser, endPointB);
-    profileRepository.addEndpoint(aUser, endpointC);
+    List.of(endpointA, endPointB, endpointC).forEach(e->
+    {
+      profileRepository.addEndpoint(aUser,e);
+      healthCheckRepository.add(e, new HealthCheckResponse(e.getHttpUrl(), OK.value(), time.minusMinutes(2), time ));
+      healthCheckRepository.add(e, new HealthCheckResponse(e.getHttpUrl(), OK.value(), time.minusMinutes(1), time ));
+    });
 
-    healthCheckRepository.add(endpointA, new HealthCheckResponse(httpUrlA, 200, time.minusMinutes(1), time ));
-    healthCheckRepository.add(endpointA, new HealthCheckResponse(httpUrlA, 200, time.minusMinutes(1), time ));
-
-    healthCheckRepository.add(endPointB, new HealthCheckResponse(httpUrlB, 200, time.minusMinutes(1), time ));
-    healthCheckRepository.add(endPointB, new HealthCheckResponse(httpUrlB, 200, time.minusMinutes(1), time ));
-
-    healthCheckRepository.add(endpointC, new HealthCheckResponse(httpUrlC, 200, time.minusMinutes(1), time ));
-    healthCheckRepository.add(endpointC, new HealthCheckResponse(httpUrlC, 200, time.minusMinutes(1), time ));
 
     this.mockMvc.perform(get("/profile").header("Token", aToken))
         .andExpect(status().isOk())
@@ -138,16 +133,16 @@ class ProfileApiTest {
               {"responses":[
               {"endpoint":{"id":"%s","url":"%s"},
               "healthCheckResponse":[
-              {"time":"2020-11-30T12:00:00","url":"https://amazon.com","delay":60000,"status":200},
-              {"time":"2020-11-30T12:00:00","url":"https://amazon.com","delay":60000,"status":200}]}
+              {"time":"2020-11-30T12:00:00","url":"http://a.com","delay":120000,"status":200},
+              {"time":"2020-11-30T12:00:00","url":"http://a.com","delay":60000,"status":200}]}
               ,{"endpoint":{"id":"%s","url":"%s"},
               "healthCheckResponse":[
-              {"time":"2020-11-30T12:00:00","url":"https://sport.it","delay":60000,"status":200},
-              {"time":"2020-11-30T12:00:00","url":"https://sport.it","delay":60000,"status":200}]},
+              {"time":"2020-11-30T12:00:00","url":"http://b.it","delay":120000,"status":200},
+              {"time":"2020-11-30T12:00:00","url":"http://b.it","delay":60000,"status":200}]},
               {"endpoint":{"id":"%s","url":"%s"},
               "healthCheckResponse":[
-              {"time":"2020-11-30T12:00:00","url":"https://joindrover.com","delay":60000,"status":200},
-              {"time":"2020-11-30T12:00:00","url":"https://joindrover.com","delay":60000,"status":200}]}],
+              {"time":"2020-11-30T12:00:00","url":"http://c.es","delay":120000,"status":200},
+              {"time":"2020-11-30T12:00:00","url":"http://c.es","delay":60000,"status":200}]}],
               "userId":"%s"}
               """.formatted(
                       endpointA.getId(), endpointA.getHttpUrl().toString(),

@@ -14,29 +14,32 @@ import static java.util.Collections.emptySet;
 
 public class ProfileService {
 
-    private final ProfileRepository profileRepository;
-    private final HealthCheckRepository healthCheckRepository;
-    private EndpointRepository endpointRepository;
+  private final ProfileRepository profileRepository;
+  private final HealthCheckRepository healthCheckRepository;
+  private EndpointRepository endpointRepository;
 
-    public ProfileService(
-            ProfileRepository profileRepository,
-            HealthCheckRepository healthCheckRepository,
-            EndpointRepository endpointRepository
-    ) {
-        this.profileRepository = profileRepository;
-        this.healthCheckRepository = healthCheckRepository;
-        this.endpointRepository = endpointRepository;
-    }
+  public ProfileService(
+      ProfileRepository profileRepository,
+      HealthCheckRepository healthCheckRepository,
+      EndpointRepository endpointRepository) {
+    this.profileRepository = profileRepository;
+    this.healthCheckRepository = healthCheckRepository;
+    this.endpointRepository = endpointRepository;
+  }
 
-    public void addEndpointToEndpointsAndUserProfile(User user, Endpoint endpoint) {
-        endpointRepository.add(endpoint);
-        profileRepository.addEndpoint(user, endpoint);
-    }
+  public void addEndpointToEndpointsAndUserProfile(User user, Endpoint endpoint) {
+    endpointRepository.add(endpoint);
+    profileRepository.addEndpoint(user, endpoint);
+  }
 
-    public List<HealthCheckResponses> getResponses(User user) {
-        return healthCheckRepository.getResponses(
-                profileRepository.get(user).map(Profile::getFollowing)
-                        .orElse(emptySet())
-        );
-    }
+  public List<HealthCheckResponses> getResponses(User user) {
+    return healthCheckRepository.getResponses(
+        profileRepository.get(user).map(Profile::getFollowing).orElse(emptySet()));
+  }
+
+  public void deleteUrl(User user, String id) {
+    endpointRepository
+        .get(id)
+        .ifPresent(endpoint -> profileRepository.deleteEndpoint(user, endpoint));
+  }
 }

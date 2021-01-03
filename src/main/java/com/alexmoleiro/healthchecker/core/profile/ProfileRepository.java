@@ -7,4 +7,5 @@ import java.util.Optional;
 public interface ProfileRepository {
   void addEndpoint(User user, Endpoint endpoint);
   Optional<Profile> get(User user);
+  void deleteEndpoint(User user, Endpoint endpoint);
 }

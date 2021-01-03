@@ -32,4 +32,9 @@ public class ProfileRepositoryInMemory implements ProfileRepository {
   public Optional<Profile> get(User user) {
     return ofNullable(users.get(user));
   }
+
+  @Override
+  public void deleteEndpoint(User user, Endpoint endpoint) {
+      users.get(user).getFollowing().remove(endpoint);
+  }
 }

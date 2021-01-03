@@ -12,7 +12,6 @@ import java.util.Set;
 
 import static java.time.LocalDateTime.now;
 import static java.util.List.of;
-import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -69,17 +68,19 @@ class HealthChecksInMemoryTest {
         assertThat(responses).extracting("endpoint")
                 .extracting("httpUrl")
                 .containsOnly(httpUrlE, httpUrlF);
+
+        assertThat(responses.get(0).getHealthCheckResponse()).isNotEmpty();
+        assertThat(responses.get(1).getHealthCheckResponse()).isNotEmpty();
     }
 
     @Test
     void shouldReturnEmptyListWhenNoHealthCheckResultsPresentYetForAGivenEndpoint() {
-        assertThat(healthCheckResultsInMemory.getResponses(new Endpoint(new HttpUrl("www.a.com"))))
-                .isEqualTo(empty());
+        HealthCheckResponses responsesA = healthCheckResultsInMemory.getResponses(new Endpoint(new HttpUrl("www.a.com")));
+        HealthCheckResponses responsesB = healthCheckResultsInMemory.getResponses(new Endpoint(new HttpUrl("www.b.com")));
 
-        assertThat(healthCheckResultsInMemory.getResponses(Set.of(
-                new Endpoint(new HttpUrl("www.a.com")),
-                new Endpoint(new HttpUrl("www.b.com")))))
-                .isEmpty();
+        assertThat(responsesA.getHealthCheckResponse()).isEmpty();
+        assertThat(responsesB.getHealthCheckResponse()).isEmpty();
+
     }
 
     @Test
@@ -90,15 +91,16 @@ class HealthChecksInMemoryTest {
 
         healthCheckResultsInMemory.add(new Endpoint(httpUrlE), response);
 
+        HttpUrl httpWithoutResults = new HttpUrl("http://www.endpointWithoutResults.com");
         final List<HealthCheckResponses> responses =
                 healthCheckResultsInMemory.getResponses(Set.of(
                         new Endpoint(httpUrlE),
-                        new Endpoint(new HttpUrl("www.endpointWithoutResults.com")))
+                        new Endpoint(httpWithoutResults))
                 );
 
         assertThat(responses).extracting("endpoint")
                 .extracting("httpUrl")
-                .containsOnly(httpUrlE);
+                .containsOnly(httpUrlE, httpWithoutResults);
     }
 
 }

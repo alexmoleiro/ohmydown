@@ -1,6 +1,7 @@
 package com.alexmoleiro.healthchecker.infrastructure.api;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.Endpoint;
+import com.alexmoleiro.healthchecker.core.healthCheck.EndpointRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.healthCheck.HttpUrl;
@@ -14,10 +15,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import static java.time.LocalDateTime.of;
 import static java.util.UUID.randomUUID;
@@ -43,17 +46,23 @@ class ProfileApiTest {
   @Autowired
   HealthCheckRepository healthCheckRepository;
 
+  @Autowired
+  EndpointRepository endpointRepository;
+
   @MockBean
   OauthService oauthService;
 
   @Autowired
   ProfileRepository profileRepository;
 
+  private static final String A_TOKEN = UUID.randomUUID().toString();
+  private static final User USER = new User("1", "alex@email.com");
+  private static final User USERB = new User("2", "alex@email.com");
+
   @Test
   void shouldAddDomain() throws Exception {
 
-    final User user = new User("endpoint", "alex@email.com");
-    when(oauthService.getUser(anyString())).thenReturn(user);
+    when(oauthService.getUser(anyString())).thenReturn(USER);
     String aToken = "aToken";
     final String validUrl = "https://www.as.com";
 
@@ -65,16 +74,15 @@ class ProfileApiTest {
         {"url":"%s"}""".formatted(validUrl)))
         .andExpect(status().isCreated());
 
-    assertThat(profileRepository.get(user).get().getFollowing()).usingRecursiveComparison()
+    assertThat(profileRepository.get(USER).get().getFollowing()).usingRecursiveComparison()
         .isEqualTo(Set.of(new Endpoint(new HttpUrl("https://www.as.com"))));
     }
 
   @Test
   void shouldReturn404whenInvalidDomain() throws Exception {
-    String aToken = "aToken";
     this.mockMvc.perform(
         post("/profile/addurl")
-            .header("Token", aToken)
+            .header("Token", A_TOKEN)
             .contentType(APPLICATION_JSON)
             .content("""
         {"url":"invalidUrl"}"""))
@@ -93,6 +101,28 @@ class ProfileApiTest {
         {"url":"https://www.as.com"}"""))
         .andExpect(status().isForbidden());
     }
+
+  @Test
+  void deleteUrl() throws Exception {
+    when(oauthService.getUser(anyString())).thenReturn(USERB);
+    Endpoint endpointA = new Endpoint(new HttpUrl("a.com"));
+
+    profileRepository.addEndpoint(USERB, endpointA);
+    endpointRepository.add(endpointA);
+
+    assertThat(profileRepository.get(USERB).get().getFollowing()).containsOnly(endpointA);
+
+    this.mockMvc.perform(
+            MockMvcRequestBuilders.delete("/profile/deleteurl")
+                    .header("Token", A_TOKEN)
+                    .contentType(APPLICATION_JSON)
+                    .content("""
+        {"id":"%s"}""".formatted(endpointA.getId())))
+            .andExpect(status().isOk());
+
+    assertThat(profileRepository.get(USERB).get().getFollowing()).isEmpty();
+
+  }
 
   @Test
   void shouldReturnForbiddenWhenInvalidToken() throws Exception {

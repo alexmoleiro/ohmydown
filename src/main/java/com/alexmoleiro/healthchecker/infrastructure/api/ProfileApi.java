@@ -4,6 +4,7 @@ import com.alexmoleiro.healthchecker.core.healthCheck.Endpoint;
 import com.alexmoleiro.healthchecker.core.healthCheck.HttpUrl;
 import com.alexmoleiro.healthchecker.core.healthCheck.InvalidHttpUrlException;
 import com.alexmoleiro.healthchecker.core.profile.OauthService;
+import com.alexmoleiro.healthchecker.infrastructure.dto.IdDto;
 import com.alexmoleiro.healthchecker.infrastructure.dto.ProfileDto;
 import com.alexmoleiro.healthchecker.infrastructure.dto.UrlDto;
 import com.alexmoleiro.healthchecker.service.ProfileService;
@@ -17,8 +18,7 @@ public class ProfileApi {
   private final OauthService oauthService;
   private final ProfileService profileService;
 
-  public ProfileApi(OauthService oauthService, ProfileService profileService
-  ) {
+  public ProfileApi(OauthService oauthService, ProfileService profileService) {
     this.oauthService = oauthService;
     this.profileService = profileService;
   }
@@ -40,6 +40,16 @@ public class ProfileApi {
             oauthService.getUser(token),
             new Endpoint(new HttpUrl(urlDto.getUrl()))
     );
+  }
+
+  @CrossOrigin(origins = "http://localhost:3000")
+  @ResponseStatus(OK)
+  @DeleteMapping(value = "/profile/deleteurl")
+  public void deleteUrl(
+          @RequestHeader("Token") String token,
+          @RequestBody IdDto idDto) {
+
+    profileService.deleteUrl(oauthService.getUser(token), idDto.getId());
   }
 
   @ResponseStatus(value= FORBIDDEN)

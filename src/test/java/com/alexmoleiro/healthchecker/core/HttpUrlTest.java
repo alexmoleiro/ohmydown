@@ -20,7 +20,6 @@ class HttpUrlTest {
     HttpUrl httpUrl = new HttpUrl("a.com");
     assertThat(httpUrl.getUrl().toString()).isEqualTo("http://a.com");
     assertThat(httpUrl.toString()).isEqualTo("http://a.com");
-
   }
 
 

@@ -36,7 +36,7 @@ public class HealthCheckResultsApi {
     @GetMapping(value = "/historical/{id}", produces = "application/json")
     List<HistoricResultsDto> historical(@PathVariable String id) {
         return endpointRepository.get(id)
-                .map(e -> list(healthCheckRepository.getResponses(e).orElse(null)))
+                .map(e -> list(healthCheckRepository.getResponses(e)))
                 .orElse(emptyList());
     }
 }

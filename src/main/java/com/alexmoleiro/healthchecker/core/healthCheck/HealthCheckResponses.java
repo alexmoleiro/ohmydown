@@ -12,6 +12,10 @@ public class HealthCheckResponses {
     this.healthCheckResponses.addLast(response);
   }
 
+  public HealthCheckResponses(Endpoint endpoint) {
+    this.endpoint = endpoint;
+  }
+
   public Endpoint getEndpoint() {
     return endpoint;
   }

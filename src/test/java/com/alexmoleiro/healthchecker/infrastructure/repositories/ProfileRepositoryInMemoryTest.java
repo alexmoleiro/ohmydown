@@ -10,7 +10,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import static java.util.Optional.empty;
-import static java.util.Set.of;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ProfileRepositoryInMemoryTest {
@@ -31,11 +30,11 @@ class ProfileRepositoryInMemoryTest {
 
     Set<Endpoint> following = repository.get(user).get().getFollowing();
     assertThat(following)
-        .isEqualTo(
-            of(
+        .containsOnly(
                 new Endpoint(httpUrlA),
                 new Endpoint(httpUrlB),
-                new Endpoint(httpUrlC)));
+                new Endpoint(httpUrlC))
+            .hasSize(3);
   }
 
   @Test

@@ -44,12 +44,12 @@ public class ProfileApi {
 
   @CrossOrigin(origins = "http://localhost:3000")
   @ResponseStatus(OK)
-  @DeleteMapping(value = "/profile/deleteurl")
+  @DeleteMapping(value = "/profile/deleteurls")
   public void deleteUrl(
           @RequestHeader("Token") String token,
           @RequestBody IdDto idDto) {
 
-    profileService.deleteUrl(oauthService.getUser(token), idDto.getId());
+    profileService.deleteUrls(oauthService.getUser(token), idDto.getIds());
   }
 
   @ResponseStatus(value= FORBIDDEN)

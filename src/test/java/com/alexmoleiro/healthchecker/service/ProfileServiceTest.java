@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
+import static java.util.Set.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -24,6 +25,7 @@ class ProfileServiceTest {
   public static final User RANDOM_USER = new User("randomUser", "a@a.com");
   public static final User ANOTHER_RANDOM_USER = new User("randomUser2", "a@b.com");
   public static final Endpoint ENDPOINT = new Endpoint(new HttpUrl("www.as.com"));
+  public static final Endpoint ENDPOINT_B = new Endpoint(new HttpUrl("www.b.com"));
 
   @Test
   void shouldRespondEmptyHealthCheckResponses() {
@@ -72,4 +74,19 @@ class ProfileServiceTest {
     verify(profileRepository).addEndpoint(ANOTHER_RANDOM_USER, ENDPOINT);
 
   }
+
+  @Test
+  void shouldDeleteAllTheEndpoints() {
+    ProfileRepository profileRepository = mock(ProfileRepository.class);
+    EndpointInMemory endpointRepository = new EndpointInMemory();
+    endpointRepository.add(ENDPOINT);
+    endpointRepository.add(ENDPOINT_B);
+    var profileService = new ProfileService(profileRepository, new HealthChecksInMemory(), endpointRepository);
+
+    profileService.deleteUrls(RANDOM_USER, of(ENDPOINT.getId(), ENDPOINT_B.getId()));
+
+    verify(profileRepository).deleteEndpoint(RANDOM_USER, ENDPOINT_B);
+    verify(profileRepository).deleteEndpoint(RANDOM_USER, ENDPOINT);
+  }
+
 }

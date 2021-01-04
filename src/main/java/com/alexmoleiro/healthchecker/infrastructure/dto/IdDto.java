@@ -1,13 +1,15 @@
 package com.alexmoleiro.healthchecker.infrastructure.dto;
 
+import java.util.Set;
+
 public class IdDto {
 
-    private String id;
+    private Set<String> ids;
 
     public IdDto() {
 
     }
-    public String getId() {
-        return id;
+    public Set<String> getIds() {
+        return ids;
     }
 }

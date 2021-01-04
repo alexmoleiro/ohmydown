@@ -9,6 +9,7 @@ import com.alexmoleiro.healthchecker.core.profile.ProfileRepository;
 import com.alexmoleiro.healthchecker.core.profile.User;
 
 import java.util.List;
+import java.util.Set;
 
 import static java.util.Collections.emptySet;
 
@@ -37,9 +38,10 @@ public class ProfileService {
         profileRepository.get(user).map(Profile::getFollowing).orElse(emptySet()));
   }
 
-  public void deleteUrl(User user, String id) {
-    endpointRepository
-        .get(id)
-        .ifPresent(endpoint -> profileRepository.deleteEndpoint(user, endpoint));
+  public void deleteUrls(User user, Set<String> ids) {
+    ids.forEach(id-> endpointRepository
+            .get(id)
+            .ifPresent(endpoint -> profileRepository.deleteEndpoint(user, endpoint))
+    );
   }
 }

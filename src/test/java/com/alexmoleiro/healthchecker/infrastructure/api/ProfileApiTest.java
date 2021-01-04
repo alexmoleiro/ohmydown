@@ -113,11 +113,11 @@ class ProfileApiTest {
     assertThat(profileRepository.get(USERB).get().getFollowing()).containsOnly(endpointA);
 
     this.mockMvc.perform(
-            MockMvcRequestBuilders.delete("/profile/deleteurl")
+            MockMvcRequestBuilders.delete("/profile/deleteurls")
                     .header("Token", A_TOKEN)
                     .contentType(APPLICATION_JSON)
                     .content("""
-        {"id":"%s"}""".formatted(endpointA.getId())))
+        {"ids":["%s"]}""".formatted(endpointA.getId())))
             .andExpect(status().isOk());
 
     assertThat(profileRepository.get(USERB).get().getFollowing()).isEmpty();

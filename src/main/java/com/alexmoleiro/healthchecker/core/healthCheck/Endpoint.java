@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Objects;
 import java.util.UUID;
 
+import static java.text.MessageFormat.format;
+
 public class Endpoint {
 
   private HttpUrl httpUrl;
@@ -39,5 +41,10 @@ public class Endpoint {
   @Override
   public int hashCode() {
     return Objects.hash(httpUrl.getUrl().toString());
+  }
+
+  public String getGroup() {
+    String[] domain = httpUrl.getUrl().getHost().split("\\.");
+    return format("{0}.{1}", domain[domain.length - 2], domain[domain.length - 1]);
   }
 }

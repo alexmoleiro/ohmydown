@@ -161,23 +161,23 @@ class ProfileApiTest {
         .andExpect(status().isOk())
         .andExpect(content().json("""              
               {"responses":[
-              {"endpoint":{"id":"%s","url":"%s"},
+              {"endpoint":{"id":"%s","url":"%s","group":"%s"},
               "healthCheckResponse":[
               {"time":"2020-11-30T12:00:00","url":"http://a.com","delay":120000,"status":200},
               {"time":"2020-11-30T12:00:00","url":"http://a.com","delay":60000,"status":200}]}
-              ,{"endpoint":{"id":"%s","url":"%s"},
+              ,{"endpoint":{"id":"%s","url":"%s","group":"%s"},
               "healthCheckResponse":[
               {"time":"2020-11-30T12:00:00","url":"http://b.it","delay":120000,"status":200},
               {"time":"2020-11-30T12:00:00","url":"http://b.it","delay":60000,"status":200}]},
-              {"endpoint":{"id":"%s","url":"%s"},
+              {"endpoint":{"id":"%s","url":"%s","group":"%s"},
               "healthCheckResponse":[
               {"time":"2020-11-30T12:00:00","url":"http://c.es","delay":120000,"status":200},
               {"time":"2020-11-30T12:00:00","url":"http://c.es","delay":60000,"status":200}]}],
               "userId":"%s"}
               """.formatted(
-                      endpointA.getId(), endpointA.getHttpUrl().toString(),
-                      endPointB.getId(), endPointB.getHttpUrl().toString(),
-                endpointC.getId(),  endpointC.getHttpUrl().toString(),
+                      endpointA.getId(), endpointA.getHttpUrl().toString(), endpointA.getGroup(),
+                      endPointB.getId(), endPointB.getHttpUrl().toString(), endPointB.getGroup(),
+                endpointC.getId(),  endpointC.getHttpUrl().toString(), endpointC.getGroup(),
                 anId
         )));
   }

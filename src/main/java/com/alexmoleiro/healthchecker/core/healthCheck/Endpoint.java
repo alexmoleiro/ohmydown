@@ -2,6 +2,7 @@ package com.alexmoleiro.healthchecker.core.healthCheck;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.text.MessageFormat;
 import java.util.Objects;
 
 import static java.text.MessageFormat.format;
@@ -9,6 +10,7 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 
 public class Endpoint {
 
+  private static final int THREE_CHARS = 3;
   private HttpUrl httpUrl;
   private String id;
   private String group;
@@ -37,7 +39,7 @@ public class Endpoint {
   }
 
   private void setId() {
-    this.id = group + "-" + randomAlphanumeric(3);
+    this.id = format("{0}-{1}", group, randomAlphanumeric(THREE_CHARS));
   }
 
   private void setGroup() {

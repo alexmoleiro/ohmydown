@@ -6,6 +6,8 @@ import com.alexmoleiro.healthchecker.core.healthCheck.EndpointRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HttpUrl;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import static com.alexmoleiro.healthchecker.core.healthCheck.EndpointType.LANDING;
+
 
 public class EndpointService {
 
@@ -26,7 +28,7 @@ public class EndpointService {
 
     private void domainsToEndpoints() {
         this.domainsRepository.getDomains()
-                .forEach(domain -> endpointRepository.add(new Endpoint(new HttpUrl(domain))));
+                .forEach(domain -> endpointRepository.add(new Endpoint(new HttpUrl(domain), LANDING)));
     }
 
     @Scheduled(cron = "${cron.expression}")

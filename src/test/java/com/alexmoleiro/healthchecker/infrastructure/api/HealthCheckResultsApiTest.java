@@ -98,10 +98,12 @@ public class HealthCheckResultsApiTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {"responses":[
-                        {"url":"https://www.z.com","delay":300000,"status":200,"id":"%s"},
-                        {"url":"https://www.x.com","delay":300000,"status":500,"id":"%s"}
+                        {"url":"https://www.z.com","delay":300000,"status":200,"id":"%s","group":"%s"},
+                        {"url":"https://www.x.com","delay":300000,"status":500,"id":"%s","group":"%s"}
                         ],
-                        "numUrls":2}""".formatted(endpointZ.getId(), endpointX.getId())));
+                        "numUrls":2}""".formatted(
+                                endpointZ.getId(), endpointZ.getGroup(),
+                        endpointX.getId(), endpointX.getGroup() )));
     }
 
 

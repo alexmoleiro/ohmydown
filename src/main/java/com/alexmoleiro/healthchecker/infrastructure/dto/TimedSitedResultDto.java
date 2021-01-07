@@ -11,7 +11,7 @@ public class TimedSitedResultDto {
     this.healthCheckResponses = healthCheckResponses;
     this.lastResponse = healthCheckResponses.getHealthCheckResponse().getLast();
   }
-  //TODO decouple Id from Url
+
   public String getId() {
     return healthCheckResponses.getEndpoint().getId();
   }
@@ -26,5 +26,9 @@ public class TimedSitedResultDto {
 
   public long getDelay() {
     return lastResponse.getDelay();
+  }
+
+  public String getGroup() {
+    return healthCheckResponses.getEndpoint().getGroup();
   }
 }

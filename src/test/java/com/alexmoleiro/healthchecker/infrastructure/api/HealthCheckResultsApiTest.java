@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static com.alexmoleiro.healthchecker.core.healthCheck.EndpointType.LANDING;
 import static java.time.LocalDateTime.of;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
@@ -86,11 +87,11 @@ public class HealthCheckResultsApiTest {
     void shouldReturnLandingListSites() throws Exception {
         healthCheckRepository.deleteAll();
         HttpUrl httpUrlZ = new HttpUrl("https://www.z.com");
-        Endpoint endpointZ = new Endpoint(httpUrlZ);
+        Endpoint endpointZ = new Endpoint(httpUrlZ, LANDING);
         healthCheckRepository.add(endpointZ, new HealthCheckResponse(httpUrlZ, OK.value(), FIRST, SECOND));
 
         HttpUrl httpUrlX = new HttpUrl("https://www.x.com");
-        Endpoint endpointX = new Endpoint(httpUrlX);
+        Endpoint endpointX = new Endpoint(httpUrlX, LANDING);
         healthCheckRepository.add(endpointX, new HealthCheckResponse(httpUrlX, INTERNAL_SERVER_ERROR.value(), FIRST, SECOND
         ));
 
@@ -98,10 +99,12 @@ public class HealthCheckResultsApiTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                         {"responses":[
-                        {"url":"https://www.z.com","delay":300000,"status":200,"id":"%s"},
-                        {"url":"https://www.x.com","delay":300000,"status":500,"id":"%s"}
+                        {"url":"https://www.z.com","delay":300000,"status":200,"id":"%s","group":"%s"},
+                        {"url":"https://www.x.com","delay":300000,"status":500,"id":"%s","group":"%s"}
                         ],
-                        "numUrls":2}""".formatted(endpointZ.getId(), endpointX.getId())));
+                        "numUrls":2}""".formatted(
+                                endpointZ.getId(), endpointZ.getGroup(),
+                        endpointX.getId(), endpointX.getGroup() )));
     }
 
 

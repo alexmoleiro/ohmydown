@@ -36,7 +36,6 @@ public class OauthServiceGoogle implements OauthService {
 
   GoogleIdTokenVerifier verifier;
 
-
   public OauthServiceGoogle(String googleid) {
     verifier =
         new Builder(new NetHttpTransport(), new JacksonFactory())
@@ -52,9 +51,12 @@ public class OauthServiceGoogle implements OauthService {
     } catch (IllegalArgumentException | GeneralSecurityException | IOException e) {
       throw new InvalidTokenException(e);
     }
+    if (googleIdToken == null) {
+      throw new InvalidTokenException();
+    }
+
     return new User(
         (String) googleIdToken.getPayload().get("sub"),
-        (String) googleIdToken.getPayload().get("email")
-    );
+        (String) googleIdToken.getPayload().get("email"));
   }
 }

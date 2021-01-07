@@ -4,4 +4,7 @@ public class InvalidTokenException extends RuntimeException {
   public InvalidTokenException(Exception e) {
     super(e);
   }
+
+  public InvalidTokenException() {
+  }
 }

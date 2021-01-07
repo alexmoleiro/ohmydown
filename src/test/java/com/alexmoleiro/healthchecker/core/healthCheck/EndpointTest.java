@@ -7,10 +7,20 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
+import static com.alexmoleiro.healthchecker.core.healthCheck.EndpointType.DEFAULT;
+import static com.alexmoleiro.healthchecker.core.healthCheck.EndpointType.LANDING;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.of;
 
 class EndpointTest {
+
+  @Test
+  void shouldTag() {
+    assertThat(new Endpoint(new HttpUrl("www.as.com"), LANDING).getEndpointType())
+            .isEqualTo(LANDING);
+    assertThat(new Endpoint(new HttpUrl("www.as.com")).getEndpointType())
+            .isEqualTo(DEFAULT);
+  }
 
   @Test
   void shouldCreateIdSeo() {

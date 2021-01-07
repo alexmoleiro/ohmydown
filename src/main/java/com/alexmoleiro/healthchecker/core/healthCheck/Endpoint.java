@@ -2,9 +2,9 @@ package com.alexmoleiro.healthchecker.core.healthCheck;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import java.text.MessageFormat;
 import java.util.Objects;
 
+import static com.alexmoleiro.healthchecker.core.healthCheck.EndpointType.DEFAULT;
 import static java.text.MessageFormat.format;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 
@@ -14,11 +14,17 @@ public class Endpoint {
   private HttpUrl httpUrl;
   private String id;
   private String group;
+  private EndpointType endpointType;
 
-  public Endpoint(HttpUrl httpUrl) {
+  public Endpoint(HttpUrl httpUrl, EndpointType endpointType) {
     this.httpUrl = httpUrl;
+    this.endpointType = endpointType;
     setGroup();
     setId();
+  }
+
+  public Endpoint(HttpUrl httpUrl) {
+    this(httpUrl, DEFAULT);
   }
 
   public String getId() {
@@ -28,6 +34,11 @@ public class Endpoint {
   @JsonIgnore
   public HttpUrl getHttpUrl() {
     return httpUrl;
+  }
+
+  @JsonIgnore
+  public EndpointType getEndpointType() {
+    return endpointType;
   }
 
   public String getUrl() {

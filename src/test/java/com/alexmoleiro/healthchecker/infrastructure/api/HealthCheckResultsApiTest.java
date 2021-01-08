@@ -86,6 +86,7 @@ public class HealthCheckResultsApiTest {
     @Test
     void shouldReturnLandingListSites() throws Exception {
         healthCheckRepository.deleteAll();
+
         HttpUrl httpUrlZ = new HttpUrl("https://www.z.com");
         Endpoint endpointZ = new Endpoint(httpUrlZ, LANDING);
         healthCheckRepository.add(endpointZ, new HealthCheckResponse(httpUrlZ, OK.value(), FIRST, SECOND));
@@ -94,6 +95,10 @@ public class HealthCheckResultsApiTest {
         Endpoint endpointX = new Endpoint(httpUrlX, LANDING);
         healthCheckRepository.add(endpointX, new HealthCheckResponse(httpUrlX, INTERNAL_SERVER_ERROR.value(), FIRST, SECOND
         ));
+
+        HttpUrl httpUrlY = new HttpUrl("https://www.y.com");
+        Endpoint endpointY = new Endpoint(httpUrlY);
+        healthCheckRepository.add(endpointY, new HealthCheckResponse(httpUrlY, OK.value(), FIRST, SECOND));
 
         this.mockMvc.perform(post("/landing-list"))
                 .andExpect(status().isOk())
@@ -106,6 +111,4 @@ public class HealthCheckResultsApiTest {
                                 endpointZ.getId(), endpointZ.getGroup(),
                         endpointX.getId(), endpointX.getGroup() )));
     }
-
-
 }

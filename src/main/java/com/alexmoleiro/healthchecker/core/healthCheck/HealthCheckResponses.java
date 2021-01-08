@@ -1,5 +1,6 @@
 package com.alexmoleiro.healthchecker.core.healthCheck;
 
+import java.math.BigDecimal;
 import java.util.LinkedList;
 
 public class HealthCheckResponses {
@@ -26,5 +27,9 @@ public class HealthCheckResponses {
 
   public void addLast(HealthCheckResponse response) {
     healthCheckResponses.addLast(response);
+  }
+
+  public BigDecimal getUptime() {
+    return BigDecimal.valueOf(50.00);
   }
 }

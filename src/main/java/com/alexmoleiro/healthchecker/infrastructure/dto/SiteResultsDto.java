@@ -4,6 +4,7 @@ import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponses;
 
 import java.util.List;
 
+import static com.alexmoleiro.healthchecker.core.healthCheck.EndpointType.LANDING;
 import static java.util.stream.Collectors.toList;
 
 public class SiteResultsDto {
@@ -11,7 +12,9 @@ public class SiteResultsDto {
   List<HealthCheckResponses> responses;
 
   public SiteResultsDto(List<HealthCheckResponses> responses) {
-    this.responses = responses;
+    this.responses = responses.stream()
+        .filter(response->response.getEndpoint().getEndpointType().equals(LANDING))
+        .collect(toList());
   }
 
   public List<TimedSitedResultDto> getResponses() {

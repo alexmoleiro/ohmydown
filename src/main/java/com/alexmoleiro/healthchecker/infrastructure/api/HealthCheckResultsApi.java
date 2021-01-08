@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.alexmoleiro.healthchecker.core.healthCheck.EndpointType.LANDING;
 import static com.alexmoleiro.healthchecker.infrastructure.dto.HistoricResultsDto.list;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
@@ -34,7 +33,6 @@ public class HealthCheckResultsApi {
   SiteResultsDto webStatusResult() {
     return new SiteResultsDto(
         healthCheckRepository.getResponses().stream()
-            .filter(response -> response.getEndpoint().getEndpointType().equals(LANDING))
             .collect(toList()));
   }
 

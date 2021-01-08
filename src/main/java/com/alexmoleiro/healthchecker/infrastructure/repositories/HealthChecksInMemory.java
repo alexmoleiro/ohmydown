@@ -1,11 +1,11 @@
 package com.alexmoleiro.healthchecker.infrastructure.repositories;
 
 import com.alexmoleiro.healthchecker.core.healthCheck.Endpoint;
+import com.alexmoleiro.healthchecker.core.healthCheck.EndpointType;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponses;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,8 +21,8 @@ public class HealthChecksInMemory implements HealthCheckRepository {
     }
 
     @Override
-    public List<HealthCheckResponses> getResponses() {
-        return new ArrayList<>(siteResults.values());
+    public List<HealthCheckResponses> getResponses(EndpointType endpointType) {
+        return siteResults.values().stream().filter(response->response.getEndpoint().getEndpointType().equals(endpointType)).collect(toList());
     }
 
     @Override

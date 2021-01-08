@@ -111,6 +111,4 @@ public class HealthCheckResultsApiTest {
                                 endpointZ.getId(), endpointZ.getGroup(),
                         endpointX.getId(), endpointX.getGroup() )));
     }
-
-
 }

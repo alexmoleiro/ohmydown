@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Set;
 
+import static com.alexmoleiro.healthchecker.core.healthCheck.EndpointType.DEFAULT;
 import static java.time.LocalDateTime.now;
 import static java.util.List.of;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,7 +32,7 @@ class HealthChecksInMemoryTest {
 
         healthCheckResultsInMemory.add(ENDPOINT, healthCheckResponse);
 
-        final List<HealthCheckResponses> siteResults = healthCheckResultsInMemory.getResponses();
+        final List<HealthCheckResponses> siteResults = healthCheckResultsInMemory.getResponses(DEFAULT);
 
         assertThat(siteResults).usingRecursiveComparison().isEqualTo(of(healthCheckResponses));
     }
@@ -46,7 +47,7 @@ class HealthChecksInMemoryTest {
         healthCheckResultsInMemory.add(ENDPOINT, healthCheckResponse);
         healthCheckResultsInMemory.add(ENDPOINT, healthCheckResponse);
 
-        final List<HealthCheckResponses> timedResults = healthCheckResultsInMemory.getResponses();
+        final List<HealthCheckResponses> timedResults = healthCheckResultsInMemory.getResponses(DEFAULT);
 
         assertThat(timedResults.size()).isEqualTo(1);
         assertThat(timedResults.get(0).getHealthCheckResponse().size()).isEqualTo(3);

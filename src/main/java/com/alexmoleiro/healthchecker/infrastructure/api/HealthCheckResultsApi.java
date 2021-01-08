@@ -10,11 +10,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static com.alexmoleiro.healthchecker.core.healthCheck.EndpointType.LANDING;
 import static com.alexmoleiro.healthchecker.infrastructure.dto.HistoricResultsDto.list;
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
 
 @RestController
 public class HealthCheckResultsApi {
@@ -31,9 +32,7 @@ public class HealthCheckResultsApi {
   @CrossOrigin(origins = "http://localhost:3000")
   @PostMapping(value = "/landing-list", produces = "application/json")
   SiteResultsDto webStatusResult() {
-    return new SiteResultsDto(
-        healthCheckRepository.getResponses().stream()
-            .collect(toList()));
+    return new SiteResultsDto(new ArrayList<>(healthCheckRepository.getResponses(LANDING)));
   }
 
   @CrossOrigin(origins = "http://localhost:3000")

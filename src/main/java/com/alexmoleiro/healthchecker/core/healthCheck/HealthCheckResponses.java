@@ -49,7 +49,7 @@ public class HealthCheckResponses {
         new DecimalFormat("##")
             .format(
                 healthCheckResponses.stream()
-                    .mapToLong(x -> x.getDelay())
+                    .mapToLong(response -> response.getDelay())
                     .summaryStatistics()
                     .getAverage()));
   }

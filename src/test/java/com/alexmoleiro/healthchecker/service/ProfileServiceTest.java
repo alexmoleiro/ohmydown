@@ -3,7 +3,9 @@ package com.alexmoleiro.healthchecker.service;
 import com.alexmoleiro.healthchecker.core.healthCheck.Endpoint;
 import com.alexmoleiro.healthchecker.core.healthCheck.EndpointRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponse;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckResponses;
+import com.alexmoleiro.healthchecker.core.healthCheck.HealthChecker;
 import com.alexmoleiro.healthchecker.core.healthCheck.HttpUrl;
 import com.alexmoleiro.healthchecker.core.profile.ProfileRepository;
 import com.alexmoleiro.healthchecker.core.profile.User;
@@ -14,11 +16,14 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
 import static java.util.Set.of;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class ProfileServiceTest {
 
@@ -31,12 +36,15 @@ class ProfileServiceTest {
   void shouldRespondEmptyHealthCheckResponses() {
     final ProfileRepositoryInMemory profileRepositoryInMemory = new ProfileRepositoryInMemory();
     final HealthCheckRepository healthCheckRepository = new HealthChecksInMemory();
+    HealthChecker healthChecker = mock(HealthChecker.class);
 
-    final List<HealthCheckResponses> healthCheckResponses = new ProfileService(
-            profileRepositoryInMemory,
-            healthCheckRepository,
-            new EndpointInMemory())
-        .getResponses(RANDOM_USER);
+    final List<HealthCheckResponses> healthCheckResponses =
+        new ProfileService(
+                profileRepositoryInMemory,
+                healthCheckRepository,
+                new EndpointInMemory(),
+                healthChecker)
+            .getResponses(RANDOM_USER);
 
     assertThat(healthCheckResponses).isEqualTo(emptyList());
   }
@@ -44,49 +52,55 @@ class ProfileServiceTest {
   @Test
   void shouldAddEndpointToProfileAndEndpointRepository() {
 
-
     EndpointRepository endpointRepository = mock(EndpointRepository.class);
     ProfileRepository profileRepository = mock(ProfileRepository.class);
+    HealthChecker healthChecker = mock(HealthChecker.class);
+    HealthCheckRepository healthCheckRepository = mock(HealthCheckRepository.class);
 
+    final HealthCheckResponse healthCheckResponse =
+        new HealthCheckResponse(ENDPOINT.getHttpUrl(), 200, now(), now());
 
-    new ProfileService(profileRepository, new HealthChecksInMemory(), endpointRepository)
-            .addEndpointToEndpointsAndUserProfile(RANDOM_USER, ENDPOINT);
+    when(healthChecker.check(ENDPOINT.getHttpUrl())).thenReturn(healthCheckResponse);
+
+    new ProfileService(profileRepository, healthCheckRepository, endpointRepository, healthChecker)
+        .addEndpointToEndpointsAndUserProfile(RANDOM_USER, ENDPOINT);
 
     verify(endpointRepository).add(ENDPOINT);
     verify(profileRepository).addEndpoint(RANDOM_USER, ENDPOINT);
-
+    verify(healthCheckRepository).add(ENDPOINT, healthCheckResponse);
   }
 
   @Test
   void shouldAddExistingEndpointToAnotherUser() {
 
     ProfileRepository profileRepository = mock(ProfileRepository.class);
+    HealthChecker healthChecker = mock(HealthChecker.class);
 
-    ProfileService profileService = new ProfileService(
-            profileRepository,
-            new HealthChecksInMemory(),
-            new EndpointInMemory());
+    ProfileService profileService =
+        new ProfileService(
+            profileRepository, new HealthChecksInMemory(), new EndpointInMemory(), healthChecker);
 
     profileService.addEndpointToEndpointsAndUserProfile(RANDOM_USER, ENDPOINT);
     profileService.addEndpointToEndpointsAndUserProfile(ANOTHER_RANDOM_USER, ENDPOINT);
 
     verify(profileRepository).addEndpoint(RANDOM_USER, ENDPOINT);
     verify(profileRepository).addEndpoint(ANOTHER_RANDOM_USER, ENDPOINT);
-
   }
 
   @Test
   void shouldDeleteAllTheEndpoints() {
     ProfileRepository profileRepository = mock(ProfileRepository.class);
+    HealthChecker healthChecker = mock(HealthChecker.class);
     EndpointInMemory endpointRepository = new EndpointInMemory();
     endpointRepository.add(ENDPOINT);
     endpointRepository.add(ENDPOINT_B);
-    var profileService = new ProfileService(profileRepository, new HealthChecksInMemory(), endpointRepository);
+    var profileService =
+        new ProfileService(
+            profileRepository, new HealthChecksInMemory(), endpointRepository, healthChecker);
 
     profileService.deleteUrls(RANDOM_USER, of(ENDPOINT.getId(), ENDPOINT_B.getId()));
 
     verify(profileRepository).deleteEndpoint(RANDOM_USER, ENDPOINT_B);
     verify(profileRepository).deleteEndpoint(RANDOM_USER, ENDPOINT);
   }
-
 }

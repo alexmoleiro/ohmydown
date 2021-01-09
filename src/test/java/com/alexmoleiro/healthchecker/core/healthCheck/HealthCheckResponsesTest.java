@@ -50,6 +50,6 @@ class HealthCheckResponsesTest {
 
 
     assertThat(responses.getAverage())
-        .isEqualTo(1003.47);
+        .isEqualTo(1003.0);
   }
 }

@@ -31,4 +31,12 @@ public class TimedSitedResultDto {
   public String getGroup() {
     return healthCheckResponses.getEndpoint().getGroup();
   }
+
+  public double getAverage() {
+    return  healthCheckResponses.getAverage();
+  }
+
+  public float getUptime() {
+    return  healthCheckResponses.getUptime();
+  }
 }

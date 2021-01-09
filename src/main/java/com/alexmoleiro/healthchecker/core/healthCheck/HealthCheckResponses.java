@@ -46,7 +46,7 @@ public class HealthCheckResponses {
 
   public double getAverage() {
     return Double.valueOf(
-        new DecimalFormat("##.##")
+        new DecimalFormat("##")
             .format(
                 healthCheckResponses.stream()
                     .mapToLong(x -> x.getDelay())

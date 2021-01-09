@@ -10,10 +10,10 @@ import com.alexmoleiro.healthchecker.infrastructure.repositories.DomainsRemote;
 import com.alexmoleiro.healthchecker.infrastructure.repositories.EndpointInMemory;
 import com.alexmoleiro.healthchecker.infrastructure.repositories.HealthChecksInMemory;
 import com.alexmoleiro.healthchecker.infrastructure.repositories.ProfileRepositoryInMemory;
+import com.alexmoleiro.healthchecker.service.EndpointService;
 import com.alexmoleiro.healthchecker.service.HealthCheckerClient;
 import com.alexmoleiro.healthchecker.service.HealthCheckerCrawler;
 import com.alexmoleiro.healthchecker.service.ProfileService;
-import com.alexmoleiro.healthchecker.service.EndpointService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -57,10 +57,12 @@ public class InfrastuctureConfiguration {
 
   @Bean
   ProfileService profileService(
-          ProfileRepository profileRepository,
-          HealthCheckRepository healthCheckRepository,
-          EndpointRepository endpointRepository) {
-    return new ProfileService(profileRepository, healthCheckRepository, endpointRepository);
+      ProfileRepository profileRepository,
+      HealthCheckRepository healthCheckRepository,
+      EndpointRepository endpointRepository,
+      HealthChecker healthChecker) {
+    return new ProfileService(
+        profileRepository, healthCheckRepository, endpointRepository, healthChecker);
   }
 
   @Bean
@@ -71,9 +73,9 @@ public class InfrastuctureConfiguration {
 
   @Bean
   EndpointService endpointService(
-          HealthCheckerCrawler healthCheckerCrawler,
-          DomainsRepository domainsRepository,
-          EndpointRepository endpointRepository) {
+      HealthCheckerCrawler healthCheckerCrawler,
+      DomainsRepository domainsRepository,
+      EndpointRepository endpointRepository) {
     return new EndpointService(healthCheckerCrawler, domainsRepository, endpointRepository);
   }
 
@@ -90,7 +92,7 @@ public class InfrastuctureConfiguration {
   }
 
   @Bean
-  @Profile({"fast","alex"})
+  @Profile({"fast", "alex"})
   DomainsRepository getDomainsTestFast() {
     return new DomainsLocal();
   }

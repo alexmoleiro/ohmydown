@@ -22,7 +22,6 @@ class HttpUrlTest {
     assertThat(httpUrl.toString()).isEqualTo("http://a.com");
   }
 
-
   @ParameterizedTest
   @MethodSource("invalidUrl")
   void shouldThrowExceptionWhenInvalidUrl(String invalidUrl) {

@@ -20,7 +20,12 @@ public class SiteResultsDto {
             responses ->
                 new TimedSitedResultDto(
                     new HealthCheckResponses(
-                        responses.getEndpoint(), responses.getHealthCheckResponse().getLast())))
+                        responses.getEndpoint(),
+                        responses.getHealthCheckResponse().getLast()),
+                    responses.getUptime(),
+                    responses.getAverage()
+
+                ))
         .collect(toList());
   }
 

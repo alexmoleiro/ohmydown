@@ -43,4 +43,14 @@ public class HealthCheckResponses {
     final DecimalFormat decimalFormat = new DecimalFormat("##.##");
     return valueOf(decimalFormat.format((totalTicks - totalNoOk) / totalTicks * 100));
   }
+
+  public double getAverage() {
+    return Double.valueOf(
+        new DecimalFormat("##.##")
+            .format(
+                healthCheckResponses.stream()
+                    .mapToLong(x -> x.getDelay())
+                    .summaryStatistics()
+                    .getAverage()));
+  }
 }

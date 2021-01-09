@@ -162,15 +162,15 @@ class ProfileApiTest {
         .andExpect(status().isOk())
         .andExpect(content().json("""              
               {"responses":[
-              {"endpoint":{"id":"%s","url":"%s","group":"%s"},"uptime":50.0,
+              {"endpoint":{"id":"%s","url":"%s","group":"%s"},"uptime":50.0,"average":90000.0,
               "healthCheckResponse":[
               {"time":"2020-11-30T12:00:00","url":"http://a.com","delay":120000,"status":200},
               {"time":"2020-11-30T12:00:00","url":"http://a.com","delay":60000,"status":403}]},
-              {"endpoint":{"id":"%s","url":"%s","group":"%s"},"uptime":50.0,
+              {"endpoint":{"id":"%s","url":"%s","group":"%s"},"uptime":50.0,"average":90000.0,
               "healthCheckResponse":[
               {"time":"2020-11-30T12:00:00","url":"http://b.it","delay":120000,"status":200},
               {"time":"2020-11-30T12:00:00","url":"http://b.it","delay":60000,"status":403}]},
-              {"endpoint":{"id":"%s","url":"%s","group":"%s"},"uptime":50.0,
+              {"endpoint":{"id":"%s","url":"%s","group":"%s"},"uptime":50.0,"average":90000.0,
               "healthCheckResponse":[
               {"time":"2020-11-30T12:00:00","url":"http://c.es","delay":120000,"status":200},
               {"time":"2020-11-30T12:00:00","url":"http://c.es","delay":60000,"status":403}]}],

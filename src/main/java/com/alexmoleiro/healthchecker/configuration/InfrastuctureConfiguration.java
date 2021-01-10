@@ -5,6 +5,7 @@ import com.alexmoleiro.healthchecker.core.healthCheck.EndpointRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthChecker;
 import com.alexmoleiro.healthchecker.core.profile.ProfileRepository;
+import com.alexmoleiro.healthchecker.infrastructure.filter.ThrottleFilter;
 import com.alexmoleiro.healthchecker.infrastructure.repositories.DomainsLocal;
 import com.alexmoleiro.healthchecker.infrastructure.repositories.DomainsRemote;
 import com.alexmoleiro.healthchecker.infrastructure.repositories.EndpointInMemory;
@@ -33,6 +34,17 @@ public class InfrastuctureConfiguration {
 
   @Value("${nthreads}")
   int nThreads;
+
+  @Value("${tokens.daily}")
+  int dailyTokens;
+
+  @Value("${tokens.hourly}")
+  int hourlyTokens;
+
+  @Bean
+  ThrottleFilter throttleFilter() {
+    return new ThrottleFilter(dailyTokens, hourlyTokens);
+  }
 
   @Bean
   HealthChecker httpChecker() {
@@ -78,6 +90,8 @@ public class InfrastuctureConfiguration {
       EndpointRepository endpointRepository) {
     return new EndpointService(healthCheckerCrawler, domainsRepository, endpointRepository);
   }
+
+
 
   @Bean
   @Profile({"pro", "default"})

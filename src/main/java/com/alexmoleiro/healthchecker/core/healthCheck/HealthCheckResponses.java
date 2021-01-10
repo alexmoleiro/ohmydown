@@ -2,9 +2,9 @@ package com.alexmoleiro.healthchecker.core.healthCheck;
 
 import java.text.DecimalFormat;
 import java.util.LinkedList;
-import java.util.stream.Collectors;
 
 import static java.lang.Float.valueOf;
+import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.OK;
 
 public class HealthCheckResponses {
@@ -38,10 +38,9 @@ public class HealthCheckResponses {
     float totalNoOk =
         healthCheckResponses.stream()
             .filter(r -> r.getStatus() != OK.value())
-            .collect(Collectors.toList())
+            .collect(toList())
             .size();
-    final DecimalFormat decimalFormat = new DecimalFormat("##.##");
-    return valueOf(decimalFormat.format((totalTicks - totalNoOk) / totalTicks * 100));
+    return valueOf(new DecimalFormat("##.##").format((totalTicks - totalNoOk) / totalTicks * 100));
   }
 
   public double getAverage() {

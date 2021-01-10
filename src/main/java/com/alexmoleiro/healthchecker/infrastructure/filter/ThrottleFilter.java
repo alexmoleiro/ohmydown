@@ -1,8 +1,6 @@
 package com.alexmoleiro.healthchecker.infrastructure.filter;
 
 import io.github.bucket4j.Bucket;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -20,15 +18,21 @@ import static io.github.bucket4j.Bucket4j.builder;
 import static io.github.bucket4j.Refill.intervally;
 import static java.time.Duration.ofDays;
 import static java.time.Duration.ofMinutes;
+import static org.springframework.http.HttpStatus.TOO_MANY_REQUESTS;
 
-@Component
 public class ThrottleFilter implements Filter {
 
-  public static final int DAILY_TOKENS = 2000;
-  public static final int HOURLY_TOKENS = 120;
-  public static final int ONE = 1;
+  private static final int ONE = 1;
+  private final int dailyTokens;
+  private final int hourlyTokens;
   private Map<String, Bucket> minuteBucket = new HashMap<>();
   private Map<String, Bucket> dayBucket = new HashMap<>();
+
+  public ThrottleFilter(int dailyTokens, int hourlyTokens) {
+
+    this.dailyTokens = dailyTokens;
+    this.hourlyTokens = hourlyTokens;
+  }
 
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -41,13 +45,13 @@ public class ThrottleFilter implements Filter {
         remoteAddr,
         k ->
             builder()
-                .addLimit(classic(HOURLY_TOKENS, intervally(HOURLY_TOKENS, ofMinutes(ONE))))
+                .addLimit(classic(hourlyTokens, intervally(hourlyTokens, ofMinutes(ONE))))
                 .build());
     dayBucket.computeIfAbsent(
         remoteAddr,
         k ->
             builder()
-                .addLimit(classic(DAILY_TOKENS, intervally(DAILY_TOKENS, ofDays(ONE))))
+                .addLimit(classic(dailyTokens, intervally(dailyTokens, ofDays(ONE))))
                 .build());
 
     final Bucket mBucket = minuteBucket.get(remoteAddr);
@@ -58,7 +62,7 @@ public class ThrottleFilter implements Filter {
     } else {
       HttpServletResponse httpResponse = (HttpServletResponse) response;
       httpResponse.setContentType("text/plain");
-      httpResponse.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
+      httpResponse.setStatus(TOO_MANY_REQUESTS.value());
       httpResponse.getWriter().append("Too many requests");
     }
   }

@@ -7,7 +7,6 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
@@ -24,28 +23,27 @@ public class ThrottleFilter implements Filter {
 
   private static final int ONE = 1;
   private final int dailyTokens;
-  private final int hourlyTokens;
+  private final int minutelyToken;
   private Map<String, Bucket> minuteBucket = new HashMap<>();
   private Map<String, Bucket> dayBucket = new HashMap<>();
 
-  public ThrottleFilter(int dailyTokens, int hourlyTokens) {
+  public ThrottleFilter(int dailyTokens, int minutelyToken) {
 
     this.dailyTokens = dailyTokens;
-    this.hourlyTokens = hourlyTokens;
+    this.minutelyToken = minutelyToken;
   }
 
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
       throws IOException, ServletException {
 
-    HttpServletRequest httpRequest = (HttpServletRequest) request;
-    final String remoteAddr = httpRequest.getRemoteAddr();
+    final String remoteAddr = request.getRemoteAddr();
 
     minuteBucket.computeIfAbsent(
         remoteAddr,
         k ->
             builder()
-                .addLimit(classic(hourlyTokens, intervally(hourlyTokens, ofMinutes(ONE))))
+                .addLimit(classic(minutelyToken, intervally(minutelyToken, ofMinutes(ONE))))
                 .build());
     dayBucket.computeIfAbsent(
         remoteAddr,
@@ -54,10 +52,7 @@ public class ThrottleFilter implements Filter {
                 .addLimit(classic(dailyTokens, intervally(dailyTokens, ofDays(ONE))))
                 .build());
 
-    final Bucket mBucket = minuteBucket.get(remoteAddr);
-    final Bucket dBucket = dayBucket.get(remoteAddr);
-
-    if (mBucket.tryConsume(ONE) && dBucket.tryConsume(ONE)) {
+    if (minuteBucket.get(remoteAddr).tryConsume(ONE) && dayBucket.get(remoteAddr).tryConsume(ONE)) {
       chain.doFilter(request, response);
     } else {
       HttpServletResponse httpResponse = (HttpServletResponse) response;

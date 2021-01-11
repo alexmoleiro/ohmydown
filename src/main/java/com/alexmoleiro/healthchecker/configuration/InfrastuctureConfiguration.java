@@ -38,12 +38,12 @@ public class InfrastuctureConfiguration {
   @Value("${tokens.daily}")
   int dailyTokens;
 
-  @Value("${tokens.hourly}")
-  int hourlyTokens;
+  @Value("${tokens.minuteLy}")
+  int minutelyTokens;
 
   @Bean
   ThrottleFilter throttleFilter() {
-    return new ThrottleFilter(dailyTokens, hourlyTokens);
+    return new ThrottleFilter(dailyTokens, minutelyTokens);
   }
 
   @Bean

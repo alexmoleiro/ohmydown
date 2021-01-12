@@ -47,7 +47,7 @@ public class ProfileService {
   private Boolean isUserExceedingNumberOfEndpoints(User user) {
     return profileRepository
         .get(user)
-        .map(x -> x.getFollowing().size() + 1 > maxEndpointsPerUserLimit)
+        .map(u -> u.getFollowing().size() + 1 > maxEndpointsPerUserLimit)
         .orElse(false);
   }
 

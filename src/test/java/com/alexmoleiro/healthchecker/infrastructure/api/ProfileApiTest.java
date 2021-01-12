@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import static com.alexmoleiro.healthchecker.core.healthCheck.CheckResultCode.MAXIMUM_ENDPOINT_PER_USER_EXCEEDED;
 import static java.time.LocalDateTime.of;
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,6 +60,7 @@ class ProfileApiTest {
   private static final String A_TOKEN = UUID.randomUUID().toString();
   private static final User USER = new User("1", "alex@email.com");
   private static final User USERB = new User("2", "alex@email.com");
+  private static final User USERC= new User("3", "alex@email.com");
 
   @Test
   void shouldAddDomain() throws Exception {
@@ -78,6 +80,31 @@ class ProfileApiTest {
     assertThat(profileRepository.get(USER).get().getFollowing()).usingRecursiveComparison()
         .isEqualTo(Set.of(new Endpoint(new HttpUrl("https://www.as.com"))));
     }
+
+  @Test
+  void shouldReturn701() throws Exception {
+
+    when(oauthService.getUser(anyString())).thenReturn(USERC);
+    String aToken = "aToken";
+    final String validUrl = "https://www.as.com";
+
+    this.mockMvc.perform(
+        post("/profile/addurl")
+            .header("Token", aToken)
+            .contentType(APPLICATION_JSON)
+            .content("""
+        {"url":"%s"}""".formatted(validUrl)))
+        .andExpect(status().isCreated());
+
+    this.mockMvc.perform(
+        post("/profile/addurl")
+            .header("Token", aToken)
+            .contentType(APPLICATION_JSON)
+            .content("""
+        {"url":"%s"}""".formatted(validUrl)))
+        .andExpect(status().is(MAXIMUM_ENDPOINT_PER_USER_EXCEEDED.value()));
+
+  }
 
   @Test
   void shouldReturn404whenInvalidDomain() throws Exception {

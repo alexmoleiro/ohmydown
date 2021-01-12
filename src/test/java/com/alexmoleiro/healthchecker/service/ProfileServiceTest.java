@@ -20,17 +20,37 @@ import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
 import static java.util.Set.of;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.OK;
 
 class ProfileServiceTest {
 
-  public static final User RANDOM_USER = new User("randomUser", "a@a.com");
-  public static final User ANOTHER_RANDOM_USER = new User("randomUser2", "a@b.com");
-  public static final Endpoint ENDPOINT = new Endpoint(new HttpUrl("www.as.com"));
-  public static final Endpoint ENDPOINT_B = new Endpoint(new HttpUrl("www.b.com"));
+  private static final User RANDOM_USER = new User("randomUser", "a@a.com");
+  private static final User ANOTHER_RANDOM_USER = new User("randomUser2", "a@b.com");
+  private static final Endpoint ENDPOINT = new Endpoint(new HttpUrl("www.as.com"));
+  private static final Endpoint ENDPOINT_B = new Endpoint(new HttpUrl("www.b.com"));
+  private static final int MAX_ENDPOINTS_PER_USER_LIMIT = 10;
+  public static final int ONE_ENDPOINT_PER_USER = 1;
+
+  @Test
+  void shouldThrownExceptionWhenMaxNumberOFEndpointExeeded() {
+    final ProfileService profileService =
+        new ProfileService(
+            new ProfileRepositoryInMemory(),
+            new HealthChecksInMemory(),
+            new EndpointInMemory(),
+            mock(HealthChecker.class),
+            ONE_ENDPOINT_PER_USER);
+
+    profileService.addEndpointToEndpointsAndUserProfile(RANDOM_USER, ENDPOINT_B);
+
+    assertThatThrownBy(
+            () -> profileService.addEndpointToEndpointsAndUserProfile(RANDOM_USER, ENDPOINT))
+        .isInstanceOf(MaximumEndpointPerUserExceededException.class);
+  }
 
   @Test
   void shouldRespondEmptyHealthCheckResponses() {
@@ -43,7 +63,8 @@ class ProfileServiceTest {
                 profileRepositoryInMemory,
                 healthCheckRepository,
                 new EndpointInMemory(),
-                healthChecker)
+                healthChecker,
+                MAX_ENDPOINTS_PER_USER_LIMIT)
             .getResponses(RANDOM_USER);
 
     assertThat(healthCheckResponses).isEqualTo(emptyList());
@@ -58,11 +79,16 @@ class ProfileServiceTest {
     HealthCheckRepository healthCheckRepository = mock(HealthCheckRepository.class);
 
     final HealthCheckResponse healthCheckResponse =
-        new HealthCheckResponse(ENDPOINT.getHttpUrl(), 200, now(), now());
+        new HealthCheckResponse(ENDPOINT.getHttpUrl(), OK.value(), now(), now());
 
     when(healthChecker.check(ENDPOINT.getHttpUrl())).thenReturn(healthCheckResponse);
 
-    new ProfileService(profileRepository, healthCheckRepository, endpointRepository, healthChecker)
+    new ProfileService(
+            profileRepository,
+            healthCheckRepository,
+            endpointRepository,
+            healthChecker,
+            MAX_ENDPOINTS_PER_USER_LIMIT)
         .addEndpointToEndpointsAndUserProfile(RANDOM_USER, ENDPOINT);
 
     verify(endpointRepository).add(ENDPOINT);
@@ -78,7 +104,11 @@ class ProfileServiceTest {
 
     ProfileService profileService =
         new ProfileService(
-            profileRepository, new HealthChecksInMemory(), new EndpointInMemory(), healthChecker);
+            profileRepository,
+            new HealthChecksInMemory(),
+            new EndpointInMemory(),
+            healthChecker,
+            MAX_ENDPOINTS_PER_USER_LIMIT);
 
     profileService.addEndpointToEndpointsAndUserProfile(RANDOM_USER, ENDPOINT);
     profileService.addEndpointToEndpointsAndUserProfile(ANOTHER_RANDOM_USER, ENDPOINT);
@@ -96,7 +126,11 @@ class ProfileServiceTest {
     endpointRepository.add(ENDPOINT_B);
     var profileService =
         new ProfileService(
-            profileRepository, new HealthChecksInMemory(), endpointRepository, healthChecker);
+            profileRepository,
+            new HealthChecksInMemory(),
+            endpointRepository,
+            healthChecker,
+            MAX_ENDPOINTS_PER_USER_LIMIT);
 
     profileService.deleteUrls(RANDOM_USER, of(ENDPOINT.getId(), ENDPOINT_B.getId()));
 

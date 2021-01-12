@@ -41,6 +41,9 @@ public class InfrastuctureConfiguration {
   @Value("${tokens.minuteLy}")
   int minutelyTokens;
 
+  @Value("${maxEndpointsPerUser}")
+  int maxEndpointsPerUser;
+
   @Bean
   ThrottleFilter throttleFilter() {
     return new ThrottleFilter(dailyTokens, minutelyTokens);
@@ -74,7 +77,7 @@ public class InfrastuctureConfiguration {
       EndpointRepository endpointRepository,
       HealthChecker healthChecker) {
     return new ProfileService(
-        profileRepository, healthCheckRepository, endpointRepository, healthChecker);
+        profileRepository, healthCheckRepository, endpointRepository, healthChecker, maxEndpointsPerUser);
   }
 
   @Bean

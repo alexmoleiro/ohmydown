@@ -20,22 +20,35 @@ public class ProfileService {
   private final HealthCheckRepository healthCheckRepository;
   private EndpointRepository endpointRepository;
   private final HealthChecker healthChecker;
+  private final int maxEndpointsPerUserLimit;
 
   public ProfileService(
       ProfileRepository profileRepository,
       HealthCheckRepository healthCheckRepository,
       EndpointRepository endpointRepository,
-      HealthChecker healthChecker) {
+      HealthChecker healthChecker,
+      int maxEndpointsPerUserLimit) {
     this.profileRepository = profileRepository;
     this.healthCheckRepository = healthCheckRepository;
     this.endpointRepository = endpointRepository;
     this.healthChecker = healthChecker;
+    this.maxEndpointsPerUserLimit = maxEndpointsPerUserLimit;
   }
 
   public void addEndpointToEndpointsAndUserProfile(User user, Endpoint endpoint) {
+    if (isUserExceedingNumberOfEndpoints(user)) {
+      throw new MaximumEndpointPerUserExceededException();
+    }
     endpointRepository.add(endpoint);
     healthCheckRepository.add(endpoint, healthChecker.check(endpoint.getHttpUrl()));
     profileRepository.addEndpoint(user, endpoint);
+  }
+
+  private Boolean isUserExceedingNumberOfEndpoints(User user) {
+    return profileRepository
+        .get(user)
+        .map(x -> x.getFollowing().size() + 1 > maxEndpointsPerUserLimit)
+        .orElse(false);
   }
 
   public List<HealthCheckResponses> getResponses(User user) {

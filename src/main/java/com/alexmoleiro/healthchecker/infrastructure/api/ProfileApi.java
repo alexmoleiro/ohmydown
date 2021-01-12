@@ -7,8 +7,12 @@ import com.alexmoleiro.healthchecker.core.profile.OauthService;
 import com.alexmoleiro.healthchecker.infrastructure.dto.IdDto;
 import com.alexmoleiro.healthchecker.infrastructure.dto.ProfileDto;
 import com.alexmoleiro.healthchecker.infrastructure.dto.UrlDto;
+import com.alexmoleiro.healthchecker.service.MaximumEndpointPerUserExceededException;
 import com.alexmoleiro.healthchecker.service.ProfileService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -62,4 +66,8 @@ public class ProfileApi {
   public void invalidUrl() {
   }
 
+  @ExceptionHandler(MaximumEndpointPerUserExceededException.class)
+  public void maximumEndpoints(HttpServletResponse response) {
+    response.setStatus(701);
+  }
 }

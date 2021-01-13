@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import static com.alexmoleiro.healthchecker.core.healthCheck.EndpointType.LANDING;
 import static java.time.LocalDateTime.of;
+import static java.time.Month.DECEMBER;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -39,8 +40,8 @@ public class HealthCheckResultsApiTest {
     @Autowired
     private EndpointRepository endpointRepository;
 
-    private static final LocalDateTime FIRST = of(2020, 12, 8, 23, 20);
-    private static final LocalDateTime SECOND = of(2020, 12, 8, 23, 25);
+    private static final LocalDateTime FIRST = of(2020, DECEMBER.getValue(), 8, 23, 20);
+    private static final LocalDateTime SECOND = of(2020, DECEMBER.getValue(), 8, 23, 25);
 
     @Test
     void shouldReturnHistoricalValues() throws Exception {

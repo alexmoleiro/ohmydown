@@ -36,19 +36,21 @@ public class ProfileService {
   }
 
   public void addEndpointToEndpointsAndUserProfile(User user, Endpoint endpoint) {
-    if (isUserExceedingNumberOfEndpoints(user)) {
-      throw new MaximumEndpointPerUserExceededException();
-    }
-    endpointRepository.add(endpoint);
+    isUserExceedingNumberOfEndpoints(user);
     healthCheckRepository.add(endpoint, healthChecker.check(endpoint.getHttpUrl()));
+    endpointRepository.add(endpoint);
     profileRepository.addEndpoint(user, endpoint);
   }
 
-  private Boolean isUserExceedingNumberOfEndpoints(User user) {
-    return profileRepository
+  private void isUserExceedingNumberOfEndpoints(User user) {
+    profileRepository
         .get(user)
-        .map(u -> u.getFollowing().size() + 1 > maxEndpointsPerUserLimit)
-        .orElse(false);
+        .ifPresent(
+            u -> {
+              if (u.getFollowing().size() + 1 > maxEndpointsPerUserLimit) {
+                throw new MaximumEndpointPerUserExceededException();
+              }
+            });
   }
 
   public List<HealthCheckResponses> getResponses(User user) {

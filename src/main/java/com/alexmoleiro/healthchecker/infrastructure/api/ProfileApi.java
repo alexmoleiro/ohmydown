@@ -9,12 +9,23 @@ import com.alexmoleiro.healthchecker.infrastructure.dto.ProfileDto;
 import com.alexmoleiro.healthchecker.infrastructure.dto.UrlDto;
 import com.alexmoleiro.healthchecker.service.MaximumEndpointPerUserExceededException;
 import com.alexmoleiro.healthchecker.service.ProfileService;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 
-import static org.springframework.http.HttpStatus.*;
+import static com.alexmoleiro.healthchecker.core.healthCheck.CheckResultCode.MAXIMUM_ENDPOINT_PER_USER_EXCEEDED;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 public class ProfileApi {
@@ -56,18 +67,18 @@ public class ProfileApi {
     profileService.deleteUrls(oauthService.getUser(token), idDto.getIds());
   }
 
-  @ResponseStatus(value= FORBIDDEN)
+  @ResponseStatus(FORBIDDEN)
   @ExceptionHandler(InvalidTokenException.class)
   public void invalidToken() {
   }
 
-  @ResponseStatus(value= BAD_REQUEST)
+  @ResponseStatus(BAD_REQUEST)
   @ExceptionHandler(InvalidHttpUrlException.class)
   public void invalidUrl() {
   }
 
   @ExceptionHandler(MaximumEndpointPerUserExceededException.class)
   public void maximumEndpoints(HttpServletResponse response) {
-    response.setStatus(701);
+    response.setStatus(MAXIMUM_ENDPOINT_PER_USER_EXCEEDED.value());
   }
 }

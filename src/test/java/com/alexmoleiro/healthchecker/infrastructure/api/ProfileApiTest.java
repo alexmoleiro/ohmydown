@@ -1,5 +1,6 @@
 package com.alexmoleiro.healthchecker.infrastructure.api;
 
+
 import com.alexmoleiro.healthchecker.core.healthCheck.Endpoint;
 import com.alexmoleiro.healthchecker.core.healthCheck.EndpointRepository;
 import com.alexmoleiro.healthchecker.core.healthCheck.HealthCheckRepository;
@@ -24,6 +25,7 @@ import java.util.UUID;
 
 import static com.alexmoleiro.healthchecker.core.healthCheck.CheckResultCode.MAXIMUM_ENDPOINT_PER_USER_EXCEEDED;
 import static java.time.LocalDateTime.of;
+import static java.time.Month.NOVEMBER;
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -58,16 +60,13 @@ class ProfileApiTest {
   ProfileRepository profileRepository;
 
   private static final String A_TOKEN = UUID.randomUUID().toString();
-  private static final User USER = new User("1", "alex@email.com");
-  private static final User USERB = new User("2", "alex@email.com");
-  private static final User USERC= new User("3", "alex@email.com");
 
   @Test
   void shouldAddDomain() throws Exception {
-
-    when(oauthService.getUser(anyString())).thenReturn(USER);
+ User user = createUser();
+    when(oauthService.getUser(anyString())).thenReturn(user);
     String aToken = "aToken";
-    final String validUrl = "https://www.as.com";
+    final String validUrl = "https://www.c.com";
 
     this.mockMvc.perform(
         post("/profile/addurl")
@@ -77,14 +76,14 @@ class ProfileApiTest {
         {"url":"%s"}""".formatted(validUrl)))
         .andExpect(status().isCreated());
 
-    assertThat(profileRepository.get(USER).get().getFollowing()).usingRecursiveComparison()
-        .isEqualTo(Set.of(new Endpoint(new HttpUrl("https://www.as.com"))));
+    assertThat(profileRepository.get(user).get().getFollowing()).usingRecursiveComparison()
+        .isEqualTo(Set.of(new Endpoint(new HttpUrl("https://www.c.com"))));
     }
 
   @Test
   void shouldReturn701() throws Exception {
 
-    when(oauthService.getUser(anyString())).thenReturn(USERC);
+    when(oauthService.getUser(anyString())).thenReturn(createUser());
     String aToken = "aToken";
     final String validUrl = "https://www.as.com";
 
@@ -132,13 +131,14 @@ class ProfileApiTest {
 
   @Test
   void deleteUrl() throws Exception {
-    when(oauthService.getUser(anyString())).thenReturn(USERB);
+    User user = createUser();
+    when(oauthService.getUser(anyString())).thenReturn(user);
     Endpoint endpointA = new Endpoint(new HttpUrl("a.com"));
 
-    profileRepository.addEndpoint(USERB, endpointA);
+    profileRepository.addEndpoint(user, endpointA);
     endpointRepository.add(endpointA);
 
-    assertThat(profileRepository.get(USERB).get().getFollowing()).containsOnly(endpointA);
+    assertThat(profileRepository.get(user).get().getFollowing()).containsOnly(endpointA);
 
     this.mockMvc.perform(
             MockMvcRequestBuilders.delete("/profile/deleteurls")
@@ -148,7 +148,7 @@ class ProfileApiTest {
         {"ids":["%s"]}""".formatted(endpointA.getId())))
             .andExpect(status().isOk());
 
-    assertThat(profileRepository.get(USERB).get().getFollowing()).isEmpty();
+    assertThat(profileRepository.get(user).get().getFollowing()).isEmpty();
 
   }
 
@@ -168,7 +168,7 @@ class ProfileApiTest {
     final String anId = randomString();
     final String anEmail = randomString();
     final String aToken = randomString();
-    LocalDateTime time = of(2020, 11, 30, 12, 0);
+    LocalDateTime time = of(2020, NOVEMBER.getValue(), 30, 12, 0);
     final User aUser = new User(anId, anEmail);
 
     when(oauthService.getUser(aToken)).thenReturn(aUser);
@@ -210,6 +210,9 @@ class ProfileApiTest {
         )));
   }
 
+  private User createUser() {
+    return new User(randomUUID().toString(), "alex@email.com");
+  }
   private String randomString() {
     return randomUUID().toString();
   }

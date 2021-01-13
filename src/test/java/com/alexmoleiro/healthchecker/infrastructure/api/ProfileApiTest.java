@@ -165,11 +165,9 @@ class ProfileApiTest {
   @Test
   void shouldRespondFollowebWebsites() throws Exception {
 
-    final String anId = randomString();
-    final String anEmail = randomString();
     final String aToken = randomString();
     LocalDateTime time = of(2020, NOVEMBER.getValue(), 30, 12, 0);
-    final User aUser = new User(anId, anEmail);
+    final User aUser = createUser();
 
     when(oauthService.getUser(aToken)).thenReturn(aUser);
 
@@ -206,7 +204,7 @@ class ProfileApiTest {
                       endpointA.getId(), endpointA.getHttpUrl().toString(), endpointA.getGroup(),
                       endPointB.getId(), endPointB.getHttpUrl().toString(), endPointB.getGroup(),
                 endpointC.getId(),  endpointC.getHttpUrl().toString(), endpointC.getGroup(),
-                anId
+                aUser.getId()
         )));
   }
 
